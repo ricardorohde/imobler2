@@ -1,0 +1,48 @@
+/*------------------------------------------------------------------
+[Styles]
+
+Project:	Houzez html5 Template
+Version:	1.1
+Last change:
+Primary use:	Real estate
+-------------------------------------------------------------------*/
+/*------------------------------------------------------------------
+[Table of contents]
+
+1. Body
+2. Header
+3. Navigation
+4. Content
+5. Widgets
+6. Modules
+7. Typography
+8. Alerts
+9. Buttons
+10. Footer
+-------------------------------------------------------------------*/
+
+@import 'compass';
+@import 'variables.scss';
+@import 'mixings.scss';
+
+@import 'fonts.scss';
+
+@import 'global.scss';
+
+@import 'header.scss';
+
+@import 'content.scss';
+
+@import 'widgets.scss';
+
+@import 'modules.scss';
+
+@import 'typography.scss';
+
+@import 'alerts.scss';
+
+@import 'buttons';
+
+@import 'footer.scss';
+
+@import 'keyframs.scss';
