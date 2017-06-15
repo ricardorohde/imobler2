@@ -247,7 +247,7 @@ class Properties_model extends CI_Model {
 
     // GET ROWS COUNT
 
-    $limit = (isset($request['limit']) && !empty($request['limit']) ? $request['limit'] : 12);
+    $limit = (isset($request['limit']) && !empty($request['limit']) ? $request['limit'] : $this->config->item('property_list_limit'));
 
     // PAGINATION
     if(isset($request['page']) && $request['page']){
