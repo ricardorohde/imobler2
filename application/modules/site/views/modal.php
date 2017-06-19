@@ -51,22 +51,26 @@
           </div>
 
           <div class="tab-pane tab-pane-register fade">
-            <form>
+            <div class="message">
+              <p class="message-text"></p>
+            </div>
+
+            <form id="pop-cadastro-form" method="post" action="<?php echo base_url('minha-conta/cadastro'); ?>">
               <div class="form-group field-group">
                 <div class="input-user input-icon">
-                  <input type="text" name="nome" placeholder="Nome">
+                  <input type="text" name="nome" required placeholder="Nome completo">
                 </div>
                 <div class="input-email input-icon">
-                  <input type="email" name="email" placeholder="E-mail">
+                  <input type="email" name="email" required placeholder="E-mail">
                 </div>
                 <div class="input-pass input-icon">
-                  <input type="password" name="senha" placeholder="Senha">
+                  <input type="password" name="senha" required placeholder="Senha">
                 </div>
               </div>
               <div class="form-group">
                 <div class="checkbox">
                   <label>
-                    <input type="checkbox">
+                    <input type="checkbox" name="termos" value="1">
                     Li e concordo com os <a href="<?php echo base_url('termos-e-condicoes'); ?>" target="_blank">Termos e Condições</a>.
                   </label>
                 </div>

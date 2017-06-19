@@ -31,6 +31,10 @@ class Home extends Site_Controller {
       'properties_types' => $this->properties_model->filters_properties_types()
     );
 
+    $data['featured'] = $this->properties_model->properties(array(
+      'orderby' => 'featured'
+    ));
+
     // print_l($this->properties_model->properties((isset($params['route_params']) ? $params['route_params'] : null)));
 
 		$this->template->view('site/master', 'site/home', $data);

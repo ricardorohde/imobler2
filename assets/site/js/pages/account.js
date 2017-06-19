@@ -26,7 +26,10 @@ var property_like_post = null;
         usuario_logado = response;
         $('.tab-pane-login').find('.message-text').removeClass('text-danger').addClass('text-success').html('<i class="fa fa-check"></i> ' + response.success);
 
-        property_like(property_like_post); property_like_post = null;
+        if(property_like_post){
+          property_like(property_like_post);
+          property_like_post = null;
+        }
 
         $.get(app.get_asset_url('templates/header__account.mustache'), function(template) {
           response['site_base_url'] = app.base_url();
@@ -40,6 +43,62 @@ var property_like_post = null;
     }
   });
 
+  var cadastro = $('#pop-cadastro-form').validate({
+    rules: {
+      nome: {
+        required: true,
+        minWords: 2
+      },
+      termos: 'required'
+    },
+    messages: {
+      email: {
+        required: 'Obrigatório',
+        email: 'Inválido'
+      },
+      nome: {
+          required: 'Obrigatório',
+          minWords: 'Nome e Sobrenome'
+      },
+      senha: {
+        required: 'Obrigatório'
+      },
+      termos: {
+        required: '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>'
+      }
+    },
+
+    submitHandler: function(form) {
+      $(form).ajaxSubmit({
+        dataType: 'json',
+        success: function(response){
+          if(response.errors){
+            $.each(response.errors, function(key, value){
+              $('.tab-pane-register').find('.message-text').removeClass('text-success').addClass('text-danger').html('<i class="fa fa-close"></i> ' + value);
+            });
+          }else{
+            usuario_logado = response;
+
+            $('.tab-pane-register').find('.message-text').removeClass('text-danger').addClass('text-success').html('<i class="fa fa-check"></i> ' + response.success);
+
+            if(property_like_post){
+              property_like(property_like_post);
+              property_like_post = null;
+            }
+
+            $.get(app.get_asset_url('templates/header__account.mustache'), function(template) {
+              response['site_base_url'] = app.base_url();
+              var rendered = Mustache.render(template, response);
+              $('#header-account').html(rendered);
+              $('#header-account-mobile').html(rendered);
+
+              $('#pop-login').modal('toggle');
+            });
+          }
+        }
+      });
+    }
+  });
 
 
   app.body.on('click', '.btn-like, .link-like', function(){

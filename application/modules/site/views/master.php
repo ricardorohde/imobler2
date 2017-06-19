@@ -77,6 +77,8 @@ if(isset($section["body_class"])){
         .script("<?php echo get_asset('js/isotope.pkgd.min.js'); ?>").wait()
         .script("<?php echo get_asset('js/jquery.nicescroll.js'); ?>").wait()
         .script("<?php echo get_asset('js/jquery.parallax-1.1.3.js'); ?>").wait()
+        .script("<?php echo get_asset('js/jquery.validate.min.js'); ?>").wait()
+        .script("<?php echo get_asset('js/additional-methods.min.js'); ?>").wait()
         .script("<?php echo get_asset('js/jquery.form.js'); ?>").wait()
         .script("<?php echo get_asset('js/mustache.min.js'); ?>").wait()
         .script("<?php echo get_asset('js/pages/account.js'); ?>").wait()
