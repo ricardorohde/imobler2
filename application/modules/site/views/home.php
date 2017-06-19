@@ -8,17 +8,37 @@
         <h1>Welcome To Miami Beach</h1>
         <h2 class="banner-sub-title">Parallax banner with search and image</h2>
         <div class="banner-search-main">
-            <form class="form-inline">
+            <form id="form-search-local" method="post" class="form-inline">
+                <input type="text" id="banner-search-main-transaction" name="params[transaction][]" value="venda" />
+
                 <div class="form-group">
-                    <select class="selectpicker" data-live-search="false" data-live-search-style="begins" title="Location">
-                        <option>Location 1</option>
-                        <option>Location 2</option>
-                        <option>Location 3</option>
-                        <option>Location 4</option>
-                        <option>Location 5</option>
+                    <select class="selectpicker form-control" name="params[properties_types][]" id="banner-search-main-properties_types" title="Selecione um tipo" data-live-search="false" data-live-search-style="begins" title="Location">
+                        <?php
+                        if(isset($properties_types) && !empty($properties_types)){
+                            foreach($properties_types as $properties_type){
+                                ?>
+                                <optgroup label="<?php echo $properties_type['segmento']; ?>">
+                                    <?php
+                                    if(isset($properties_type['tipos'])){
+                                        foreach ($properties_type['tipos'] as $tipo) {
+                                            ?>
+                                            <option <?php echo (isset($tipo['selected']) && $tipo['selected'] ? 'selected="true"' : ''); ?> value="<?php echo $tipo['slug']; ?>"><?php echo $tipo['nome']; ?></option>
+                                            <?php
+                                        }
+                                    }
+                                    ?>
+                                </optgroup>
+                                <?php
+                            }
+                        }
+                        ?>
                     </select>
                     <div class="search input-search input-icon">
-                        <input class="form-control" type="text" placeholder="Enter Keyword">
+                        <input type="text" id="banner-search-main-state" name="params[location][0][state]" value="" />
+                        <input type="text" id="banner-search-main-city" name="params[location][0][city]" value="">
+                        <input type="text" id="banner-search-main-district" name="params[location][0][district]" value="">
+
+                        <input type="text" class="form-control input-search-local" placeholder="Bairro, cidade ou referência do imóvel" autocomplete="off" />
                     </div>
                     <div class="search-btn">
                         <button class="btn btn-secondary"><i class="fa fa-search"></i> Search</button>

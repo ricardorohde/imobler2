@@ -26,11 +26,13 @@ class Home extends Site_Controller {
         'scripts' => array(
           array('js/pages/home.js')
         )
-      )
+      ),
+
+      'properties_types' => $this->properties_model->filters_properties_types()
     );
 
-    print_l($this->properties_model->properties((isset($params['route_params']) ? $params['route_params'] : null)));
+    // print_l($this->properties_model->properties((isset($params['route_params']) ? $params['route_params'] : null)));
 
-		// $this->template->view('site/master', 'site/home', $data);
+		$this->template->view('site/master', 'site/home', $data);
 	}
 }

@@ -1,0 +1,13 @@
+<span class="hidden-sm hidden-xs">{{nome}} <i class="fa fa-angle-down"></i></span>
+<span class="hidden-md hidden-lg"><span class="user-icon"><i class="fa fa-user"></i></span></span>
+{{#imagem}}
+  <img src="{{.}}" class="user-image hidden-sm hidden-xs" alt="{{nome}}" height="22" width="22">
+{{/imagem}}
+<div class="account-dropdown">
+  <ul>
+    <li><a href="{{site_base_url}}minha-conta"> <i class="fa fa-user"></i>Minha conta</a></li>
+    <li><a href="{{site_base_url}}minha-conta/favoritos"> <i class="fa fa-heart"></i>Imóveis favoritos</a></li>
+    <li><a href="{{site_base_url}}minha-conta/minhas-buscas"> <i class="fa fa-search-plus"></i>Minhas buscas</a></li>
+    <li><a href="{{site_base_url}}minha-conta/logout"> <i class="fa fa-unlock"></i>Sairs</a></li>
+  </ul>
+</div>

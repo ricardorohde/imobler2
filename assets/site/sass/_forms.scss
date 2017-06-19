@@ -1,0 +1,73 @@
+.radio-as-button {
+    list-style-type:none;
+    padding: 0;
+
+    li {
+        display: inline-block;
+        position: relative;
+        margin-left: 5px;
+
+        &:first-child {
+            margin-left: 0;
+        }
+
+        input[type="radio"] {
+            opacity: 0.011;
+            position: absolute;
+        }
+
+        input[type="radio"]:checked + label {
+            background: gray;
+        }
+    }
+
+    &.red {
+        li {
+            input[type="radio"]:checked + label {
+                background: $red;
+                border-color: $red;
+                color: $white;
+            }
+        }
+    }
+}
+
+/*
+
+.donate-now {
+
+     margin:25px 0 0 0;
+     padding:0;
+}
+
+.donate-now li {
+     float:left;
+     margin:0 5px 0 0;
+    width:100px;
+    height:40px;
+    position:relative;
+}
+
+.donate-now label, .donate-now input {
+    display:block;
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+}
+
+
+
+
+
+.donate-now label {
+     padding:5px;
+     border:1px solid #CCC;
+     cursor:pointer;
+    z-index:90;
+}
+
+.donate-now label:hover {
+     background:#DDD;
+} */

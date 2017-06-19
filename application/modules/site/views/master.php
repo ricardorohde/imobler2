@@ -25,12 +25,13 @@
     <link href="<?php echo get_asset('css/bootstrap-select.css'); ?>" rel="stylesheet" type="text/css" />
     <link href="<?php echo get_asset('css/font-awesome.css'); ?>" rel="stylesheet" type="text/css" />
     <link href="<?php echo get_asset('css/owl.carousel.css'); ?>" rel="stylesheet" type="text/css" />
-    <link href="<?php echo get_asset('css/jquery-ui.css'); ?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo get_asset('css/jquery-ui.min.css'); ?>" rel="stylesheet" type="text/css" />
     <link href="<?php echo get_asset('css/styles.css'); ?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo get_asset('css/options.css'); ?>" rel="stylesheet" type="text/css" />
     <?php
     if(isset($assets["styles"]) && !empty($assets["styles"])){
       foreach($assets["styles"] as $index => $style){
-        $style_src = strpos($style, '//') === false ? base_url($style) . '?v=' . $this->config->item('site_versao') : $style;
+        $style_src = strpos($style, '//') === false ? get_asset($style) . '?v=' . $this->config->item('site_versao') : $style;
         ?><link href="<?php echo $style_src; ?>" rel="stylesheet" type="text/css" media="screen" /><?php
       }
     }
@@ -56,6 +57,13 @@ if(isset($section["body_class"])){
 
     <script src="<?php echo get_asset('js/LAB.min.js'); ?>"></script>
     <script>
+        paceOptions = {
+           ajax: {
+                 trackMethods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH']
+           }
+        }
+    </script>
+    <script>
         $LAB
         .script("<?php echo get_asset('js/jquery.js'); ?>").wait()
         .script("<?php echo base_url('configjs'); ?>").wait()
@@ -65,11 +73,12 @@ if(isset($section["body_class"])){
         .script("<?php echo get_asset('js/owl.carousel.min.js'); ?>").wait()
         .script("<?php echo get_asset('js/jquery.matchHeight-min.js'); ?>").wait()
         .script("<?php echo get_asset('js/bootstrap-select.js'); ?>").wait()
-        .script("<?php echo get_asset('js/jquery-ui.js'); ?>").wait()
+        .script("<?php echo get_asset('js/jquery-ui.min.js'); ?>").wait()
         .script("<?php echo get_asset('js/isotope.pkgd.min.js'); ?>").wait()
         .script("<?php echo get_asset('js/jquery.nicescroll.js'); ?>").wait()
         .script("<?php echo get_asset('js/jquery.parallax-1.1.3.js'); ?>").wait()
-        .script("<?php echo get_asset('js/jquery.form.js'); ?>")
+        .script("<?php echo get_asset('js/jquery.form.js'); ?>").wait()
+        .script("<?php echo get_asset('js/mustache.min.js'); ?>").wait()
         .script("<?php echo get_asset('js/pages/account.js'); ?>").wait()
         <?php
         if(isset($assets["scripts"]) && !empty($assets["scripts"])){

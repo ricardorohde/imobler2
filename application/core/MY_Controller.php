@@ -18,11 +18,7 @@ class Site_Controller extends Default_Controller {
     $this->load->add_package_path(APPPATH . 'modules/site/');
     $this->load->library(array('site'));
 
-    $config = [
-      'paths' => [get_asset('templates', 'path'), VIEWPATH],
-      'cache' => false
-    ];
-
-    $this->load->library('twig', $config);
+    require_once APPPATH . 'third_party/Mustache/Autoloader.php';
+    Mustache_Autoloader::register();
   }
 }

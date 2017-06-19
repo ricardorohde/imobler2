@@ -276,8 +276,9 @@
     width: 50%;
     text-align: center;
     line-height: 55px;
+
     img{
-      max-height: 20px;
+      max-width: 150px;
     }
   }
   .header-user{
@@ -332,7 +333,7 @@
 }
 
 .header-section-default{
-  background-color: #004274;
+  background-color: $white;
   position: relative;
   //z-index: 11;
   .header-left{
@@ -376,6 +377,7 @@
     > a{
       color: $white;
       display: inline-block;
+      outline: none;
       &:hover{
         color:$white;
       }
@@ -461,7 +463,7 @@
     display: inline-block;
     line-height: 46px;
     font-weight: 500;
-    color: $white;
+    color: $black;
     cursor: pointer;
     //position: relative;
     //.fa{
@@ -1021,7 +1023,7 @@
   }
   .header-left{
     float: left ;
-    width: 75%;
+    width: 50%;
     .navi{
       float: left;
       margin-left: 5%;
@@ -1032,7 +1034,7 @@
   }
   .header-right{
     float: right;
-    width: 25%;
+    width: 50%;
     a{
       color: #004274;
       &:hover{

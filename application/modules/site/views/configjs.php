@@ -1,6 +1,8 @@
 <?php header('Content-type: application/javascript'); ?>
 var app = app || {};
 
+var usuario_logado = <?php echo $this->session->userdata('usuario_logado') ? "JSON.parse('" . json_encode($this->session->userdata("usuario_logado")) . "')" : 'false'; ?>;
+
 (function (window, document, $, undefined) {
 	'use strict';
 

@@ -10,19 +10,21 @@ class Site {
     }*/
   }
 
-  public function create_pagination($limit, $total_rows, $base_url, $num_links = 5, $url_suffix = null){
+  public function create_pagination($page, $limit, $total_rows, $base_url, $num_links = 5, $url_suffix = null){
     $this->ci->load->library('pagination');
 
     $config = array();
+    $config["cur_page"] = $page;
     $config["base_url"] = $base_url; // Set base_url for every links
     if($url_suffix){
-      $config['suffix'] = '#filter' . base64_encode($url_suffix);//$url_suffix;
+      $config['suffix'] = '?_=' . $url_suffix;//$url_suffix;
       $config['first_url'] = $config['base_url'] . $config['suffix'];
     }
     $config["total_rows"] = $total_rows; // Set total rows in the result set you are creating pagination for.
     $config["per_page"] = $limit; // Number of items you intend to show per page.
     $config['reuse_query_string'] = TRUE;
     $config['use_page_numbers'] = TRUE; // Use pagination number for anchor URL.
+    $config['rel'] = FALSE; // Use pagination number for anchor URL.
     $config['num_links'] = $num_links; //Set that how many number of pages you want to view.
     $config['full_tag_open'] = '<hr><div class="pagination-main"><ul class="pagination">';
     $config['full_tag_close'] = '</ul></div><!--pagination-->';
@@ -51,6 +53,87 @@ class Site {
     return $this->ci->pagination->create_links();
   }
 
+  public function mustache($template, $data = null){
+    $entry = new Mustache_Engine;
+
+    $this->ci->load->helper('file');
+    $template = read_file(get_asset("templates/" . $template . ".mustache", 'path'));
+
+    $data['site_base_url'] = base_url();
+
+    $rendered = $entry->render($template, $data);
+
+    return $rendered;
+  }
+
+  public function create_url_filter($route_params) {
+    $return = array();
+
+    $uri = '/';
+
+    if(isset($route_params['params']['transaction'])){
+      $uri .= $route_params['params']['transaction'] . '/';
+    }
+
+    if(isset($route_params['params']['location'][0])){
+      if(isset($route_params['params']['location'][0]['state'])){
+        $uri .= $route_params['params']['location'][0]['state'] . '/';
+      }
+
+      if(isset($route_params['params']['location'][0]['city'])){
+        $uri .= $route_params['params']['location'][0]['city'] . '/';
+      }
+
+      if(isset($route_params['params']['location'][0]['district'])){
+        $uri .= $route_params['params']['location'][0]['district'] . '/';
+      }
+    }
+
+    if(isset($route_params['params']['properties_types'][0])){
+      $uri .= $route_params['params']['properties_types'][0] . '/';
+    }
+
+    $return['uri'] = $uri;
+
+    if(isset($route_params['page'])){
+      $return['page'] = $route_params['page'];
+    }
+
+    $return['filter'] = base64url_encode(json_encode($route_params));
+
+    $return['uri_full'] = $uri . (isset($route_params['page']) ? $route_params['page'] : '') . '?_=' . $return['filter'];
+
+    return $return;
+  }
+
+  public function user_logged($condition = TRUE, $redirect = NULL, $section = 'usuario_logado'){
+    $login_check = $this->ci->session->userdata($section);
+    $is_logged = $login_check ? TRUE : FALSE;
+
+    if($is_logged == $condition){
+      if($redirect){
+        if($redirect === TRUE){
+          $redirect = 'minha-conta/login';
+        }
+        $this->ci->session->set_flashdata('redirect', base_url($this->ci->uri->uri_string()));
+        redirect(base_url($redirect), 'location');
+      }
+      return TRUE;
+    }
+    return FALSE;
+  }
+
+  public function userinfo($slug, $section = 'usuario_logado'){
+    if($this->user_logged(TRUE, NULL, $section)){
+      $usuario = $this->ci->session->userdata($section);
+      if(isset($usuario[$slug])){
+        return $usuario[$slug];
+      }
+    }
+    return false;
+  }
+
+
 /*
   public function autologin(){
     if($this->user_logged(FALSE)){
@@ -69,22 +152,6 @@ class Site {
     }
   }
 
-  public function mustache($template, $data){
-    require_once APPPATH.'third_party/Mustache/Autoloader.php';
-
-    Mustache_Autoloader::register();
-
-    $entry = new Mustache_Engine;
-
-    $this->ci->load->helper('file');
-    $template = read_file("application/modules/site/views/includes/templates/" . $template);
-
-    $data['base_url'] = base_url();
-
-    $rendered = $entry->render($template, $data);
-
-    return $rendered;
-  }
 
   public function get_property_url($property = 0){
     $this->ci->load->model('properties_model');
@@ -137,31 +204,6 @@ class Site {
 
 
 
-  public function user_logged($condition = TRUE, $redirect = NULL, $section = 'usuario_logado'){
-    $login_check = $this->ci->session->userdata($section);
-    $is_logged = $login_check ? TRUE : FALSE;
 
-    if($is_logged == $condition){
-      if($redirect){
-        if($redirect === TRUE){
-          $redirect = 'minha-conta/login';
-        }
-        $this->ci->session->set_flashdata('redirect', base_url($this->ci->uri->uri_string()));
-        redirect(base_url($redirect), 'location');
-      }
-      return TRUE;
-    }
-    return FALSE;
-  }
-
-  public function userinfo($slug, $section = 'usuario_logado'){
-    if($this->user_logged(TRUE, NULL, $section)){
-      $usuario = $this->ci->session->userdata($section);
-      if(isset($usuario[$slug])){
-        return $usuario[$slug];
-      }
-    }
-    return false;
-  }
 */
 }

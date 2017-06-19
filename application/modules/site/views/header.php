@@ -1,8 +1,64 @@
-<header id="header-section" class="header-section-4 header-main  nav-left hidden-sm hidden-xs" data-sticky="1">
+<header class="header-section-4 header-main nav-left hidden-sm hidden-xs" data-sticky="1">
     <div class="container">
         <div class="header-left">
             <div class="logo">
                 <a href="index.html">
+                    <img src="<?php echo get_asset('img/logo-mediz-white.png'); ?>" width="180" alt="logo">
+                </a>
+            </div>
+        </div>
+        <div class="header-right">
+            <ul class="account-action">
+                <li>
+                  <a href="<?php echo base_url('anunciar-imovel'); ?>" class="btn btn-default">Anunciar imóvel</a>
+                </li>
+
+                <li id="header-account">
+                    <?php
+                    if($this->session->userdata('usuario_logado')){
+                        echo $this->site->mustache('header__account', $this->session->userdata('usuario_logado'));
+                    }else{
+                        ?>
+                        <a href="#" data-toggle="modal" data-target="#pop-login">Entrar / Cadastrar</a>
+                        <?php
+                    }
+                    ?>
+                </li>
+            </ul>
+        </div>
+    </div>
+</header>
+<div class="header-mobile visible-sm visible-xs">
+    <div class="container">
+        <div class="mobile-nav">
+            <span class="nav-trigger"><i class="fa fa-navicon"></i></span>
+            <div class="nav-dropdown main-nav-dropdown"></div>
+        </div>
+        <div class="header-logo">
+            <img src="<?php echo get_asset('img/logo-mediz-white.png'); ?>" width="180" alt="logo">
+        </div>
+        <div class="header-user">
+            <ul class="account-action">
+                <li id="header-account-mobile">
+                    <?php
+                    if($this->session->userdata('usuario_logado')){
+                      echo $this->site->mustache('header__account', $this->session->userdata('usuario_logado'));
+                    }else{
+                      ?>
+                      <a href="#" data-toggle="modal" data-target="#pop-login"><span class="user-icon"><i class="fa fa-user"></i></span></a>
+                      <?php
+                    }
+                    ?>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!--header id="header-section" class="header-section-4 header-main  nav-left hidden-sm hidden-xs" data-sticky="1">
+    <div class="container">
+        <div class="header-left">
+            <div class="logo">
+                <a href="<?php echo base_url(); ?>">
                     <img src="<?php echo get_asset('img/houzez-logo-color.png'); ?>" alt="logo">
                 </a>
             </div>
@@ -206,22 +262,30 @@
         </div>
         <div class="header-right">
             <div class="user">
-                <a href="#" data-toggle="modal" data-target="#pop-login">Sign In / Register</a>
-                <a href="add-new-property.html" class="btn btn-default">Create Listing</a>
+                <span id="header-account">
+                    <?php
+                    if($this->session->userdata('usuario_logado')){
+                        echo $this->site->mustache('header__account', $this->session->userdata('usuario_logado'));
+                    }else{
+                        ?>
+                        <a href="#" data-toggle="modal" data-target="#pop-login">Entrar / Cadastrar</a>
+                        <?php
+                    }
+                    ?>
+                </span>
+                <a href="<?php echo base_url('anunciar-imovel'); ?>" class="btn btn-default">Anunciar imóvel</a>
             </div>
         </div>
     </div>
 </header>
 <div class="header-mobile visible-sm visible-xs">
     <div class="container">
-        <!--start mobile nav-->
         <div class="mobile-nav">
             <span class="nav-trigger"><i class="fa fa-navicon"></i></span>
             <div class="nav-dropdown main-nav-dropdown"></div>
         </div>
-        <!--end mobile nav-->
         <div class="header-logo">
-            <a href="index.html"><img src="<?php echo get_asset('img/logo-houzez-white.png'); ?>" alt="logo"></a>
+            <a href="<?php echo base_url(); ?>"><img src="<?php echo get_asset('img/logo-houzez-white.png'); ?>" alt="logo"></a>
         </div>
         <div class="header-user">
             <ul class="account-action">
@@ -237,4 +301,4 @@
             </ul>
         </div>
     </div>
-</div>
+</div-->

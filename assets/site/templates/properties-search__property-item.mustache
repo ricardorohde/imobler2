@@ -1,0 +1,106 @@
+{{#results}}
+<div class="item-wrap">
+  <div class="property-item table-list">
+    <div class="table-cell">
+      <div class="figure-block">
+        <figure class="item-thumb">
+          {{#destaque}}
+            <span class="label-featured label label-success">Destaque</span>
+          {{/destaque}}
+          <div class="label-wrap label-right hide-on-list">
+            <span class="label label-default">{{transacao}}</span>
+            {{#lancamento}}<span class="label label-danger">Lançamento</span>{{/lancamento}}
+          </div>
+          <div class="price hide-on-list">
+            <h3>R$s {{valor}}</h3>
+          </div>
+          <div class="properties-search-images owl-carousel owl-theme">
+            {{#imagens}}
+              <a href="{{imovel_permalink}}"><img class="owl-lazy" src="{{site_base_url}}imagens/imoveis/0/364/244/90/0/property-image.jpg" data-src="{{site_base_url}}imagens/imoveis/{{imovel}}/364/244/100/0/{{arquivo}}" alt="{{legenda}}"></a>
+            {{/imagens}}
+          </div>
+          <ul class="actions">
+            <li>
+              <span title="" class="btn-like" data-like_status="{{#imovel_favorito}}liked{{/imovel_favorito}}{{^imovel_favorito}}unliked{{/imovel_favorito}}" data-property_id="{{id}}" data-placement="top" data-toggle="tooltip" data-original-title="Adicionar aos favoritos">
+                <i class="fa fa-heart"></i>
+              </span>
+            </li>
+            <li class="share-btn">
+              <div class="share_tooltip fade">
+                <a class="share-item" href="http://www.facebook.com/share.php?u={{imovel_permalink}}&title={{tipo}} {{#dormitorios}}com {{.}} quartos{{/dormitorios}} para {{transacao}} em {{endereco_bairro}}{{#area_util}}, {{.}}m²{{/area_util}}"><i class="fa fa-facebook"></i></a>
+                <a class="share-item" href="http://twitter.com/intent/tweet?status={{tipo}} {{#dormitorios}}com {{.}} quartos{{/dormitorios}} para {{transacao}} em {{endereco_bairro}}{{#area_util}}, {{.}}m²{{/area_util}}"><i class="fa fa-twitter"></i></a>
+                <a class="share-item" href="https://plus.google.com/share?url={{imovel_permalink}}"><i class="fa fa-google-plus"></i></a>
+              </div>
+              <span class="share-btn-item" title="" data-placement="top" data-toggle="tooltip" data-original-title="share"><i class="fa fa-share-alt"></i></span>
+            </li>
+          </ul>
+        </figure>
+      </div>
+    </div>
+    <div class="item-body table-cell">
+      <div class="body-left table-cell">
+        <div class="info-row">
+          <div class="label-wrap hide-on-grid">
+            <div class="label-status label label-default">{{transacao}}</div>
+            {{#lancamento}}<span class="label label-danger">Lançamento</span>{{/lancamento}}
+          </div>
+          <h2 class="property-title"><a href="{{imovel_permalink}}">{{tipo}} {{#dormitorios}}com {{.}} quartos{{/dormitorios}} para {{transacao}}{{#area_util}}, {{.}}m²{{/area_util}}</a></h2>
+          <h4 class="property-location" title="{{endereco_label}}">{{endereco_label}}</h4>
+        </div>
+        <div class="info-row amenities hide-on-grid">
+          <p>
+            {{#area_util}}<span>Área: {{.}} m²</span>{{/area_util}}
+            {{#dormitorios}}<span>Quartos: {{.}}</span>{{/dormitorios}}
+            {{#banheiros}}<span>Banheiros: {{.}}</span>{{/banheiros}}
+          </p>
+          <p>
+            {{#suites}}<span>Suítes: {{.}}</span>{{/suites}}
+            {{#garagens}}<span>Garagens: {{.}}</span>{{/garagens}}
+            {{#salas}}<span>Salas: {{.}}</span>{{/salas}}
+          </p>
+        </div>
+        <div class="info-row date hide-on-grid">
+          <p><i class="fa fa-calendar"></i> {{data_atualizado_formatada}}</p>
+        </div>
+      </div>
+      <div class="body-right table-cell hidden-gird-cell">
+        <div class="info-row price">
+          <h3>R$ {{valor}}</h3>
+        </div>
+        <div class="info-row phone text-right">
+          <a href="{{imovel_permalink}}" class="btn btn-primary">Detalhes <i class="fa fa-angle-right fa-right"></i></a>
+        </div>
+      </div>
+      <div class="table-list full-width hide-on-list">
+        <div class="cell">
+          <div class="info-row amenities">
+            <p>
+              {{#area_util}}<span>Área: {{.}} m²</span>{{/area_util}}
+              {{#dormitorios}}<span>Quartos: {{.}}</span>{{/dormitorios}}
+              {{#banheiros}}<span>Banheiros: {{.}}</span>{{/banheiros}}
+            </p>
+            <p>
+              {{#suites}}<span>Suítes: {{.}}</span>{{/suites}}
+              {{#garagens}}<span>Garagens: {{.}}</span>{{/garagens}}
+              {{#salas}}<span>Salas: {{.}}</span>{{/salas}}
+            </p>
+          </div>
+        </div>
+        <div class="cell">
+          <div class="phone">
+            <a href="{{imovel_permalink}}" class="btn btn-primary">Detalhes <i class="fa fa-angle-right fa-right"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="item-foot date hide-on-list">
+    <div class="item-foot-left">
+      <p><i class="fa fa-calendar"></i> {{data_atualizado_formatada}}</p>
+    </div>
+    <div class="item-foot-right">
+
+    </div>
+  </div>
+</div>
+{{/results}}
