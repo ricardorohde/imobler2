@@ -1,108 +1,96 @@
 <footer class="footer-v2">
-    <div class="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-3">
-                    <div class="footer-widget widget-about">
-                        <div class="widget-top">
-                            <h3 class="widget-title">About Site</h3>
-                        </div>
-                        <div class="widget-body">
-                            <p>Houzez is a premium WordPress theme for real estate where modern aesthetics are combined with tasteful simplicity.</p>
-                            <p class="read"><a href="about-us.html">Read more <i class="fa fa-caret-right"></i></a></p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="footer-widget widget-contact">
-                        <div class="widget-top">
-                            <h3 class="widget-title">Contact Us</h3>
-                        </div>
-                        <div class="widget-body">
-                            <ul class="list-unstyled">
-                                <li><i class="fa fa-location-arrow"></i> 121 King Street, Melbourne VIC 3000</li>
-                                <li><i class="fa fa-phone"></i> +1 (877) 987 3487</li>
-                                <li><i class="fa fa-envelope-o"></i> <a href="#">info@housez.com</a></li>
-                            </ul>
-                            <p class="read"><a href="contact-us.html">Contact us <i class="fa fa-caret-right"></i></a></p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="footer-widget widget-newsletter">
-                        <div class="widget-top">
-                            <h3 class="widget-title">Newsletter Subscribe</h3>
-                        </div>
-                        <div class="widget-body">
-                            <form>
-                                <div class="table-list">
-                                    <div class="form-group table-cell">
-                                        <div class="input-email input-icon">
-                                            <input class="form-control" placeholder="Enter your email">
-                                        </div>
-                                    </div>
-                                    <div class="table-cell">
-                                        <button class="btn btn-primary">Submit</button>
-                                    </div>
-                                </div>
-                            </form>
-                            <p>Houzez is a premium WordPress theme for real estate agents.<br>Don’t forget to fullow us on:</p>
-                            <ul class="social">
-                                <li>
-                                    <a href="#" class="btn-facebook"><i class="fa fa-facebook-square"></i></a>
-                                </li>
-                                <li>
-                                    <a href="#" class="btn-twitter"><i class="fa fa-twitter-square"></i></a>
-                                </li>
-                                <li>
-                                    <a href="#" class="btn-google-plus"><i class="fa fa-google-plus-square"></i></a>
-                                </li>
-                                <li>
-                                    <a href="#" class="btn-linkedin"><i class="fa fa-linkedin-square"></i></a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+  <div class="footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-3">
+          <div class="footer-widget widget-about">
+            <div class="widget-top">
+              <h3 class="widget-title">Sobe a Mediz</h3>
             </div>
-        </div>
-    </div>
-    <div class="footer-bottom">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-3 col-sm-3">
-                    <div class="footer-col">
-                        <p>Houzez - All rights reserved</p>
-                    </div>
-                </div>
-                <div class="col-md-6 col-sm-6">
-                    <div class="footer-col">
-                        <div class="navi">
-                            <ul id="footer-menu" class="">
-                                <li><a href="privacy.html">Privacy</a></li>
-                                <li><a href="terms-and-conditions.html">Terms and Conditions</a></li>
-                                <li><a href="contact-us.html">Contact</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-3">
-                    <div class="footer-col foot-social">
-                        <p>
-                            Follow us
-                            <a target="_blank" class="btn-facebook" href="https://facebook.com/Favethemes"><i class="fa fa-facebook-square"></i></a>
-
-                            <a target="_blank" class="btn-twitter" href="https://twitter.com/favethemes"><i class="fa fa-twitter-square"></i></a>
-
-                            <a target="_blank" class="btn-linkedin" href="http://linkedin.com"><i class="fa fa-linkedin-square"></i></a>
-
-                            <a target="_blank" class="btn-google-plus" href="http://google.com"><i class="fa fa-google-plus-square"></i></a>
-
-                            <a target="_blank" class="btn-instagram" href="http://instagram.com"><i class="fa fa-instagram"></i></a>
-                        </p>
-                    </div>
-                </div>
+            <div class="widget-body">
+              <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry ipsum has been the industry.</p>
+              <p class="read"><a href="<?php echo base_url('quem-somos'); ?>">Conheça-nos <i class="fa fa-caret-right"></i></a></p>
             </div>
+          </div>
         </div>
+        <div class="col-sm-3">
+          <div class="footer-widget widget-contact">
+            <div class="widget-top">
+              <h3 class="widget-title">Entre em contato</h3>
+            </div>
+            <div class="widget-body">
+              <ul class="list-unstyled">
+                <li><i class="fa fa-location-arrow"></i> Rua Durval Fernandes Chaves, 188<br>Jd. Santo Elias - Pirituba</li>
+                <li><i class="fa fa-phone"></i> (11) 3902-7180</li>
+                <li><i class="fa fa-envelope-o"></i> <a href="mailto:contato@medizimoveis.com.br">contato@medizimoveis.com.br</a></li>
+              </ul>
+              <p class="read"><a href="<?php echo base_url('fale-conosco'); ?>">Fale conosco <i class="fa fa-caret-right"></i></a></p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="footer-widget widget-newsletter">
+            <div class="widget-top">
+              <h3 class="widget-title">Assine nossa newsletter</h3>
+            </div>
+            <div class="widget-body">
+              <form>
+                <div class="table-list">
+                  <div class="form-group table-cell">
+                    <div class="input-email input-icon">
+                      <input class="form-control" placeholder="Enter your email">
+                    </div>
+                  </div>
+                  <div class="table-cell">
+                    <button class="btn btn-primary">Enviar</button>
+                  </div>
+                </div>
+              </form>
+              <p>Pode ficar tranquilo! Nos responsabilizamos em não enviar nenhum SPAN e também em não divulgar seu e-mail à ninguém.</p>
+              <ul class="social">
+                <li>
+                  <a target="_blank" href="<?php echo $this->config->item('link_social_facebook'); ?>" class="btn-facebook"><i class="fa fa-facebook-square"></i></a>
+                </li>
+                <li>
+                  <a target="_blank" href="<?php echo $this->config->item('link_social_twitter'); ?>" class="btn-twitter"><i class="fa fa-twitter-square"></i></a>
+                </li>
+                <li>
+                  <a target="_blank" href="<?php echo $this->config->item('link_social_instagram'); ?>" class="btn-instagram"><i class="fa fa-instagram"></i></a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-</footer>
+  </div>
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 col-sm-4">
+          <div class="footer-col">
+            <p><?php echo $this->config->item('site_nome'); ?> - Todos os direitos reservados</p>
+          </div>
+        </div>
+        <div class="col-md-4 col-sm-4">
+          <div class="footer-col">
+            <div class="navi">
+              <ul id="footer-menu" class="">
+                <li><a href="<?php echo base_url('politica-de-privacidade'); ?>">Política de privacidade</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 col-sm-4">
+          <div class="footer-col foot-social">
+            <p>
+              <a target="_blank" class="btn-facebook" href="<?php echo $this->config->item('link_social_facebook'); ?>"><i class="fa fa-facebook-square"></i></a>
+              <a target="_blank" class="btn-twitter" href="<?php echo $this->config->item('link_social_twitter'); ?>"><i class="fa fa-twitter-square"></i></a>
+              <a target="_blank" class="btn-instagram" href="<?php echo $this->config->item('link_social_instagram'); ?>"><i class="fa fa-instagram"></i></a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer><!--/footer-->

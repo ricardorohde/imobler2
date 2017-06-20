@@ -6,7 +6,6 @@ class Account_model extends CI_Model {
   }
 
   public function add_user($params) {
-
     $user = array();
 
     $user['perfil'] = 1;
@@ -17,7 +16,15 @@ class Account_model extends CI_Model {
 
     $user['email'] = $params['email'];
 
-    $user['senha'] = md5($params['senha']);
+    if(isset($params['facebook_id'])){
+        $user['facebook_id'] = $params['facebook_id'];
+    }else{
+        $user['senha'] = md5($params['senha']);
+    }
+
+    if(isset($params['imagem'])){
+        $user['imagem'] = $params['imagem'];
+    }
 
     $user['status'] = 0;
 
@@ -28,35 +35,39 @@ class Account_model extends CI_Model {
     $user['perfil'] = 'Visitante';
     unset($user['senha']);
 
-    $this->session->set_userdata('usuario_logado', $user);
-
-    $user['success'] = 'Cadastro realizado com sucesso.';
-
     return $user;
+  }
+
+  // public function insert_facebook_login($params){
+  //   $usuario = array(
+  //     'nome' => $params['first_name'],
+  //     'sobrenome' => $params['last_name'],
+  //     'email' => $params['email'],
+  //     'facebook_id' => $params['id'],
+  //     'imagem' => $params['picture']['data']['url'],
+  //     'status' => 1
+  //   );
+
+  //   $this->db->set('data_criado', 'NOW()', FALSE);
+  //   $this->db->insert('usuarios', $usuario);
+
+  //   $usuario['id'] = $this->db->insert_id();
+
+  //   return $usuario;
+  // }
+
+  public function login_facebook() {
+    $post = $this->input->post();
 
 
 
-    // if($this->site->user_logged() && isset($params['property_id']) && $params['property_id'] && isset($params['status']) && $params['status']){
-    //   $user_id = $this->site->userinfo('id');
-    //   $return = array('property_id' => $params['property_id']);
-    //   $liked = $this->property_like_check($user_id, $params['property_id']);
+    if($usuario_check = $this->get_login(array('facebook_id' => $post['id']))){
+      $usuario = $usuario_check;
+    }else{
+      $usuario = $this->insert_facebook_login($post);
+    }
 
-    //   if($params['status'] == 'unliked'){
-    //     if(!$liked){
-    //
-    //     }
-    //     $return['status'] = 'liked';
-    //   }else{
-    //     if($liked){
-    //       $this->db->delete('imoveis_favoritos', array('imovel' => $params['property_id'], 'usuario' => $user_id));
-    //     }
-    //     $return['status'] = 'unliked';
-    //   }
-
-    //   return $return;
-    // }
-
-    // return false;
+    return $this->login_process($usuario);
   }
 
 }

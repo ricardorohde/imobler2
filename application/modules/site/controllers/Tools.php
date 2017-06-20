@@ -23,13 +23,26 @@ class Tools extends Site_Controller {
       $route_params = json_decode(base64url_decode($this->input->post('_')), true);
     }
 
+    if(isset($route_params['campaign'])){
+      $campaign = $this->registros_model->registros('campanhas', array('where' => array('campanhas.permalink' => $route_params['campaign'])), true, 'campanhas.*, campanhas_categorias.nome as categoria', array(
+        array('campanhas_categorias', 'campanhas.categoria = campanhas_categorias.id', 'inner')
+      ));
+
+      if($campaign){
+        $route_params['params'] = json_decode($campaign['parametros'], true);
+      }
+    }
+
+    if(isset($post['orderby'])){
+      $route_params['orderby'] = $post['orderby'];
+    }
+
     if(isset($post['page'])){
       $route_params['page'] = $post['page'];
     }
 
     $route_params_filter = $this->site->create_url_filter($route_params);
-
-    $route_params['base_url'] = base_url($route_params_filter['uri_full']);
+    $route_params['base_url'] = base_url($route_params_filter['uri']);
     $route_params['url_suffix'] = $route_params_filter['filter'];
 
     if(!isset($post['ajaxsubmit'])){

@@ -29,6 +29,10 @@ $config['base_url'] .= str_replace(basename($_SERVER['SCRIPT_NAME']),"",$_SERVER
 $config['property_pagination_links'] = 3;
 $config['site_versao'] = 1234;//md5(time() . rand(0,999));
 $config['google_api_key'] = 'AIzaSyDqSuNjacjDBvYZJkqPB-W_jGunQqjkMec';
+
+$config['link_social_facebook'] = 'https://facebook.com/medizimoveis';
+$config['link_social_instagram'] = 'http://instagram.com/medizimoveis';
+$config['link_social_twitter'] = 'https://twitter.com/medizimoveis';
 /*
 |--------------------------------------------------------------------------
 | Index File

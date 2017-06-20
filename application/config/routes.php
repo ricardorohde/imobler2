@@ -23,6 +23,13 @@ foreach($cities as $city){
 }
 $cities = implode('|', $cities_arr);
 
+$campaigns = $db->select('campanhas.permalink')->get_where('campanhas', array('status' => 1))->result_array();
+$campaigns_arr = [];
+foreach($campaigns as $campaign){
+  $campaigns_arr[] = $campaign['permalink'];
+}
+$campaigns = implode('|', $campaigns_arr);
+
 $types = $db->get('imoveis_tipos')->result_array();
 $types_arr = [];
 foreach($types as $type){
@@ -329,4 +336,32 @@ $route['imovel/(:any)'] = function ($property_permalink){
   return 'site/properties_details/index/' . json_encode($params);
 };
 
+//.../apartamentos-2-dorms-parque-sao-domingos/
+$route['('. $campaigns .')'] = function ($campaign_permalink){
+  $params = array('route_params' => array(
+    'campaign' => $campaign_permalink
+  ));
+  return 'site/properties_campaigns/index/' . json_encode($params);
+};
 
+//.../apartamentos-2-dorms-parque-sao-domingos/2 - Paginação
+$route['('. $campaigns .')/('.$paging.')'] = function ($campaign_permalink, $page){
+  $params = array('route_params' => array(
+    'campaign' => $campaign_permalink,
+    'page' => $page
+  ));
+  return 'site/properties_campaigns/index/' . json_encode($params);
+};
+
+
+// ADMIN
+$route['admin/api/(:any)'] = 'admin/tools/$1';
+$route['admin'] = 'admin/dashboard';
+
+$route['admin/login'] = 'admin/Account__login';
+$route['admin/logout'] = 'admin/Account__logout';
+$route['admin/esqueci-minha-senha'] = 'admin/Account__forgot_password';
+
+$route['admin/imoveis'] = 'admin/properties__list';
+$route['admin/imoveis/adicionar'] = 'admin/properties__edit';
+$route['admin/imoveis/(:num)/editar'] = 'admin/properties__edit/index/$1';

@@ -7,9 +7,9 @@ $font-awesome:'FontAwesome';
 $form-height:42px;
 
 //colors
-$anchor:#00aeef;
+$anchor:#e43012;
 $hover-blue:#00aeef;
-$hover:#4cc6f4;
+$hover:darken($anchor,10%);
 $white:#fff;
 $white-trans:rgba(255, 255, 255, 0.2);
 $white-trans-90:rgba(255, 255, 255, 0.9);
@@ -19,7 +19,7 @@ $orange-hover:darken($orange,5%);
 $green:#77c720;
 $black:#000;
 $blue:#00aeef;
-$red:#e43012;
+$red:$anchor;
 $blue-trans:rgba(0, 174, 239, 0.12);
 $blue-trans-dark:rgba(0, 174, 239, 0.75);
 $foot-bootom-text-color:#828282;

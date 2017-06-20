@@ -47,7 +47,7 @@
             </form>
 
             <hr>
-            <a href="#" class="btn btn-social btn-bg-facebook btn-block"><i class="fa fa-facebook"></i> Acessar com Facebook</a>
+            <a href="javascript: void(0);" class="btn btn-social btn-bg-facebook btn-block btn-facebook-login"><i class="fa fa-facebook"></i> Acessar com Facebook</a>
           </div>
 
           <div class="tab-pane tab-pane-register fade">
@@ -79,7 +79,7 @@
             </form>
             <hr>
 
-            <a href="#" class="btn btn-social btn-bg-facebook btn-block"><i class="fa fa-facebook"></i> Acessar com Facebook</a>
+            <a href="javascript: void(0);" class="btn btn-social btn-bg-facebook btn-block btn-facebook-login"><i class="fa fa-facebook"></i> Acessar com Facebook</a>
           </div>
         </div>
       </div>

@@ -55,9 +55,45 @@ class Account extends Site_Controller {
     $this->form_validation->set_rules($config);
 
     if ($this->form_validation->run()) {
-      echo json_encode($this->account_model->add_user($post));
+      if($user = $this->account_model->add_user($post)){
+        $this->session->set_userdata('usuario_logado', $user);
+
+        $user['success'] = 'Cadastro realizado com sucesso.';
+
+        echo json_encode($user);
+      }
     }else{
       echo json_encode(array('errors' => $this->form_validation->error_array()));
+    }
+  }
+
+  public function login_facebook(){
+    $post = $this->input->post();
+
+    if($user = $this->registros_model->registros('usuarios', array('where' => array('usuarios.facebook_id' => $post['id'])), true, 'usuarios.id, usuarios.nome, usuarios.sobrenome, usuarios.email, usuarios.imagem, usuarios.status, usuarios_perfis.nome as perfil', array(
+      array('usuarios_perfis', 'usuarios.perfil = usuarios_perfis.id', 'inner')
+    ))){
+      $return = $user;
+      $this->session->set_userdata('usuario_logado', $user);
+      $return['success'] = 'Login realizado com sucesso.';
+      echo json_encode($return);
+    }else{
+      $user_array = array(
+        'nome' => $post['name'],
+        'email' => $post['email'],
+        'facebook_id' => $post['id'],
+        'imagem' => $post['picture']['data']['url']
+      );
+
+      if($user = $this->account_model->add_user($user_array)){
+        $this->session->set_userdata('usuario_logado', $user);
+
+        $user['success'] = 'Cadastro realizado com sucesso.';
+
+        echo json_encode($user);
+      }else{
+        echo json_encode(array('errors' => array('Ocorreu um erro inesperado.')));
+      }
     }
   }
 

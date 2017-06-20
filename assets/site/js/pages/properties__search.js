@@ -84,6 +84,8 @@ jQuery.fn.toggleAttr = function(attr) {
       $('#properties-list').html('Nada ver');
       $('#properties-pagination').html('');
     }
+
+    $('body, html').animate({ scrollTop: 0 },"slow");
   };
 
   properties_search.form_submit = function(){

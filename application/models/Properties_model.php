@@ -55,6 +55,7 @@ class Properties_model extends CI_Model {
       imoveis_tipos.nome as tipo,
       imoveis_tipos.nome_plural as tipo_plural,
       imoveis_tipos.slug as tipo_slug,
+      imoveis_tipos.id as tipo_id,
 
       enderecos.cep as endereco_cep,
       enderecos.logradouro as endereco_logradouro,
@@ -65,8 +66,10 @@ class Properties_model extends CI_Model {
       enderecos.latitude_site as endereco_latitude_site,
       enderecos.longitude_site as endereco_longitude_site,
       enderecos_visibilidades.slug as endereco_visibilidade,
+      enderecos_visibilidades.id as endereco_visibilidade_id,
 
       UCASE(estados.sigla) as endereco_estado,
+      estados.id as endereco_estado_id,
       estados.nome as endereco_estado_nome,
 
       cidades.nome as endereco_cidade,
@@ -124,24 +127,36 @@ class Properties_model extends CI_Model {
       $this->db->group_end();
     }
 
-    // Características
     if(isset($request['params']['property_features']) && !empty($request['params']['property_features'])){
       $this->db->join("imoveis_caracteristicas", "imoveis_caracteristicas.imovel = imoveis.id", "inner"); // Imóveis características
       $this->db->join("caracteristicas", "imoveis_caracteristicas.caracteristica = caracteristicas.id", "inner"); // Características
-      $this->db->group_start();
-      $feature_count = 0;
-      foreach ($request['params']['property_features'] as $feature) {
-        if(!$feature_count){
-          $this->db->group_start();
-        }else{
-          $this->db->or_group_start();
-        }
-        $this->db->where('caracteristicas.slug', $feature);
-        $this->db->group_end();
-        $feature_count++;
-      }
-      $this->db->group_end();
+      $this->db->where_in('caracteristicas.slug', $request['params']['property_features']);
     }
+
+    // Características
+//     if(isset($request['params']['property_features']) && !empty($request['params']['property_features'])){
+//       $this->db->join("imoveis_caracteristicas", "imoveis_caracteristicas.imovel = imoveis.id", "inner"); // Imóveis características
+//       $this->db->join("caracteristicas", "imoveis_caracteristicas.caracteristica = caracteristicas.id", "inner"); // Características
+
+//       $this->db->group_start();
+
+//       $feature_count = 0;
+// print_l($request['params']['property_features']);
+//       foreach ($request['params']['property_features'] as $feature) {
+//         if(!$feature_count){
+//           // $this->db->group_start();
+//         }else{
+//           // $this->db->or_group_start();
+//         }
+
+//         // $this->db->where('caracteristicas.slug', $feature);
+
+//         // $this->db->group_end();
+//         $feature_count++;
+//       }
+
+//       $this->db->group_end();
+//     }
 
     //- Tipo de imóvel
     if(isset($request['params']['properties_types']) && !empty($request['params']['properties_types'])){
@@ -268,7 +283,7 @@ class Properties_model extends CI_Model {
     $this->db->limit($limit, $page);
 
 
-    // $return['sql'] = $this->db->_compile_select();
+    $return['sql'] = $this->db->_compile_select();
     // echo $return['sql'];
 
 
@@ -280,42 +295,46 @@ class Properties_model extends CI_Model {
       $return_ids = array();
       $return_count = 0;
 
+
+
       foreach($query->result_array() as $result){
-        $endereco_label = '';
-        $endereco_fields = array('endereco_cep', 'endereco_logradouro', 'endereco_numero', 'endereco_complemento', 'endereco_bairro', 'endereco_cidade', 'endereco_estado');
 
-        switch ($result['endereco_visibilidade']) {
-          case 'apenas-rua':
-            $endereco_visibilidade = array('endereco_cep', 'endereco_logradouro', 'endereco_bairro', 'endereco_cidade', 'endereco_estado');
-            $endereco_label = '%endereco_logradouro% - %endereco_bairro%';
-          break;
+        if($this->router->fetch_module() == 'site'){
+          $endereco_label = '';
+          $endereco_fields = array('endereco_cep', 'endereco_logradouro', 'endereco_numero', 'endereco_complemento', 'endereco_bairro', 'endereco_cidade', 'endereco_estado');
 
-          case 'completo':
-            $endereco_visibilidade = array('endereco_cep', 'endereco_logradouro', 'endereco_numero', 'endereco_complemento', 'endereco_bairro', 'endereco_cidade', 'endereco_estado');
-            $endereco_label = '%endereco_logradouro%, %endereco_numero% - %endereco_bairro%';
-          break;
+          switch ($result['endereco_visibilidade']) {
+            case 'apenas-rua':
+              $endereco_visibilidade = array('endereco_cep', 'endereco_logradouro', 'endereco_bairro', 'endereco_cidade', 'endereco_estado');
+              $endereco_label = '%endereco_logradouro% - %endereco_bairro%';
+            break;
 
-          default:
-             $endereco_visibilidade = array('endereco_bairro', 'endereco_cidade', 'endereco_estado');
-             $endereco_label = '%endereco_bairro%';
-        }
+            case 'completo':
+              $endereco_visibilidade = array('endereco_cep', 'endereco_logradouro', 'endereco_numero', 'endereco_complemento', 'endereco_bairro', 'endereco_cidade', 'endereco_estado');
+              $endereco_label = '%endereco_logradouro%, %endereco_numero% - %endereco_bairro%';
+            break;
 
-        foreach ($endereco_fields as $field) {
-          if(!in_array($field, $endereco_visibilidade)){
-            unset($result[$field]);
+            default:
+               $endereco_visibilidade = array('endereco_bairro', 'endereco_cidade', 'endereco_estado');
+               $endereco_label = '%endereco_bairro%';
           }
 
+          foreach ($endereco_fields as $field) {
+            if(!in_array($field, $endereco_visibilidade)){
+              unset($result[$field]);
+            }
 
-          $endereco_label = str_replace('%'. $field .'%', (isset($result[$field]) && !empty($result[$field]) ? $result[$field] : ''), $endereco_label);
+
+            $endereco_label = str_replace('%'. $field .'%', (isset($result[$field]) && !empty($result[$field]) ? $result[$field] : ''), $endereco_label);
+          }
+
+          $result['endereco_label'] = $endereco_label;
+
+          $result['endereco_latitude'] = (!empty($result['endereco_latitude_site']) ? $result['endereco_latitude_site'] : $result['endereco_latitude']);
+          $result['endereco_longitude'] = (!empty($result['endereco_longitude_site']) ? $result['endereco_longitude_site'] : $result['endereco_longitude']);
+          unset($result['endereco_latitude_site']);
+          unset($result['endereco_longitude_site']);
         }
-
-        $result['endereco_label'] = $endereco_label;
-
-        $result['endereco_latitude'] = (!empty($result['endereco_latitude_site']) ? $result['endereco_latitude_site'] : $result['endereco_latitude']);
-        $result['endereco_longitude'] = (!empty($result['endereco_longitude_site']) ? $result['endereco_longitude_site'] : $result['endereco_longitude']);
-        unset($result['endereco_latitude_site']);
-        unset($result['endereco_longitude_site']);
-
 
         $return['results'][$return_count] = $result;
 
@@ -784,39 +803,78 @@ class Properties_model extends CI_Model {
     return $return;
   }
 
+  public function filters_properties_orderby($request = null) {
+    $orderby_array = array(
+      'most_recent' => 'Mais recentes',
+      'lowest_price' => 'Preço menor pro maior',
+      'biggest_price' => 'Preço maior pro menor'
+    );
+
+    $return = array();
+    $count = 0;
+    foreach($orderby_array as $orderby_key => $orderby_label){
+      $return[$count] = array(
+        'slug' => $orderby_key,
+        'name' => $orderby_label
+      );
+
+      if(!empty($request)){
+        if($request == $orderby_key){
+          $return[$count]['selected'] = true;
+        }
+      }
+
+      $count++;
+    }
+
+    return $return;
+  }
+
   public function filters($request = null) {
     $return['params'] = array();
 
-    if(isset($request['params']['location'])){
-      $count = 0;
-      foreach ($request['params']['location'] as $location) {
-        if(!isset($location['label'])){
-          $get_location = $this->filters_location($location);
-          if($get_location){
-            $return['params']['location'][$count] = $get_location;
+    if(!isset($request['campaign'])){
+      if(isset($request['params']['location'])){
+        $count = 0;
+        foreach ($request['params']['location'] as $location) {
+          if(!isset($location['label'])){
+            $get_location = $this->filters_location($location);
+            if($get_location){
+              $return['params']['location'][$count] = $get_location;
+            }
+          }else{
+            $return['params']['location'][$count] = $location;
           }
-        }else{
-          $return['params']['location'][$count] = $location;
+
+          $return['params']['location'][$count]['index'] = $count;
+
+          $count++;
         }
+      }
 
-        $return['params']['location'][$count]['index'] = $count;
+      $return['params']['property_features'] = $this->filters_properties_features(isset($request['params']['property_features']) ? $request['params']['property_features'] : null);
 
-        $count++;
+      $return['params']['properties_types'] = $this->filters_properties_types(isset($request['params']['properties_types']) ? $request['params']['properties_types'] : null);
+
+      foreach (array('bedrooms','garages','bathrooms','min_price','max_price','min_area','max_area') as $field) {
+        if(isset($request['params'][$field])) {
+          $return['params'][$field] = $request['params'][$field];
+        }
       }
     }
 
-    $return['params']['properties_types'] = $this->filters_properties_types(isset($request['params']['properties_types']) ? $request['params']['properties_types'] : null);
-
-    foreach (array('transaction','bedrooms','garages','bathrooms','min_price','max_price','min_area','max_area') as $field) {
-      if(isset($request['params'][$field])) {
-        $return['params'][$field] = $request['params'][$field];
-      }
+    if(isset($request['params']['transaction'])) {
+      $return['params']['transaction'] = $request['params']['transaction'];
     }
 
-    $return['params']['property_features'] = $this->filters_properties_features(isset($request['params']['property_features']) ? $request['params']['property_features'] : null);
+    $return['orderby'] = $this->filters_properties_orderby(isset($request['orderby']) ? $request['orderby'] : null);
 
     if(isset($request['page'])){
       $return['page'] = $request['page'];
+    }
+
+    if(isset($request['campaign'])){
+      $return['campaign'] = $request['campaign'];
     }
 
     return $return;

@@ -16,9 +16,18 @@ class Site_Controller extends Default_Controller {
     parent::__construct();
 
     $this->load->add_package_path(APPPATH . 'modules/site/');
-    $this->load->library(array('site'));
+    // $this->load->library(array('site'));
 
     require_once APPPATH . 'third_party/Mustache/Autoloader.php';
     Mustache_Autoloader::register();
+  }
+}
+
+// Admin Controller
+class Admin_Controller extends Default_Controller {
+  function __construct() {
+    parent::__construct();
+    $this->load->add_package_path(APPPATH . 'modules/admin/');
+  // $this->load->library(array('admin'));
   }
 }

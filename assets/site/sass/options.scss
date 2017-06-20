@@ -17,33 +17,32 @@
 }
 
 .ui-widget.ui-widget-content {
-  border: 1px solid red;
+  border: 1px solid #f1f1f1;
 
   .ui-autocomplete-category {
-    padding: 5px 15px;
-    background: #ff0000;
-    font-size: 10px;
+    padding: 8px 10px;
+    font-size: 13px;
     font-weight: bold;
+    background: #f1f1f1;
   }
 
   .ui-menu-item {
     margin: 0;
     cursor: pointer;
-    font-size: 12px;
+    font-size: 13px;
     padding: 0;
-    line-height: 17px;
-    border-bottom: 1px solid #ff0000;
+    border-bottom: 1px solid #f1f1f1;
 
     .ui-menu-item-wrapper {
       position: relative;
-      padding: 0px;
-      font-size: 10px;
+      padding: 3px 10px;
+      font-size: 12px;
 
       &.ui-state-active {
-        border: 1px solid #ffff00;
-        background: #ffff00;
+        border: 1px solid $red;
+        background: $red;
         font-weight: normal;
-        color: #fff;
+        color: $white;
       }
     }
   }
@@ -130,5 +129,32 @@
 }
 .link-like[data-like_status=liked],
 .link-like[data-like_status=liked]:hover {
+  color: $red;
+}
+
+.mr20 { margin-right: 20px !important; }
+
+
+.header-section-4 .header-right a.btn-anunciar-imovel {
+  color: #004274;
+  &:hover {
+    background-color: $red;
+    color: #fff;
+    border-color: $red;
+  }
+}
+
+.header-section-4 .header-right a {
+  &:hover {
+    background: darken($red,10%);
+    color: $white;
+  }
+}
+
+.pagination-main .pagination li.active a {
+  background-color: $red;
+}
+.pagination-main .pagination a,
+.pagination-main .pagination a:hover {
   color: $red;
 }

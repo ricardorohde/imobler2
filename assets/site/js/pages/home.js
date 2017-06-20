@@ -79,21 +79,6 @@ var search_process = false;
       }
     });
 
-    $('.property-featured-images').owlCarousel({
-      loop: false,
-      margin:0,
-      responsiveClass: true,
-      lazyLoad:true,
-      dots: false,
-      navText : ["",""],
-      responsive:{
-        0:{
-          items: 1,
-          nav: true
-        }
-      }
-    });
-
     $('#form-search-local').submit(function(e){
       home.get_search_url_by_location();
       e.preventDefault();

@@ -51,6 +51,11 @@ class Registros_model extends CI_Model {
       }
     }
 
+    //GROUP
+    if(isset($params['group_by']) && !empty($params['group_by'])){
+      $this->db->group_by($params['group_by']);
+    }
+
     // $sql = $this->db->_compile_select();
     // echo $sql;
 

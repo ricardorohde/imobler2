@@ -4,6 +4,61 @@ var property_like_post = null;
 (function (window, document, $, undefined) {
   'use strict';
 
+  account.facebook = {
+    status: function(response){
+      if (response.status === 'connected') {
+        FB.api('/me?fields=name,email,picture', function(response) {
+          $.ajax({
+            url: app.base_url('minha-conta/login_facebook'),
+            data: response,
+            method: 'post',
+            dataType: "json"
+          }).done(function(response) {
+            if(response.success){
+              usuario_logado = response;
+
+              if(property_like_post){
+                property_like(property_like_post);
+                property_like_post = null;
+              }
+
+              $.get(app.get_asset_url('templates/header__account.mustache'), function(template) {
+                response['site_base_url'] = app.base_url();
+                var rendered = Mustache.render(template, response);
+                $('#header-account').html(rendered);
+                $('#header-account-mobile').html(rendered);
+
+                $('#pop-login').modal('toggle');
+              });
+            }
+          });
+        });
+      }else if (response.status === 'not_authorized') {
+        console.log('Não autorizado');
+      }else{
+        console.log(response);
+      }
+    },
+
+    login: function(){
+      FB.login(function(response) {
+        if (response.authResponse) {
+          app.account.facebook.status(response);
+        }else{
+          console.log('User cancelled login or did not fully authorize.');
+        }
+      }, {
+        scope: 'public_profile,email'
+      });
+    },
+
+    check: function(){
+      FB.getLoginStatus(function(response) {
+        app.account.facebook.status(response);
+      });
+    }
+  };
+
   var property_like = function($params) {
     $.ajax({
       url: app.base_url('api/property-like'),
@@ -117,6 +172,10 @@ var property_like_post = null;
     }
   });
 
+  $('.btn-facebook-login').on('click', function(){
+    app.account.facebook.login();
+  });
+
 
 }(this, document, jQuery));
 
@@ -160,44 +219,7 @@ var property_like_post = null;
 //     }
 //   };
 
-//   account.facebook = {
-//     status: function(response){
-//       if (response.status === 'connected') {
-//         FB.api('/me?fields=first_name,last_name,gender,email,picture', function(response) {
-//           $.ajax({
-//             url: app.base_url('api/login_facebook'),
-//             data: response,
-//             method: 'post',
-//             dataType: "json"
-//           }).done(function(result) {
-//             account.login.header(result);
-//           });
-//         });
-//       }else if (response.status === 'not_authorized') {
-//         console.log('Não autorizado');
-//       }else{
-//         console.log(response);
-//       }
-//     },
 
-//     login: function(){
-//       FB.login(function(response) {
-//         if (response.authResponse) {
-//           app.account.facebook.status(response);
-//         }else{
-//           console.log('User cancelled login or did not fully authorize.');
-//         }
-//       }, {
-//         scope: 'public_profile,email'
-//       });
-//     },
-
-//     check: function(){
-//       FB.getLoginStatus(function(response) {
-//         app.account.facebook.status(response);
-//       });
-//     }
-//   }
 
 //   modal_login.on('hide.bs.modal', function (e) {
 //     if(properties_like_property_id){
@@ -235,7 +257,5 @@ var property_like_post = null;
 //     return false;
 //   });
 
-//   $('.btn-facebook-login').on('click', function(){
-//     app.account.facebook.login();
-//   });
+
 // });

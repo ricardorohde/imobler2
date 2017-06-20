@@ -1,8 +1,8 @@
-<header class="header-section-4 header-main nav-left hidden-sm hidden-xs" data-sticky="1">
+<header class="header-section-4 header-main nav-left hidden-sm hidden-xs">
     <div class="container">
         <div class="header-left">
             <div class="logo">
-                <a href="index.html">
+                <a href="<?php echo base_url(); ?>">
                     <img src="<?php echo get_asset('img/logo-mediz-white.png'); ?>" width="180" alt="logo">
                 </a>
             </div>
@@ -10,7 +10,7 @@
         <div class="header-right">
             <ul class="account-action">
                 <li>
-                  <a href="<?php echo base_url('anunciar-imovel'); ?>" class="btn btn-default">Anunciar imóvel</a>
+                  <a href="<?php echo base_url('anunciar-imovel'); ?>" class="btn btn-anunciar-imovel mr20">Anunciar imóvel</a>
                 </li>
 
                 <li id="header-account">

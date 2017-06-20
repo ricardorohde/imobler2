@@ -35,6 +35,10 @@ class Home extends Site_Controller {
       'orderby' => 'featured'
     ));
 
+    $data['campaigns'] = $this->registros_model->registros('campanhas', array('where' => array('campanhas.status' => 1, 'campanhas_categorias.id' => 1)), false, 'campanhas.*, campanhas_categorias.nome as categoria', array(
+      array('campanhas_categorias', 'campanhas.categoria = campanhas_categorias.id', 'inner')
+    ));
+
     // print_l($this->properties_model->properties((isset($params['route_params']) ? $params['route_params'] : null)));
 
 		$this->template->view('site/master', 'site/home', $data);

@@ -53,8 +53,7 @@ class Properties_search extends Site_Controller {
 
       'assets' => array(
         'styles' => array(
-          'css/sweetalert2.min.css',
-          'css/jquery.bootstrap-touchspin.min.css'
+          'css/sweetalert2.min.css'
         ),
 
         'scripts' => array(

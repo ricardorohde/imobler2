@@ -3,15 +3,15 @@
         <div class="page-title breadcrumb-top">
             <div class="row">
                 <div class="col-sm-12">
-                    <ol class="breadcrumb"><li ><a href="/"><i class="fa fa-home"></i></a></li><li class="active">Simple Listing – List View</li></ol>
+                    <ol class="breadcrumb"><li ><a href="<?php echo base_url(); ?>"><i class="fa fa-home"></i></a></li><li class="active">Resultado da busca</li></ol>
                     <div class="page-title-left">
-                        <h2>Simple Listing – List View</h2>
+                        <h2>Resultado da busca</h2>
                     </div>
                     <div class="page-title-right">
                         <div class="view hidden-xs">
                             <div class="table-cell">
-                                <span class="view-btn btn-list active"><i class="fa fa-th-list"></i></span>
-                                <span class="view-btn btn-grid"><i class="fa fa-th-large"></i></span>
+                                <span class="view-btn btn-grid active"><i class="fa fa-th-large"></i></span>
+                                <span class="view-btn btn-list"><i class="fa fa-th-list"></i></span>
                             </div>
                         </div>
                     </div>
@@ -32,11 +32,19 @@
                                 </ul>
                             </div>
                             <div class="sort-tab table-cell text-right">
-                                <select name="params[orderby]" class="selectpicker bs-select-hidden" id="property-listing-order" title="Ordenar por" data-live-search-style="begins" data-live-search="false">
-                                    <option value="most_recent">Mais recentes</option>
-                                    <option value="lowest_price">Preço menor pro maior</option>
-                                    <option value="biggest_price">Preço maior pro menor</option>
-                                </select>
+                                <?php
+                                if(isset($filters['orderby']) && !empty($filters['orderby'])){
+                                    ?>
+                                    <select name="orderby" class="selectpicker bs-select-hidden" id="property-listing-order" title="Ordenar por" data-live-search-style="begins" data-live-search="false">
+                                        <?php
+                                        foreach($filters['orderby'] as $orderby){
+                                            ?><option value="<?php echo $orderby['slug']; ?>" <?php echo isset($orderby['selected']) && $orderby['selected'] ? 'selected="true"' : ''; ?>><?php echo $orderby['name']; ?></option><?php
+                                        }
+                                        ?>
+                                    </select>
+                                    <?php
+                                }
+                                ?>
                             </div>
                         </div>
                         <!--end list tabs-->
