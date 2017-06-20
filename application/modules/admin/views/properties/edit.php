@@ -80,13 +80,13 @@
               <div class="form-group">
                 <label for="cidade" class="col-sm-3 control-label">Estado (UF)</label>
                 <div class="col-sm-9">
-                  <select class="full-width" name="localizacao[estado]" required data-init-plugin="select2">
+                  <select class="full-width" name="localizacao[estado]" id="estado" required data-init-plugin="select2">
                     <option></option>
                     <?php
                     if(isset($estados) && !empty($estados)){
                       foreach ($estados as $estado) {
                         ?>
-                        <option value="<?php echo $estado['id']; ?>" <?php echo isset($post['localizacao']['estado']) && strtolower($post['localizacao']['estado']) == $estado['id'] ? 'selected="true"' : ''; ?> data-sigla="<?php echo $estado['sigla']; ?>"><?php echo $estado['nome']; ?></option>
+                        <option value="<?php echo $estado['id']; ?>" <?php echo isset($post['localizacao']['estado']) && $post['localizacao']['estado'] == $estado['id'] ? 'selected="true"' : ''; ?> data-sigla="<?php echo strtoupper($estado['sigla']); ?>"><?php echo $estado['nome']; ?></option>
                         <?php
                       }
                     }
@@ -118,6 +118,10 @@
                 </label>
                 <div class="col-sm-9">
                   <p>Have you Worked at page Inc. before, Or joined the Pages Supirior Club?</p>
+                  <input type="text" name="localizacao[latitude]" id="latitude" value="<?php echo isset($post['localizacao']['latitude']) ? $post['localizacao']['latitude'] : ''; ?>">
+                  <input type="text" name="localizacao[longitude]" id="longitude" value="<?php echo isset($post['localizacao']['longitude']) ? $post['localizacao']['longitude'] : ''; ?>">
+                  <input type="text" name="localizacao[latitude_site]" id="latitude_site" value="<?php echo isset($post['localizacao']['latitude_site']) ? $post['localizacao']['latitude_site'] : ''; ?>">
+                  <input type="text" name="localizacao[longitude_site]" id="longitude_site" value="<?php echo isset($post['localizacao']['longitude_site']) ? $post['localizacao']['longitude_site'] : ''; ?>">
                   <div id="localizacao_mapa" style="height: 400px;"></div>
                 </div>
               </div>

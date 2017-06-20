@@ -121,7 +121,7 @@ class Site {
     if($is_logged == $condition){
       if($redirect){
         if($redirect === TRUE){
-          $redirect = 'minha-conta/login';
+          $redirect = ($this->ci->router->fetch_module() == 'site' ? 'minha-conta/login' : 'admin/login');
         }
         $this->ci->session->set_flashdata('redirect', base_url($this->ci->uri->uri_string()));
         redirect(base_url($redirect), 'location');
@@ -192,6 +192,34 @@ class Site {
     }
 
     return $alerta;
+  }
+
+  public function curl_get_result($url, $vars = '', $http_method = '') {
+    $ch = curl_init();
+    $timeout = 5;
+
+    curl_setopt($ch,CURLOPT_URL, $url);
+
+    if($http_method){
+      if($http_method == 'POST'){
+        curl_setopt($ch, CURLOPT_POST, 1);
+      }else{
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $http_method);
+      }
+    }
+
+    if($vars){
+      curl_setopt($ch, CURLOPT_POSTFIELDS, $vars);
+    }
+
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_FAILONERROR, false);
+    $data = curl_exec($ch);
+    curl_close($ch);
+    return $data;
   }
 
 

@@ -22,7 +22,7 @@ class Properties__edit extends Admin_Controller {
 
         'scripts' => array(
           array('plugins/jquery.mask/jquery.mask.min.js'),
-          array('https://maps.googleapis.com/maps/api/js?key='. $this->config->item('google_api_key') .'&callback=properties_edit__init_mapa', array('attributes' => array('async', 'defer')))
+          array('https://maps.googleapis.com/maps/api/js?key='. $this->config->item('google_api_key') /*.'&callback=properties_edit__init_mapa'*/, array('attributes' => array('async', 'defer')))
         ),
 
         'script_page' => 'js/properties_edit.js'
@@ -141,9 +141,9 @@ class Properties__edit extends Admin_Controller {
       $post = $this->input->post();
     }
 
-print_l($post);
-
-    $data['post'] = $post;
+    if(isset($post)){
+      $data['post'] = $post;
+    }
 
     $this->template->view('admin/master', 'admin/properties/edit', $data);
   }

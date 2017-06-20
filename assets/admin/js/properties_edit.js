@@ -6,6 +6,12 @@ var properties_edit__markers = [];
 
 $(function(){
 
+  var properties_edit__google_loaded = function(callback) {
+    if (typeof google === 'object' && typeof google.maps === 'object') {
+      console.log('loaded');
+    }
+  }
+
   properties_edit__init_mapa = function() {
     var haightAshbury = {lat: -23.501473, lng: -46.736422};
 
@@ -15,23 +21,49 @@ $(function(){
       mapTypeId: 'roadmap'
     });
 
-    // This event listener will call addMarker() when the map is clicked.
-    properties_edit__map.addListener('click', function(event) {
-      properties_edit__addMarker(event.latLng);
-    });
-
     // Adds a marker at the center of the map.
     properties_edit__addMarker(haightAshbury);
   };
 
+  var properties_edit__delMarker = function(map) {
+    for (var i = 0; i < properties_edit__markers.length; i++) {
+      properties_edit__markers[i].setMap(map);
+    }
+  }
+
+
   // Adds a marker to the map and push to the array.
   var properties_edit__addMarker = function(location) {
-    var marker = new google.maps.Marker({
+    properties_edit__delMarker(null);
+
+    var imovel = new google.maps.Marker({
       position: location,
-      map: properties_edit__map
+      map: properties_edit__map,
+      title: 'Localização do imóvel',
+      icon: app.get_asset_url('img/icon-imovel.png')
     });
 
-    properties_edit__markers.push(marker);
+    properties_edit__markers.push(imovel);
+
+    $("#latitude").val(imovel.getPosition().lat());
+    $("#longitude").val(imovel.getPosition().lng());
+    $("#latitude_site").val('');
+    $("#longitude_site").val('');
+
+    var centro = new google.maps.Marker({
+      position: location,
+      map: properties_edit__map,
+      draggable:true,
+      title: 'Localização aproximada do imóvel'
+    });
+
+    properties_edit__markers.push(centro);
+
+    google.maps.event.addListener(centro, 'dragend', function() {
+      properties_edit__map.panTo(centro.getPosition());
+      $("#latitude_site").val(centro.getPosition().lat());
+      $("#longitude_site").val(centro.getPosition().lng());
+    });
   }
 
   properties_edit.init_cep = function($templates, $callback){
@@ -41,13 +73,45 @@ $(function(){
       onComplete: function(cep) {
         cep_loading.addClass('loading-active');
 
-        setTimeout(function(){
-            cep_loading.removeClass('loading-active');
-        }, 2000);
+        $.ajax({
+          url: app.base_url('admin/tools/buscar-cep/' + cep),
+          dataType: 'json'
+        }).done(function(response) {
+          cep_loading.removeClass('loading-active');
+
+          if(response.erro){
+
+          }else{
+
+            $('#logradouro').val(response.logradouro);
+            $('#bairro').val(response.bairro);
+            $('#cidade').val(response.localidade);
+            $('#estado').val(response.uf);
+
+            if(response.coordenadas){
+              var mapaLatLng = {lat: response.coordenadas.latitude, lng: response.coordenadas.longitude};
+              properties_edit__map.panTo(mapaLatLng);
+              properties_edit__addMarker(mapaLatLng);
+            }
+
+            $.each($('#estado option'), function(i, item){
+              if($(item).attr('data-sigla') == 'SP'){
+                console.log($(item).val())
+              }
+            });
+
+
+            jQuery.each(jQuery("#estado option"), function(i, item){
+              if(response.uf == $(item).attr("data-sigla")){
+                $('#estado').val($(item).val()).trigger('change');
+              }
+            });
+
+          }
+        });
       },
       onKeyPress: function(cep, event, currentField, options){
-        console.log('An key was pressed!:', cep, ' event: ', event,
-                    'currentField: ', currentField, ' options: ', options);
+
       },
       onChange: function(cep){
         console.log('cep changed! ', cep);
@@ -59,7 +123,6 @@ $(function(){
     };
 
     $('.cep-mask').mask('00000-000', options);
-
   };
 
   // Init
