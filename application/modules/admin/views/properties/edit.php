@@ -50,7 +50,7 @@
                       <input type="text" class="form-control" name="localizacao[logradouro]" id="logradouro" placeholder="Ex. Rua 25 de Março" value="<?php echo isset($post['localizacao']['logradouro']) ? $post['localizacao']['logradouro'] : ''; ?>" required>
                     </div>
                     <div class="col-xs-4 col-sm-3">
-                      <input type="text" class="form-control" name="localizacao[numero]" id="numero" placeholder="Ex. 1234" value="<?php echo isset($post['localizacao']['numero']) ? $post['localizacao']['numero'] : ''; ?>" required>
+                      <input type="text" class="form-control" name="localizacao[numero]" id="numero" placeholder="Ex. 1234" value="<?php echo isset($post['localizacao']['numero']) ? $post['localizacao']['numero'] : ''; ?>">
                     </div>
                   </div>
                 </div>
@@ -95,7 +95,7 @@
                 </div>
               </div>
 
-              <div class="form-group no-border">
+              <div class="form-group">
                 <label class="col-sm-3 control-label">Mostrar endereço no site</label>
                 <div class="col-sm-9">
                   <div class="radio radio-success">
@@ -103,7 +103,7 @@
                     if($enderecos_visibilidades) {
                       foreach ($enderecos_visibilidades as $visibilidade) {
                         ?>
-                        <input type="radio" value="<?php echo $visibilidade['id']; ?>" <?php echo isset($post['localizacao']['visibilidade_site']) && $post['localizacao']['visibilidade_site'] == $visibilidade['id'] ? 'checked="true"' : ''; ?> name="localizacao[visibilidade_site]" id="visibilidade_<?php echo $visibilidade['slug']; ?>">
+                        <input type="radio" value="<?php echo $visibilidade['id']; ?>" <?php echo isset($post['localizacao']['visibilidade_site']) ? ($post['localizacao']['visibilidade_site'] == $visibilidade['id'] ? 'checked="true"' : '') : ($visibilidade['id'] == 1 ? 'checked="true"' : ''); ?> name="localizacao[visibilidade_site]" id="visibilidade_<?php echo $visibilidade['slug']; ?>">
                         <label for="visibilidade_<?php echo $visibilidade['slug']; ?>"><?php echo $visibilidade['nome']; ?></label>
                         <?php
                       }
@@ -113,16 +113,15 @@
                 </div>
               </div>
 
-              <div class="form-group no-border">
-                <label class="col-sm-3 control-label">
-                </label>
-                <div class="col-sm-9">
-                  <p>Have you Worked at page Inc. before, Or joined the Pages Supirior Club?</p>
-                  <input type="text" name="localizacao[latitude]" id="latitude" value="<?php echo isset($post['localizacao']['latitude']) ? $post['localizacao']['latitude'] : ''; ?>">
-                  <input type="text" name="localizacao[longitude]" id="longitude" value="<?php echo isset($post['localizacao']['longitude']) ? $post['localizacao']['longitude'] : ''; ?>">
-                  <input type="text" name="localizacao[latitude_site]" id="latitude_site" value="<?php echo isset($post['localizacao']['latitude_site']) ? $post['localizacao']['latitude_site'] : ''; ?>">
-                  <input type="text" name="localizacao[longitude_site]" id="longitude_site" value="<?php echo isset($post['localizacao']['longitude_site']) ? $post['localizacao']['longitude_site'] : ''; ?>">
-                  <div id="localizacao_mapa" style="height: 400px;"></div>
+              <input type="text" name="localizacao[latitude]" id="latitude" value="<?php echo isset($post['localizacao']['latitude']) ? $post['localizacao']['latitude'] : ''; ?>">
+              <input type="text" name="localizacao[longitude]" id="longitude" value="<?php echo isset($post['localizacao']['longitude']) ? $post['localizacao']['longitude'] : ''; ?>">
+              <input type="text" name="localizacao[latitude_site]" id="latitude_site" value="<?php echo isset($post['localizacao']['latitude_site']) ? $post['localizacao']['latitude_site'] : ''; ?>">
+              <input type="text" name="localizacao[longitude_site]" id="longitude_site" value="<?php echo isset($post['localizacao']['longitude_site']) ? $post['localizacao']['longitude_site'] : ''; ?>">
+
+              <div id="localizacao_mapa_box" class="hide form-group">
+                <div class="col-sm-12">
+                  <p>Clique e arraste o marker no mapa, para apresentar uma localização aproximada do imóvel.</p>
+                  <div id="localizacao_mapa"></div>
                 </div>
               </div>
 
@@ -138,7 +137,7 @@
                   <div class="radio radio-success">
 
 
-                  <select class="full-width" name="detalhes[tipo]" data-init-plugin="select2">
+                  <select class="full-width" name="detalhes[tipo]" data-init-plugin="select2" required>
                     <option></option>
                     <?php
                     if(isset($imoveis_tipos) && !empty($imoveis_tipos)){
@@ -181,11 +180,36 @@
                       ?>
                       <div class="col-sm-2 sm-m-t-5">
                         <label class="label-sm"><?php echo $value; ?></label>
-                        <input type="number" name="detalhes[<?php echo $key; ?>]" value="<?php echo isset($post['detalhes'][$key]) ? $post['detalhes'][$key] : ''; ?>" class="form-control input-sm">
+                        <input type="number" name="detalhes[<?php echo $key; ?>]" value="<?php echo isset($post['detalhes'][$key]) ? $post['detalhes'][$key] : ''; ?>" placeholder="0" class="form-control input-sm">
                       </div>
                       <?php
                     }
                     ?>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="position" class="col-sm-3 control-label">Áreas</label>
+                <div class="col-sm-9">
+                  <div class="row">
+                      <div class="col-sm-3 sm-m-t-5">
+                        <label class="label-sm">*Área útil</label>
+                        <div class="input-group">
+                          <input type="number" name="detalhes[area_util]" value="<?php echo isset($post['detalhes']['area_util']) ? $post['detalhes']['area_util'] : ''; ?>" placeholder="0" required class="form-control area-mask input-sm">
+                          <span class="input-group-addon">m²</span>
+                        </div>
+
+                      </div>
+
+                      <div class="col-sm-3 sm-m-t-5">
+                        <label class="label-sm">Área total</label>
+                        <div class="input-group">
+                          <input type="number" name="detalhes[area_total]" value="<?php echo isset($post['detalhes']['area_total']) ? $post['detalhes']['area_total'] : ''; ?>" placeholder="0" class="form-control area-mask input-sm">
+                          <span class="input-group-addon">m²</span>
+                        </div>
+
+                      </div>
                   </div>
                 </div>
               </div>
@@ -208,7 +232,7 @@
                           <?php
                           $caracteristica_item_count = 0;
                           foreach ($caracteristica['caracteristicas'] as $caracteristica_item) {
-                            if($caracteristica_item_count == 4){
+                            if($caracteristica_item_count == 3){
                               $caracteristica_item_count = 1;
                               ?>
                               </div>
@@ -216,9 +240,9 @@
                               <?php
                             }
                             ?>
-                            <div class="col-sm-3">
+                            <div class="col-sm-4">
                               <div class="checkbox ">
-                                <input type="checkbox" value="<?php echo $caracteristica_item['id']; ?>" <?php echo isset($caracteristica_item['selected']) ? 'checked="true"' : ''; ?> id="checkbox<?php echo $caracteristica_item['id']; ?>">
+                                <input type="checkbox" name="caracteristicas[]" value="<?php echo $caracteristica_item['id']; ?>" <?php echo isset($caracteristica_item['selected']) ? 'checked="true"' : ''; ?> id="checkbox<?php echo $caracteristica_item['id']; ?>">
                                 <label for="checkbox<?php echo $caracteristica_item['id']; ?>"><?php echo $caracteristica_item['nome']; ?></label>
                               </div>
                             </div>
@@ -236,16 +260,79 @@
                 </div>
               </div>
 
-
+              <div class="row margin-top-30">
+                <div class="col-sm-12">
+                  <h4 class="no-margin">Negociação e valores</h4>
+                </div>
+              </div>
 
 
 
               <div class="form-group">
-                <label for="name" class="col-sm-3 control-label">Description</label>
+                <label for="valor" class="col-sm-3 control-label">*Valor da venda</label>
                 <div class="col-sm-9">
-                  <textarea class="form-control" id="name" placeholder="Briefly Describe your Abilities"></textarea>
+                  <div class="input-group">
+                    <span class="input-group-addon">R$</span>
+                    <input type="text" class="form-control input-lg price-mask" id="valor" name="negociacao[valor]" value="<?php echo isset($post['negociacao']['valor']) ? $post['negociacao']['valor'] : ''; ?>" placeholder="0,00" required>
+                  </div>
                 </div>
               </div>
+
+              <div class="form-group">
+                <label for="position" class="col-sm-3 control-label">Outros valores</label>
+                <div class="col-sm-9">
+                  <div class="row">
+                      <div class="col-sm-4 sm-m-t-5">
+                        <label for="condominio" class="label-sm">*Condomínio / Mês</label>
+                        <div class="input-group">
+                          <span class="input-group-addon">R$</span>
+                          <input type="text" class="form-control input-sm price-mask" id="condominio" name="despesas[condominio]" value="<?php echo isset($post['despesas']['condominio']) ? $post['despesas']['condominio'] : ''; ?>" placeholder="0,00">
+                        </div>
+                      </div>
+
+                      <div class="col-sm-4 sm-m-t-5">
+                        <label for="iptu" class="label-sm">IPTU / Ano</label>
+                        <div class="input-group">
+                          <span class="input-group-addon">R$</span>
+                          <input type="text" class="form-control input-sm price-mask" id="iptu" name="despesas[iptu]" value="<?php echo isset($post['despesas']['iptu']) ? $post['despesas']['iptu'] : ''; ?>" placeholder="0,00">
+                        </div>
+                      </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row margin-top-30">
+                <div class="col-sm-12">
+                  <h4 class="no-margin">Código, título e descrição do anúncio</h4>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="referencia" class="col-sm-3 control-label">Código de referência</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control input-sm" id="referencia" name="metas[referencia]" value="<?php echo isset($post['metas']['referencia']) ? $post['metas']['referencia'] : ''; ?>" required>
+                </div>
+              </div>
+
+
+              <div class="form-group">
+                <label for="breve_descricao" class="col-sm-3 control-label">Breve descrição</label>
+                <div class="col-sm-9">
+                  <textarea class="form-control" id="breve_descricao" name="metas[breve_descricao]" rows="2" maxlength="200" placeholder="Escreva uma breve descrição, com as informações mais importantes do imóvel."><?php echo isset($post['metas']['breve_descricao']) ? $post['metas']['breve_descricao'] : ''; ?></textarea>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="descricao" class="col-sm-3 control-label">Descrição</label>
+                <div class="col-sm-9">
+                  <textarea class="form-control" id="descricao" name="metas[descricao]" rows="10" maxlength="3000" placeholder="Escreva uma descrição detalhada do imóvel, seu estado de conservação, localização, comércio próximo e todas as informações que achar relevante."><?php echo isset($post['metas']['descricao']) ? $post['metas']['descricao'] : ''; ?></textarea>
+                </div>
+              </div>
+
+
+
+
+
               <br>
               <div class="row">
                 <div class="col-sm-3">

@@ -4,25 +4,50 @@ var properties_edit__init_mapa;
 var properties_edit__map;
 var properties_edit__markers = [];
 
+
 $(function(){
 
-  var properties_edit__google_loaded = function(callback) {
-    if (typeof google === 'object' && typeof google.maps === 'object') {
-      console.log('loaded');
-    }
-  }
-
   properties_edit__init_mapa = function() {
-    var haightAshbury = {lat: -23.501473, lng: -46.736422};
+    if (typeof google === 'object' && typeof google.maps === 'object') {
+      var latitude = parseFloat($("#latitude").val());
+      var longitude = parseFloat($("#longitude").val());
 
-    properties_edit__map = new google.maps.Map(document.getElementById('localizacao_mapa'), {
-      zoom: 17,
-      center: haightAshbury,
-      mapTypeId: 'roadmap'
-    });
+      var latitude_site = parseFloat($("#latitude_site").val());
+      var longitude_site = parseFloat($("#longitude_site").val());
 
-    // Adds a marker at the center of the map.
-    properties_edit__addMarker(haightAshbury);
+      var latitude_mapa = (latitude_site.length && (latitude_site != latitude) ? latitude_site : latitude);
+      var longitude_mapa = (longitude_site.length && (longitude_site != longitude) ? longitude_site : longitude);
+
+
+      var localizacao_mapa_box = $('#localizacao_mapa_box');
+      var localizacao_mapa = localizacao_mapa_box.find('#localizacao_mapa');
+
+      localizacao_mapa_box.removeClass('hide').show();
+      localizacao_mapa.css('height', 400);
+
+      properties_edit__map = new google.maps.Map(localizacao_mapa.get(0), {
+        zoom: 18,
+        center: {lat: latitude_mapa, lng: longitude_mapa},
+        mapTypeId: 'roadmap',
+        scrollwheel: false
+      });
+
+      var styles = [
+         {
+           featureType: "poi",
+           stylers: [
+            { visibility: "off" }
+           ]
+          }
+      ];
+
+      var styledMap = new google.maps.StyledMapType(styles,{name: "Styled Map"});
+
+      properties_edit__addMarker();
+    }else{
+      console.log('tentando');
+      setTimeout(properties_edit__init_mapa, 300);
+    }
   };
 
   var properties_edit__delMarker = function(map) {
@@ -31,13 +56,22 @@ $(function(){
     }
   }
 
-
-  // Adds a marker to the map and push to the array.
-  var properties_edit__addMarker = function(location) {
+  var properties_edit__addMarker = function() {
     properties_edit__delMarker(null);
 
+    var latitude = $("#latitude").val();
+    var longitude = $("#longitude").val();
+
+    var latitude_site = $("#latitude_site").val();
+    var longitude_site = $("#longitude_site").val();
+
+    var latitude_mapa = latitude_site && latitude_site != latitude ? latitude_site : latitude;
+    var longitude_mapa = longitude_site && longitude_site != longitude ? longitude_site : longitude;
+
+    properties_edit__map.panTo({lat: parseFloat(latitude_mapa), lng: parseFloat(longitude_mapa)});
+
     var imovel = new google.maps.Marker({
-      position: location,
+      position: {lat: parseFloat(latitude), lng: parseFloat(longitude)},
       map: properties_edit__map,
       title: 'Localização do imóvel',
       icon: app.get_asset_url('img/icon-imovel.png')
@@ -45,13 +79,8 @@ $(function(){
 
     properties_edit__markers.push(imovel);
 
-    $("#latitude").val(imovel.getPosition().lat());
-    $("#longitude").val(imovel.getPosition().lng());
-    $("#latitude_site").val('');
-    $("#longitude_site").val('');
-
     var centro = new google.maps.Marker({
-      position: location,
+      position: {lat: parseFloat(latitude_mapa), lng: parseFloat(longitude_mapa)},
       map: properties_edit__map,
       draggable:true,
       title: 'Localização aproximada do imóvel'
@@ -89,9 +118,16 @@ $(function(){
             $('#estado').val(response.uf);
 
             if(response.coordenadas){
-              var mapaLatLng = {lat: response.coordenadas.latitude, lng: response.coordenadas.longitude};
-              properties_edit__map.panTo(mapaLatLng);
-              properties_edit__addMarker(mapaLatLng);
+              $("#latitude").val(response.coordenadas.latitude);
+              $("#longitude").val(response.coordenadas.longitude);
+              $("#latitude_site").val('');
+              $("#longitude_site").val('');
+
+              if(!properties_edit__map){
+                properties_edit__init_mapa();
+              }else{
+                properties_edit__addMarker({lat: response.coordenadas.latitude, lng: response.coordenadas.longitude});
+              }
             }
 
             $.each($('#estado option'), function(i, item){
@@ -123,10 +159,23 @@ $(function(){
     };
 
     $('.cep-mask').mask('00000-000', options);
+    $('.price-mask').mask('000.000.000.000.000,00', {reverse: true});
+    $('.area-mask').mask('000.000.000.000.000', {reverse: true});
+
+    $('textarea[maxlength]').maxlength({
+      alwaysShow: true,
+      threshold: 10,
+      warningClass: "label label-info",
+      limitReachedClass: "label label-danger"
+    });
   };
 
   // Init
   properties_edit.init = function(){
+    if($('#latitude').val().length && $('#longitude').val().length){
+      properties_edit__init_mapa();
+    }
+
     properties_edit.init_cep();
   };
 

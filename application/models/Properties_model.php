@@ -46,6 +46,7 @@ class Properties_model extends CI_Model {
       imoveis.status as status,
 
       format(sum(imoveis_negociacoes.valor), 0, 'de_DE') as valor,
+      imoveis_negociacoes.valor as valor_real,
       imoveis_negociacoes.permalink as imovel_permalink,
       imoveis_negociacoes.referencia as referencia,
 
@@ -628,6 +629,39 @@ class Properties_model extends CI_Model {
     }
 
     return false;
+  }
+
+  public function add_locality($table, $params = array()) {
+    $this->db->insert($table, $params);
+    return $this->db->insert_id();
+  }
+
+  public function check_locality($estado_id, $cidade_nome, $bairro_nome) {
+    // Cidade
+    $cidade = $this->registros_model->registros('cidades', array('where' => array('cidades.estado' => $estado_id, 'cidades.nome' => trim($cidade_nome))), true);
+    if($cidade){
+      $cidade_id = $cidade['id'];
+    }else{
+      $cidade_id = $this->add_locality('cidades', array(
+        'estado' => $estado_id,
+        'nome' => trim($cidade_nome),
+        'slug' => sanitize_string(trim($cidade_nome))
+      ));
+    }
+
+    // Bairro
+    $bairro = $this->registros_model->registros('bairros', array('where' => array('bairros.cidade' => $cidade_id, 'bairros.nome' => trim($bairro_nome))), true);
+    if($bairro){
+      $bairro_id = $bairro['id'];
+    }else{
+      $bairro_id = $this->add_locality('bairros', array(
+        'cidade' => $cidade_id,
+        'nome' => trim($bairro_nome),
+        'slug' => sanitize_string(trim($bairro_nome))
+      ));
+    }
+
+    return array('estado_id' => $estado_id, 'cidade_id' => $cidade_id, 'bairro_id' => $bairro_id);
   }
 
   public function get_locations_by_term() {

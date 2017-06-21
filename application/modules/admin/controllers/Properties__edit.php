@@ -22,6 +22,7 @@ class Properties__edit extends Admin_Controller {
 
         'scripts' => array(
           array('plugins/jquery.mask/jquery.mask.min.js'),
+          array('plugins/bootstrap-maxlength.js'),
           array('https://maps.googleapis.com/maps/api/js?key='. $this->config->item('google_api_key') /*.'&callback=properties_edit__init_mapa'*/, array('attributes' => array('async', 'defer')))
         ),
 
@@ -63,20 +64,45 @@ class Properties__edit extends Admin_Controller {
         'banheiros' => 'banheiros',
         'suites' => 'suites',
         'garagens' => 'garagens',
-        'varandas' => 'varandas'
+        'varandas' => 'varandas',
+
+        'area_util' => 'area_util',
+        'area_total' => 'area_total'
       );
       foreach ($detalhes as $de => $para) {
         $post['detalhes'][$para] = $property[$de];
       }
 
+      if(isset($property['despesas'])){
+        foreach ($property['despesas'] as $despesa_slug => $despesa) {
+          $post['despesas'][$despesa_slug] = $despesa['valor'];
+        }
+      }
+
+      $post['negociacao']['valor'] = $property['valor_real'];
+
+      $metas = array(
+        'breve_descricao' => 'breve_descricao',
+        'descricao' => 'descricao',
+        'referencia' => 'referencia'
+      );
+      foreach ($metas as $de => $para) {
+        $post['metas'][$para] = $property[$de];
+      }
+
       print_l($property);
 
       if(isset($property['caracteristicas'])){
-        $imoveis_caracteristicas = array();
         foreach ($property['caracteristicas'] as $caracteristica) {
-          $imoveis_caracteristicas[] = $caracteristica['id'];
+          $post['caracteristicas'][] = $caracteristica['id'];
         }
       }
+    }
+
+    if($this->input->post()){
+      $post = $this->input->post();
+
+      $this->properties_model->check_locality($post['localizacao']['estado'], $post['localizacao']['cidade'], $post['localizacao']['bairro']);
     }
 
     $caracteristicas = $this->registros_model->registros(
@@ -107,7 +133,7 @@ class Properties__edit extends Admin_Controller {
           'nome' => $caracteristica['nome'],
         );
 
-        if(isset($imoveis_caracteristicas) && in_array($caracteristica['id'], $imoveis_caracteristicas)){
+        if(isset($post['caracteristicas']) && in_array($caracteristica['id'], $post['caracteristicas'])){
           $caracteristicas_array[$caracteristica['tipo']]['caracteristicas'][$caracteristicas_count]['selected'] = true;
         }
 
@@ -137,13 +163,13 @@ class Properties__edit extends Admin_Controller {
 
     $data['imoveis_tipos'] = $imoveis_tipos;
 
-    if($this->input->post()){
-      $post = $this->input->post();
-    }
+
 
     if(isset($post)){
       $data['post'] = $post;
     }
+
+    // print_l($post);
 
     $this->template->view('admin/master', 'admin/properties/edit', $data);
   }
