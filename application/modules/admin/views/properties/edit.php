@@ -26,7 +26,7 @@
         <div class="row">
           <div class="col-sm-10 p-t-20">
 
-            <form id="form-work" class="form-horizontal" role="form" autocomplete="off" method="post" action="<?php echo base_url($form_action); ?>">
+            <form id="form-work" class="form-horizontal" role="form" autocomplete="off" method="post" action="<?php echo base_url($form_action); ?>" enctype="multipart/form-data">
 
               <h4 class="no-margin">Localização do imóvel</h4>
               <p class="hint-text small">O endereço do imóvel só ficará visível no site se a opção "Mostrar endereço no site" estiver selecionada.</p>
@@ -329,9 +329,51 @@
                 </div>
               </div>
 
+              <div class="form-group">
+                <label for="descricao" class="col-sm-3 control-label">Descrição</label>
+                <div class="col-sm-9">
+
+<div class="property-uploads dropzone">
+</div>
+
+<ul class="visualizacao sortable dropzone-previews" style="border:1px solid #000">
+</ul>
+
+<div id="image-preview-template" class="hide">
+  <li class="ui-state-default">
+    <div>
+      <div class="dz-preview dz-file-preview">
+        <span data-dz-remove>Some</span>
+        <div class="dz-details">
+          <div class="dz-filename"><span data-dz-name></span></div>
+          <div class="dz-size" data-dz-size></div>
+          <img data-dz-thumbnail />
+        </div>
+        <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
+        <div class="dz-success-mark"><span>✔</span></div>
+        <div class="dz-error-mark"><span>✘</span></div>
+        <div class="dz-error-message"><span data-dz-errormessage></span></div>
+      </div>
+    </div>
+  </li>
+</div>
+
+<!--
+  <li>
+    <div>
+      <div class="dz-preview dz-file-preview">
+        <img data-dz-thumbnail />
+        <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
+        <div class="dz-success-mark"><span>✔</span></div>
+        <div class="dz-error-mark"><span>✘</span></div>
+        <div class="dz-error-message"><span data-dz-errormessage></span></div>
+      </div>
+    </div>
+  </li> -->
 
 
-
+                </div>
+              </div>
 
               <br>
               <div class="row">

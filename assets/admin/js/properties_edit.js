@@ -176,6 +176,92 @@ $(function(){
       properties_edit__init_mapa();
     }
 
+    $('.sortable').sortable();
+
+    Dropzone.autoDiscover = false;
+    var propertyDropzone = new Dropzone(".property-uploads", {
+        url: app.base_url('admin/tools/enviar-imagens'),
+        previewsContainer: '.visualizacao',
+        previewTemplate: $('#image-preview-template').html(),
+        init: function() {
+          this.on('completemultiple', function(file, json) {
+            //$('.sortable').sortable('enable');
+            $('.sortable').sortable('refresh');
+            console.log('complete');
+          });
+
+          this.on('success', function(file, json) {
+            console.log('success');
+          });
+
+          this.on('addedfile', function(file) {
+            console.log('addedfile');
+          });
+
+          this.on('removedfile', function(file) {
+            console.log('removedfile');
+          });
+
+          this.on('drop', function(file) {
+            console.log('File',file)
+          });
+        }
+        // addedfile: function(file) {
+        //   file.previewElement = Dropzone.createElement(this.options.previewTemplate);
+        // },
+        // thumbnail: function(file, dataUrl) {
+        // },
+        // uploadprogress: function(file, progress, bytesSent) {
+        // },
+
+        // success: function (file, response) {
+        //     var imgName = response;
+        //     file.previewElement.classList.add("dz-success");
+        //     console.log("Successfully uploaded :" + imgName);
+        // },
+        // error: function (file, response) {
+        //     file.previewElement.classList.add("dz-error");
+        // }
+    });
+
+    propertyDropzone.on('sending', function(file, xhr, formData){
+    formData.append('upload_path', 'imoveis');
+    });
+
+    /*(".property-uploads").dropzone({
+      url: "/upload",
+      addRemoveLinks: true,
+      maxFilesize: 100,
+      paramName: "uploadfile",
+      maxThumbnailFilesize: 99999,
+
+      previewTemplate : $('.preview').html(),
+      success: function (file, response) {
+          var imgName = response;
+          file.previewElement.classList.add("dz-success");
+          console.log("Successfully uploaded :" + imgName);
+      },
+      error: function (file, response) {
+          file.previewElement.classList.add("dz-error");
+      },
+      init: function() {
+        this.on('completemultiple', function(file, json) {
+         $('.sortable').sortable('enable');
+        });
+        this.on('success', function(file, json) {
+          alert('aa');
+        });
+
+        this.on('addedfile', function(file) {
+
+        });
+
+        this.on('drop', function(file) {
+          console.log('File',file)
+        });
+      }
+    });*/
+
     properties_edit.init_cep();
   };
 

@@ -14,15 +14,21 @@ class Properties__edit extends Admin_Controller {
         'two' => ($property_id ? 'edit' : 'add')
       ),
 
-      'section' => array(),
+      'section' => array(
+        'data' => array(
+          'property_id' => $property_id
+        )
+      ),
 
       'assets' => array(
         'styles' => array(
+          array('plugins/dropzone2/min/dropzone.min.css')
         ),
 
         'scripts' => array(
           array('plugins/jquery.mask/jquery.mask.min.js'),
           array('plugins/bootstrap-maxlength.js'),
+          array('plugins/dropzone2/min/dropzone.min.js'),
           array('https://maps.googleapis.com/maps/api/js?key='. $this->config->item('google_api_key') /*.'&callback=properties_edit__init_mapa'*/, array('attributes' => array('async', 'defer')))
         ),
 

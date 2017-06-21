@@ -6,3 +6,50 @@
     margin-top: 5 * $i + px !important;
   }
 }
+
+.property-uploads {
+  min-height: 100px;
+  background: #fff;
+  border: 1px solid #666;
+}
+
+.sortable {
+  padding: 0;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+
+  &::after {
+    content: '';
+    display: block;
+    clear: both;
+  }
+
+  li {
+    float: left;
+    width: 120px;
+    height: 120px;
+    overflow:hidden;
+    border:1px solid red;
+    text-align: center;
+    margin:5px;
+
+    &.sortable-placeholder {
+      border: 1px dashed #CCC;
+      width: 120px;
+      height: 120px;
+      background: none;
+    }
+  }
+}
+
+
+
+  #sortable { list-style-type: none; margin: 0; padding: 0; width: 450px; }
+  #sortable li { margin: 3px 3px 3px 0; padding: 1px; float: left; width: 100px; height: 90px; font-size: 4em; text-align: center; }

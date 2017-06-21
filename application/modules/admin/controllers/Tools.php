@@ -56,4 +56,17 @@ class Tools extends Admin_Controller {
 
     echo json_encode($response);
   }
+
+  function enviar_imagens() {
+    print_l($this->input->post());
+    echo FCPATH . 'assets/ulpad';
+    // $targetDir = "uploads/";
+    // $fileName = $_FILES['file']['name'];
+    // $targetFile = $targetDir . $fileName;
+
+    // if(move_uploaded_file($_FILES['file']['tmp_name'],$targetFile)){
+    //   echo $fileName;
+    //     // $conn->query("INSERT INTO files (file_name, uploaded) VALUES('".$fileName."','".date("Y-m-d H:i:s")."')");
+    // }
+  }
 }

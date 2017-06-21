@@ -58,5 +58,17 @@
     $body_class = array_merge($body_class, (is_array($section["body_class"]) ? $section["body_class"] : explode(' ', $section["body_class"])));
   }
 
+  $body_data = '';
+  if(isset($section["data"]) && !empty($section["data"])){
+    $data_count = 0;
+    foreach ($section["data"] as $data_key => $data_value) {
+      $body_data .= ' data-' . $data_key . '="'. $data_value .'"';
+    }
+  }
   ?>
-  <body<?php echo isset($section["body_id"]) && !empty($section["body_id"]) ? ' id="' . $section["body_id"] . '"' : null; echo !empty($body_class) ? ' class="'. implode(' ', $body_class) .'"' : ''; ?>>
+  <body<?php echo isset($section["body_id"]) && !empty($section["body_id"]) ? ' id="' . $section["body_id"] . '"' : null; echo !empty($body_class) ? ' class="'. implode(' ', $body_class) .'"' : ''; echo $body_data; ?>>
+
+
+
+
+
