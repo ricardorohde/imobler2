@@ -2171,7 +2171,6 @@ body.dashboard .page-container {
 .ui-sortable-placeholder {
   border: 1px dotted black;
   visibility: visible !important;
-  height: 100% !important;
 }
 .ui-sortable-placeholder * {
   visibility: hidden;
@@ -14349,19 +14348,22 @@ Main components
 }
 
 .property-uploads {
-  min-height: 100px;
   background: #fff;
   border: 1px solid #666;
+  min-height: 100px;
 }
 
-.sortable {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
+.ui-state-highlight {
+  background: #ffff00;
 }
-.sortable li {
+
+#property-images {
+  list-style-type: none;
+  margin: 0;
   padding: 0;
-  line-height: auto;
+}
+#property-images li.ui-sortable-placeholder {
+  background: red;
 }
 
 /*# sourceMappingURL=pages.css.map */

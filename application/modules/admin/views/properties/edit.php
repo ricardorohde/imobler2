@@ -345,11 +345,14 @@
     <input type="file" name="files[]" multiple>
 </span>
 <br>
-<div class="thumbnail"></div>
+<ul id="property-images">
+  <?php echo $this->site->mustache('properties-edit__image-list', $post); ?>
+</ul>
 <!-- input type="file" name="images" id="images" multiple />
 
 <ul id="property-images" class="sortable" style="border:1px solid #000">
-  <?php echo $this->site->mustache('properties-edit__image-item', $post); ?>
+print_l($post);
+
 </ul>
 
 <div id="response"></div> -->

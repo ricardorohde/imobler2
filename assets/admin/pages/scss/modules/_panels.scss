@@ -4,7 +4,7 @@
 
 .panel{
     @include box-shadow(none);
-    @include border-radius(1px);    
+    @include border-radius(1px);
     @include transition(all .2s ease);
     position: relative;
     .panel-heading{
@@ -72,7 +72,7 @@
             &:hover{
                 .panel-title{
                     opacity: 1;
-                }              
+                }
             }
         }
     }
@@ -193,12 +193,12 @@
         height: 100%;
         width: 100%;
         //overflow-y: auto;
-        &.no-padding{ 
-            .row{ 
-                margin-left: 0; 
-                margin-right: 0; 
-            } 
-        } 
+        &.no-padding{
+            .row{
+                margin-left: 0;
+                margin-right: 0;
+            }
+        }
         &.no-bottom-padding{
             padding-bottom: 0;
         }
@@ -267,9 +267,9 @@
     &.portlet-refresh{
         @include transition(opacity .3s ease);
         &.refreshing{
-            opacity: 1;    
+            opacity: 1;
         }
-        
+
     }
 }
 .panel-heading a[data-toggle]:hover{
@@ -353,7 +353,7 @@
     transition: max-height 0.3s ease 0s;
 }
 .sortable .grid .grid-title {
-    cursor: move;    
+    cursor: move;
 }
 .ui-sortable {
     min-height: 0px !important;
@@ -361,7 +361,6 @@
 .ui-sortable-placeholder {
     border: 1px dotted black;
     visibility: visible !important;
-    height: 100% !important;
     * {
         visibility: hidden;
     }

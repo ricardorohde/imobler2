@@ -1,5 +1,6 @@
 <?php header('Content-type: application/javascript'); ?>
 var app = app || {};
+var mustache_templates = {};
 
 (function (window, document, $, undefined) {
 	'use strict';
@@ -26,6 +27,17 @@ var app = app || {};
 			var response = '<?php echo get_asset('%PATH%', 'path'); ?>';
 			return (response.replace('%PATH%', $path));
 		},
+
+    mustache: function(check_template, callback){
+      if(typeof mustache_templates[check_template] != 'undefined'){
+        return callback(mustache_templates[check_template]);
+      }else{
+        $.get(app.get_asset_url('templates/'+ check_template +'.mustache'), function(template) {
+          mustache_templates[check_template] = template;
+          return callback(template);
+        });
+      }
+    },
 
 		slug: function(str) {
 			str = str.replace(/^\s+|\s+$/g, ''); // trim

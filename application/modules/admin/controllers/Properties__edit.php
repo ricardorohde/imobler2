@@ -22,13 +22,12 @@ class Properties__edit extends Admin_Controller {
 
       'assets' => array(
         'styles' => array(
-          // array('plugins/jquery-file-upload/css/jquery.fileupload.css')
         ),
 
         'scripts' => array(
           array('plugins/jquery.mask/jquery.mask.min.js'),
           array('plugins/bootstrap-maxlength.js'),
-          // array('plugins/jquery-file-upload/js/jquery.fileupload.js'),
+          array('plugins/mustache.min.js'),
           array('https://maps.googleapis.com/maps/api/js?key='. $this->config->item('google_api_key') /*.'&callback=properties_edit__init_mapa'*/, array('attributes' => array('async', 'defer')))
         ),
 
@@ -178,7 +177,8 @@ class Properties__edit extends Admin_Controller {
       $data['post'] = $post;
     }
 
-    // if($post) print_l($post);
+    if($post) print_l($post);
+    if(isset($_FILES)) print_l($_FILES);
 
     $this->template->view('admin/master', 'admin/properties/edit', $data);
   }

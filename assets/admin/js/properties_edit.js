@@ -176,19 +176,30 @@ $(function(){
       properties_edit__init_mapa();
     }
 
-    $('.sortable').sortable();
+    $('#property-images').sortable();
+    $('#property-images').disableSelection();
 
 $('input[type="file"]').change(function() {
-  $('.thumbnail').html('');
+  // $('.thumbnail').html('');
   $.each(this.files, function() {
     readURL(this);
   })
 });
 
+
+var populate_image = function(images){
+  app.mustache('properties-edit__image-item', function(template){
+    var image_rendered = Mustache.render(template, images);
+    $('#property-images').append(image_rendered);
+    $('#property-images').sortable('refresh');
+  });
+};
+
 function readURL(file) {
   var reader = new FileReader();
+  var image_obj = {'imagens' : [{}]}
   reader.onload = function(e) {
-    $('.thumbnail').append('<img src=' + e.target.result + ' style="width: 100px; height: 120px;"/>');
+    populate_image({'base64' : e.target.result});
   }
 
   reader.readAsDataURL(file);

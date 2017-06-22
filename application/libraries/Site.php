@@ -58,10 +58,14 @@ class Site {
   }
 
   public function mustache($template, $data = null){
-    $entry = new Mustache_Engine;
+    // $entry = new Mustache_Engine;
 
-    $this->ci->load->helper('file');
-    $template = read_file(get_asset("templates/" . $template . ".mustache", 'path'));
+    $entry = new Mustache_Engine(array(
+        'loader' => new Mustache_Loader_FilesystemLoader(get_asset('templates', 'path')),
+    ));
+
+    // $this->ci->load->helper('file');
+    // $template = read_file(get_asset("templates/" . $template . ".mustache", 'path'));
 
     $data['site_base_url'] = base_url();
 
