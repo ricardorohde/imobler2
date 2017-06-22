@@ -22,13 +22,13 @@ class Properties__edit extends Admin_Controller {
 
       'assets' => array(
         'styles' => array(
-          array('plugins/dropzone2/min/dropzone.min.css')
+          // array('plugins/jquery-file-upload/css/jquery.fileupload.css')
         ),
 
         'scripts' => array(
           array('plugins/jquery.mask/jquery.mask.min.js'),
           array('plugins/bootstrap-maxlength.js'),
-          array('plugins/dropzone2/min/dropzone.min.js'),
+          // array('plugins/jquery-file-upload/js/jquery.fileupload.js'),
           array('https://maps.googleapis.com/maps/api/js?key='. $this->config->item('google_api_key') /*.'&callback=properties_edit__init_mapa'*/, array('attributes' => array('async', 'defer')))
         ),
 
@@ -96,12 +96,17 @@ class Properties__edit extends Admin_Controller {
         $post['metas'][$para] = $property[$de];
       }
 
-      print_l($property);
+      // print_l($property);
 
       if(isset($property['caracteristicas'])){
         foreach ($property['caracteristicas'] as $caracteristica) {
           $post['caracteristicas'][] = $caracteristica['id'];
         }
+      }
+
+      if(isset($property['imagens'])){
+        $post['imagens'] = $property['imagens'];
+
       }
     }
 
@@ -169,13 +174,11 @@ class Properties__edit extends Admin_Controller {
 
     $data['imoveis_tipos'] = $imoveis_tipos;
 
-
-
     if(isset($post)){
       $data['post'] = $post;
     }
 
-    // print_l($post);
+    // if($post) print_l($post);
 
     $this->template->view('admin/master', 'admin/properties/edit', $data);
   }

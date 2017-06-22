@@ -6,6 +6,9 @@ class Default_Controller extends MX_Controller {
     parent::__construct();
     header('Content-Type: text/html; charset=utf-8');
 
+    require_once APPPATH . 'third_party/Mustache/Autoloader.php';
+    Mustache_Autoloader::register();
+
     $this->output->enable_profiler(FALSE);
   }
 }
@@ -17,9 +20,6 @@ class Site_Controller extends Default_Controller {
 
     $this->load->add_package_path(APPPATH . 'modules/site/');
     // $this->load->library(array('site'));
-
-    require_once APPPATH . 'third_party/Mustache/Autoloader.php';
-    Mustache_Autoloader::register();
   }
 }
 

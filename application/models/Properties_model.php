@@ -631,6 +631,11 @@ class Properties_model extends CI_Model {
     return false;
   }
 
+  public function add_property_image($params = array()) {
+    $this->db->insert('imoveis_imagens', $params);
+    return $this->db->insert_id();
+  }
+
   public function add_locality($table, $params = array()) {
     $this->db->insert($table, $params);
     return $this->db->insert_id();

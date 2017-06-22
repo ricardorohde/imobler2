@@ -58,15 +58,38 @@ class Tools extends Admin_Controller {
   }
 
   function enviar_imagens() {
-    print_l($this->input->post());
-    echo FCPATH . 'assets/ulpad';
-    // $targetDir = "uploads/";
-    // $fileName = $_FILES['file']['name'];
-    // $targetFile = $targetDir . $fileName;
+    $return = array();
 
-    // if(move_uploaded_file($_FILES['file']['tmp_name'],$targetFile)){
-    //   echo $fileName;
-    //     // $conn->query("INSERT INTO files (file_name, uploaded) VALUES('".$fileName."','".date("Y-m-d H:i:s")."')");
-    // }
+    $upload_folder = $this->input->post('upload_folder');
+    $property_id = $this->input->post('property_id');
+
+    $path_uri = 'assets/uploads/' . $upload_folder . '/' . $property_id . '/';
+    $path_upload = FCPATH . $path_uri;
+
+    if(!file_exists($path_upload)) {
+      mkdir($path_upload, 0755, true);
+    }
+
+    foreach ($_FILES["images"]["error"] as $key => $error) {
+      if ($error == UPLOAD_ERR_OK) {
+        $file_name = $_FILES["images"]["name"][$key];
+        $file_extension = pathinfo($file_name, PATHINFO_EXTENSION);
+
+        $return['uploads'][$key]['file_name_new'] = $property_id . '-' . md5($file_name . microtime(false) . rand(0,9999))  . '.' . $file_extension;
+
+        if(move_uploaded_file($_FILES["images"]["tmp_name"][$key], $path_upload . $return['uploads'][$key]['file_name_new'])){
+          $return['uploads'][$key]['success'] = true;
+
+          $this->load->model('properties_model');
+
+          $return['uploads'][$key]['image_id'] = $this->properties_model->add_property_image(array(
+            'imovel' => $property_id,
+            'arquivo' => $return['uploads'][$key]['file_name_new']
+          ));
+        }
+      }
+    }
+
+    echo json_encode($return);
   }
 }

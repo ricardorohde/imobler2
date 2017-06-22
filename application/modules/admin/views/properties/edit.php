@@ -333,30 +333,30 @@
                 <label for="descricao" class="col-sm-3 control-label">Descrição</label>
                 <div class="col-sm-9">
 
-<div class="property-uploads dropzone">
+<!-- <div class="property-uploads dropzone">
 </div>
+ -->
 
-<ul class="visualizacao sortable dropzone-previews" style="border:1px solid #000">
+<!-- The fileinput-button span is used to style the file input field as button -->
+<span class="btn btn-success fileinput-button">
+    <i class="glyphicon glyphicon-plus"></i>
+    <span>Select files...</span>
+    <!-- The file input field used as target for the file upload widget -->
+    <input type="file" name="files[]" multiple>
+</span>
+<br>
+<div class="thumbnail"></div>
+<!-- input type="file" name="images" id="images" multiple />
+
+<ul id="property-images" class="sortable" style="border:1px solid #000">
+  <?php echo $this->site->mustache('properties-edit__image-item', $post); ?>
 </ul>
 
-<div id="image-preview-template" class="hide">
-  <li class="ui-state-default">
-    <div>
-      <div class="dz-preview dz-file-preview">
-        <span data-dz-remove>Some</span>
-        <div class="dz-details">
-          <div class="dz-filename"><span data-dz-name></span></div>
-          <div class="dz-size" data-dz-size></div>
-          <img data-dz-thumbnail />
-        </div>
-        <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
-        <div class="dz-success-mark"><span>✔</span></div>
-        <div class="dz-error-mark"><span>✘</span></div>
-        <div class="dz-error-message"><span data-dz-errormessage></span></div>
-      </div>
-    </div>
-  </li>
-</div>
+<div id="response"></div> -->
+
+<!-- <div id="image-preview-template" class="hide">
+
+</div> -->
 
 <!--
   <li>
