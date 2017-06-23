@@ -20,10 +20,11 @@ class Properties__list extends Admin_Controller {
         ),
 
         'scripts' => array(
+          array('plugins/jquery-datatable/media/js/jquery.dataTables.min.js')
         ),
 
-        'script_page' => ''
-      )
+        'script_page' => 'js/properties_list.js'
+      ),
     );
 
     $this->template->view('admin/master', 'admin/properties/list', $data);

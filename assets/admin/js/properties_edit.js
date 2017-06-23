@@ -109,7 +109,17 @@ $(function(){
           cep_loading.removeClass('loading-active');
 
           if(response.erro){
+            swal(
+              'Ooops...',
+              'O CEP informado não foi encontrado. Preencha o endereço manualmente.',
+              'error'
+            );
 
+            $('#logradouro').val('');
+            $('#bairro').val('');
+            $('#cidade').val('');
+            $('#estado').val('');
+            $('#estado').val('').trigger('change');
           }else{
 
             $('#logradouro').val(response.logradouro);
@@ -176,9 +186,9 @@ $(function(){
       properties_edit__init_mapa();
     }
 
-    $('#property-uploads--view').sortable();
 
     $('#property-uploads--view').sortable({
+      handle: ".dz-handle",
       update: function() {
         var images_count = 1;
         $.each($('.dz-preview'), function(i, item){
@@ -197,7 +207,8 @@ $(function(){
         url: app.base_url('admin/tools/enviar-imagens'),
         previewsContainer: '#property-uploads--view',
         previewTemplate: template,
-        addRemoveLinks: true,
+        addRemoveLinks: false,
+        dictDefaultMessage: 'Clique ou arraste e solte aqui, os arquivos que você deseja enviar',
         init: function() {
           var thisDropzone = this;
 
@@ -223,7 +234,7 @@ $(function(){
           }).done(function(response) {
             $.each(response, function(key, value){
               // console.log(value);
-              var mockFile = { name: value.arquivo, size: '123' };
+              var mockFile = { name: value.arquivo, size: value.filesize };
               thisDropzone.options.addedfile.call(thisDropzone, mockFile);
               thisDropzone.options.thumbnail.call(thisDropzone, mockFile, app.base_url('imagens/imoveis/'+ property_folder +'/100/100/80/0/'+ value.arquivo));
               thisDropzone.emit("success", mockFile, JSON.stringify(value));
@@ -271,7 +282,7 @@ $(function(){
             var $image = JSON.parse(response);
 
             $item.attr('data-image_id', $image.id);
-            $item.find('.dz-caption').attr('name', 'imagens[legendas]['+ $image.id +']');
+            $item.find('.dz-caption').val($image.legenda);
             $item.find('[data-dz-name]').html($image.arquivo);
 
 
@@ -321,6 +332,49 @@ $(function(){
         }
       });
     });
+
+    var image_caption_timeout = 0;
+    var image_caption_changed = false;
+    var salvar_caption = function(el){
+      if(el.val().length){
+        $.ajax({
+          url: app.base_url('admin/tools/atualizar_imagem'),
+          data: {
+            'id': el.closest('.dz-item').attr('data-image_id'),
+            'legenda': el.val()
+          },
+          method: 'post',
+          dataType: 'json'
+        }).done(function(response) {
+          $.notify(
+            "Legenda atualizada com sucesso!",
+            { globalPosition: 'top right', gap: 1, className: 'success' }
+          );
+
+          // $.notify("Access granted", "success");
+          console.log(response);
+        });
+      }
+    };
+
+
+    $('#property-uploads--view').on('blur', '.dz-caption.changed', function(){
+      clearTimeout(image_caption_timeout);
+      var $this = $(this);
+      $this.removeClass('changed');
+      salvar_caption($this);
+    });
+
+    $('#property-uploads--view').on('keyup, blur', '.dz-caption', function(){
+      var $this = $(this);
+      $this.addClass('changed');
+      clearTimeout(image_caption_timeout);
+      image_caption_timeout = setTimeout(function(){
+        salvar_caption($this);
+      }, 500);
+    });
+
+
 
     //
     // $('#property-images').disableSelection();

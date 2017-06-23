@@ -23,13 +23,16 @@ class Properties__edit extends Admin_Controller {
       'assets' => array(
         'styles' => array(
           array('plugins/dropzone2/min/dropzone.min.css'),
+          array('plugins/sweetalert2/sweetalert2.min.css')
         ),
 
         'scripts' => array(
+          // array('plugins/mustache.min.js'),
           array('plugins/jquery.mask/jquery.mask.min.js'),
           array('plugins/bootstrap-maxlength.js'),
           array('plugins/dropzone2/min/dropzone.min.js'),
-          // array('plugins/mustache.min.js'),
+          array('plugins/notify.min.js'),
+          array('plugins/sweetalert2/sweetalert2.min.js'),
           array('https://maps.googleapis.com/maps/api/js?key='. $this->config->item('google_api_key') /*.'&callback=properties_edit__init_mapa'*/, array('attributes' => array('async', 'defer')))
         ),
 
@@ -84,6 +87,18 @@ class Properties__edit extends Admin_Controller {
         $post['detalhes'][$para] = $property[$de];
       }
 
+      $informacoes = array(
+        'mobiliado',
+        'ocupado',
+        'condominio',
+        'oferta',
+        'destaque',
+        'lancamento'
+      );
+      foreach ($informacoes as $informacao) {
+        $post['informacoes'][$informacao] = $property[$informacao];
+      }
+
       if(isset($property['despesas'])){
         foreach ($property['despesas'] as $despesa_slug => $despesa) {
           $post['despesas'][$despesa_slug] = $despesa['valor'];
@@ -91,11 +106,13 @@ class Properties__edit extends Admin_Controller {
       }
 
       $post['negociacao']['valor'] = $property['valor_real'];
+      $post['observacoes'] = $property['observacoes'];
 
       $metas = array(
         'breve_descricao' => 'breve_descricao',
         'descricao' => 'descricao',
-        'referencia' => 'referencia'
+        'referencia' => 'referencia',
+        'permalink' => 'permalink'
       );
       foreach ($metas as $de => $para) {
         $post['metas'][$para] = $property[$de];
@@ -120,7 +137,21 @@ class Properties__edit extends Admin_Controller {
 
       $processa = true;
       if($processa){
-        $imoveis = $post['detalhes'];
+
+        $informacoes = array(
+          'mobiliado',
+          'ocupado',
+          'condominio',
+          'oferta',
+          'destaque',
+          'lancamento'
+        );
+
+        foreach ($informacoes as $informacao) {
+          $post['informacoes'][$informacao] = (isset($post['informacoes'][$informacao]) ? 1 : null);
+        }
+
+        $imoveis = array_merge($post['detalhes'], $post['informacoes']);
         $imoveis['guid'] = $post['guid'];
         $imoveis['breve_descricao'] = $post['metas']['breve_descricao'];
         $imoveis['descricao'] = $post['metas']['descricao'];
@@ -139,6 +170,15 @@ class Properties__edit extends Admin_Controller {
         $this->db->flush_cache();
 
         $localidade = $this->properties_model->check_locality($post['localizacao']['estado'], $post['localizacao']['cidade'], $post['localizacao']['bairro']);
+
+        if($post['localizacao']['latitude_site'] == '' || $post['localizacao']['latitude_site'] == '0.000000'){
+          $post['localizacao']['latitude_site'] = null;
+        }
+
+        if($post['localizacao']['longitude_site'] == '' || $post['localizacao']['longitude_site'] == '0.000000'){
+          $post['localizacao']['longitude_site'] = null;
+        }
+
         $endereco = array_merge($post['localizacao'], array('cidade' => $localidade['cidade_id'], 'bairro' => $localidade['bairro_id']));
 
         $check_endereco = $this->db->get_where('imoveis_enderecos', array('imovel' => $property_edit_id));
@@ -166,7 +206,7 @@ class Properties__edit extends Admin_Controller {
           }
         }
 
-        $this->db->delete('imoveis_caracteristicas', array('imovel' => $property_edit_id, 'caracteristica' => $caracteristica, 'update' => 1));
+        $this->db->delete('imoveis_caracteristicas', array('imovel' => $property_edit_id, 'update' => 1));
 
         $this->db->flush_cache();
 
@@ -205,7 +245,47 @@ class Properties__edit extends Admin_Controller {
           }
         }
 
+        $this->db->flush_cache();
 
+        $negociacao = array(
+          'imovel' => $property_edit_id,
+          'transacao' => 1,
+          'valor' => str_replace(',', '.', str_replace('.', '', $post['negociacao']['valor'])),
+          'periodo' => 1,
+          'referencia' => trim($post['metas']['referencia']),
+          'permalink' => trim($post['metas']['permalink'])
+        );
+
+        $check_negociacao = $this->db->get_where('imoveis_negociacoes', array('imovel' => $property_edit_id));
+        if($check_negociacao->num_rows()){
+          $this->db->update('imoveis_negociacoes', $negociacao, array('imovel' => $property_edit_id));
+        }else{
+          $this->db->insert('imoveis_negociacoes', $negociacao);
+        }
+
+        $this->db->flush_cache();
+
+        if(isset($post['observacoes'])){
+          if(empty($post['observacoes'])){
+            $this->db->delete('imoveis_observacoes', array('imovel' => $property_edit_id));
+          }else{
+            $observacoes = array(
+              'imovel' => $property_edit_id,
+              'usuario' => $this->site->userinfo('id'),
+              'observacao' => trim($post['observacoes'])
+            );
+
+            $check_observacoes = $this->db->get_where('imoveis_observacoes', array('imovel' => $property_edit_id));
+            if($check_observacoes->num_rows()){
+              $this->db->set('data_criado', 'NOW()', FALSE);
+              $this->db->update('imoveis_observacoes', $observacoes, array('imovel' => $property_edit_id));
+            }else{
+              $this->db->set('data_criado', 'NOW()', FALSE);
+              $this->db->insert('imoveis_observacoes', $observacoes);
+            }
+          }
+
+        }
 
       }
     // $property_edit_id = 100;

@@ -15,17 +15,52 @@
 
 .ui-state-highlight { background: #ffff00; }
 
-#property-images {
+#property-uploads--view {
   list-style-type: none;
-  margin: 0;
   padding: 0;
+  margin: 0;
+  display: table;
+  width: 100%;
 
-  li {
+  .dz-item {
+    width: 100%;
+    border: 1px solid black;
+    border-top: 0;
+
+    .dz-preview {
+      display: table;
+      width: 100%;
+    }
+
+    .dz-cell {
+      display: table-cell;
+
+      &.top {
+        vertical-align: top;
+      }
+
+      &.middle {
+        vertical-align: middle;
+      }
+    }
+
     &.ui-sortable-placeholder {
+      display: block;
+      width: 100%;
+      height: 20px;
+      background: #f1f1f1;
+      border: 1px dashed red;
+    }
+
+    .dz-handle {
+      width: 20px;
+      height: 20px;
       background: red;
     }
   }
 }
+
+
 
 
 // .sortable {

@@ -48,6 +48,7 @@ class Properties_model extends CI_Model {
       format(sum(imoveis_negociacoes.valor), 0, 'de_DE') as valor,
       imoveis_negociacoes.valor as valor_real,
       imoveis_negociacoes.permalink as imovel_permalink,
+      imoveis_negociacoes.permalink as permalink,
       imoveis_negociacoes.referencia as referencia,
 
       transacoes.nome as transacao,
@@ -99,6 +100,11 @@ class Properties_model extends CI_Model {
     $this->db->join("cidades", "enderecos.cidade = cidades.id", "inner"); // Cidades
     $this->db->join("bairros", "enderecos.bairro = bairros.id", "inner"); // Bairros
     $this->db->join("zonas", "enderecos.zona = zonas.id", "left"); // Zonas
+
+    if($this->router->fetch_module() == 'admin'){
+      $this->db->select('imoveis_observacoes.observacao as observacoes');
+      $this->db->join("imoveis_observacoes", "imoveis_observacoes.imovel = imoveis.id", "left"); // Observacoes
+    }
 
     // PARAMS
 
@@ -407,6 +413,24 @@ class Properties_model extends CI_Model {
     return false;
   }
 
+  public function properties_atualizar_images($params = array()){
+    $id = $params['id'];
+
+    $imagem = array();
+
+    if(isset($params['legenda'])){
+      $imagem['legenda'] = $params['legenda'];
+    }
+
+    if(isset($params['ordem'])){
+      $imagem['ordem'] = $params['ordem'];
+    }
+
+    $this->db->update('imoveis_imagens', $imagem, array('id' => $id));
+
+    return json_encode(array('success'));
+  }
+
   public function properties_excluir_images($params = array()){
     $image = $this->property_image($params['id']);
 
@@ -625,9 +649,12 @@ class Properties_model extends CI_Model {
   public function properties_images_uploads($params = array()) {
     $this->db->select("*");
 
+    $folder = '';
     if(isset($params['property_id'])){
+      $folder = $params['property_id'];
       $this->db->where('imoveis_imagens.imovel', $params['property_id']);
     }else if(isset($params['property_guid'])){
+      $folder = $params['property_guid'];
       $this->db->where('imoveis_imagens.imovel_temp', $params['property_guid']);
     }
 
@@ -636,7 +663,15 @@ class Properties_model extends CI_Model {
     $query = $this->db->get("imoveis_imagens");
 
     if ($query->num_rows() > 0) {
-      return $query->result_array();
+      $imagens = array();
+      foreach ($query->result_array() as $key => $value) {
+        $imagens[$key] = $value;
+        $imagens[$key]['filesize'] = filesize(get_asset('imoveis/' . $folder . '/' . $value['arquivo'], 'path', 'uploads'));
+      }
+
+
+      //getimagesize($filename)
+      return $imagens;
     }
 
     return false;

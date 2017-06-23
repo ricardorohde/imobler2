@@ -133,10 +133,10 @@
                 </div>
               </div>
 
-              <input type="text" name="localizacao[latitude]" id="latitude" value="<?php echo isset($post['localizacao']['latitude']) ? $post['localizacao']['latitude'] : ''; ?>">
-              <input type="text" name="localizacao[longitude]" id="longitude" value="<?php echo isset($post['localizacao']['longitude']) ? $post['localizacao']['longitude'] : ''; ?>">
-              <input type="text" name="localizacao[latitude_site]" id="latitude_site" value="<?php echo isset($post['localizacao']['latitude_site']) ? $post['localizacao']['latitude_site'] : ''; ?>">
-              <input type="text" name="localizacao[longitude_site]" id="longitude_site" value="<?php echo isset($post['localizacao']['longitude_site']) ? $post['localizacao']['longitude_site'] : ''; ?>">
+              <input type="hidden" name="localizacao[latitude]" id="latitude" value="<?php echo isset($post['localizacao']['latitude']) ? $post['localizacao']['latitude'] : ''; ?>">
+              <input type="hidden" name="localizacao[longitude]" id="longitude" value="<?php echo isset($post['localizacao']['longitude']) ? $post['localizacao']['longitude'] : ''; ?>">
+              <input type="hidden" name="localizacao[latitude_site]" id="latitude_site" value="<?php echo isset($post['localizacao']['latitude_site']) ? $post['localizacao']['latitude_site'] : ''; ?>">
+              <input type="hidden" name="localizacao[longitude_site]" id="longitude_site" value="<?php echo isset($post['localizacao']['longitude_site']) ? $post['localizacao']['longitude_site'] : ''; ?>">
 
               <div id="localizacao_mapa_box" class="hide form-group">
                 <div class="col-sm-12">
@@ -216,7 +216,7 @@
                       <div class="col-sm-3 sm-m-t-5">
                         <label class="label-sm">*Área útil</label>
                         <div class="input-group">
-                          <input type="number" name="detalhes[area_util]" value="<?php echo isset($post['detalhes']['area_util']) ? $post['detalhes']['area_util'] : ''; ?>" placeholder="0" required class="form-control area-mask input-sm">
+                          <input type="text" name="detalhes[area_util]" value="<?php echo isset($post['detalhes']['area_util']) ? $post['detalhes']['area_util'] : ''; ?>" placeholder="0" required class="form-control area-mask input-sm">
                           <span class="input-group-addon">m²</span>
                         </div>
 
@@ -225,7 +225,7 @@
                       <div class="col-sm-3 sm-m-t-5">
                         <label class="label-sm">Área total</label>
                         <div class="input-group">
-                          <input type="number" name="detalhes[area_total]" value="<?php echo isset($post['detalhes']['area_total']) ? $post['detalhes']['area_total'] : ''; ?>" placeholder="0" class="form-control area-mask input-sm">
+                          <input type="text" name="detalhes[area_total]" value="<?php echo isset($post['detalhes']['area_total']) ? $post['detalhes']['area_total'] : ''; ?>" placeholder="0" class="form-control area-mask input-sm">
                           <span class="input-group-addon">m²</span>
                         </div>
 
@@ -277,6 +277,47 @@
                     }
                     ?>
 
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="position" class="col-sm-3 control-label">Outras informações</label>
+                <div class="col-sm-9">
+                  <div class="row">
+
+                    <?php
+                    $informacoes = array(
+                      'mobiliado' => 'Mobiliado',
+                      'ocupado' => 'Ocupado',
+                      'condominio' => 'Em condomínio',
+                      'oferta' => 'Em oferta',
+                      'destaque' => 'Em destaque',
+                      'lancamento' => 'Lançamento'
+                    );
+                    $informacao_count = 0;
+                    foreach ($informacoes as $key => $value) {
+                      if($informacao_count == 3){
+                        $informacao_count = 1;
+                        ?>
+                        </div>
+                        <div class="row">
+                        <?php
+                      }
+                      ?>
+                      <div class="col-sm-4">
+                        <div class="checkbox">
+                          <input type="checkbox" name="informacoes[<?php echo $key; ?>]" id="informacao_<?php echo $key; ?>" <?php echo isset($post['informacoes'][$key]) && $post['informacoes'][$key] == 1 ? 'checked="true"' : ''; ?> value="1">
+                          <label for="informacao_<?php echo $key; ?>"><?php echo $value; ?></label>
+                        </div>
+                      </div>
+                      <?php
+                      $informacao_count++;
+                    }
+                    ?>
+
+
+
+                  </div>
                 </div>
               </div>
 
@@ -334,11 +375,18 @@
                 </div>
               </div>
 
+              <div class="form-group">
+                <label for="permalink" class="col-sm-3 control-label">Permalink</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control input-sm" id="permalink" name="metas[permalink]" value="<?php echo isset($post['metas']['permalink']) ? $post['metas']['permalink'] : ''; ?>" required>
+                </div>
+              </div>
+
 
               <div class="form-group">
                 <label for="breve_descricao" class="col-sm-3 control-label">Breve descrição</label>
                 <div class="col-sm-9">
-                  <textarea class="form-control" id="breve_descricao" name="metas[breve_descricao]" rows="2" maxlength="200" placeholder="Escreva uma breve descrição, com as informações mais importantes do imóvel."><?php echo isset($post['metas']['breve_descricao']) ? $post['metas']['breve_descricao'] : ''; ?></textarea>
+                  <textarea class="form-control" id="breve_descricao" name="metas[breve_descricao]" rows="3" maxlength="200" placeholder="Escreva uma breve descrição, com as informações mais importantes do imóvel."><?php echo isset($post['metas']['breve_descricao']) ? $post['metas']['breve_descricao'] : ''; ?></textarea>
                 </div>
               </div>
 
@@ -350,55 +398,17 @@
               </div>
 
               <div class="form-group">
-                <label for="descricao" class="col-sm-3 control-label">Descrição</label>
+                <label for="observacoes" class="col-sm-3 control-label">Observações</label>
                 <div class="col-sm-9">
+                  <textarea class="form-control" id="observacoes" name="observacoes"><?php echo isset($post['observacoes']) ? $post['observacoes'] : ''; ?></textarea>
+                </div>
+              </div>
 
-<div class="property-uploads dropzone">
-</div>
-
-<ul id="property-uploads--view">
-
-</ul>
-
-
-<!-- The fileinput-button span is used to style the file input field as button -->
-<!-- <span class="btn btn-success fileinput-button">
-    <i class="glyphicon glyphicon-plus"></i>
-    <span>Select files...</span>
-    The file input field used as target for the file upload widget
-    <input type="file" name="files[]" multiple>
-</span>
-<br>
-<ul id="property-images">
-  <?php echo $this->site->mustache('properties-edit__image-list', $post); ?>
-</ul> -->
-<!-- input type="file" name="images" id="images" multiple />
-
-<ul id="property-images" class="sortable" style="border:1px solid #000">
-print_l($post);
-
-</ul>
-
-<div id="response"></div> -->
-
-<!-- <div id="image-preview-template" class="hide">
-
-</div> -->
-
-<!--
-  <li>
-    <div>
-      <div class="dz-preview dz-file-preview">
-        <img data-dz-thumbnail />
-        <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
-        <div class="dz-success-mark"><span>✔</span></div>
-        <div class="dz-error-mark"><span>✘</span></div>
-        <div class="dz-error-message"><span data-dz-errormessage></span></div>
-      </div>
-    </div>
-  </li> -->
-
-
+              <div class="form-group">
+                <label class="col-sm-3 control-label">Fotos</label>
+                <div class="col-sm-9">
+                  <div class="property-uploads dropzone"></div>
+                  <div id="property-uploads--view"></div>
                 </div>
               </div>
 

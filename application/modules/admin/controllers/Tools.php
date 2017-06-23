@@ -114,4 +114,9 @@ class Tools extends Admin_Controller {
     $this->load->model('properties_model');
     return $this->properties_model->properties_excluir_images($this->input->post());
   }
+
+  function atualizar_imagem() {
+    $this->load->model('properties_model');
+    echo $this->properties_model->properties_atualizar_images($this->input->post());
+  }
 }
