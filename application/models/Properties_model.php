@@ -68,6 +68,8 @@ class Properties_model extends CI_Model {
       enderecos.longitude_site as endereco_longitude_site,
       enderecos_visibilidades.slug as endereco_visibilidade,
       enderecos_visibilidades.id as endereco_visibilidade_id,
+      zonas.nome as endereco_zona,
+      zonas.id as endereco_zona_id,
 
       UCASE(estados.sigla) as endereco_estado,
       estados.id as endereco_estado_id,
@@ -96,6 +98,7 @@ class Properties_model extends CI_Model {
     $this->db->join("estados", "enderecos.estado = estados.id", "inner"); // Estados
     $this->db->join("cidades", "enderecos.cidade = cidades.id", "inner"); // Cidades
     $this->db->join("bairros", "enderecos.bairro = bairros.id", "inner"); // Bairros
+    $this->db->join("zonas", "enderecos.zona = zonas.id", "left"); // Zonas
 
     // PARAMS
 
@@ -390,6 +393,34 @@ class Properties_model extends CI_Model {
     return false;
   }
 
+  public function property_image($image_id) {
+    $this->db->select("*");
+
+    $this->db->where('imoveis_imagens.id', $image_id);
+
+    $query = $this->db->get("imoveis_imagens");
+
+    if ($query->num_rows() > 0) {
+      return $query->row_array();
+    }
+
+    return false;
+  }
+
+  public function properties_excluir_images($params = array()){
+    $image = $this->property_image($params['id']);
+
+    if($image){
+      $folder = !empty($image['imovel']) ? $image['imovel'] : $image['imovel_temp'];
+
+      if(file_exists(get_asset('imoveis/' . $folder . '/' . $image['arquivo'], 'path', 'uploads'))){
+        unlink(get_asset('imoveis/' . $folder . '/' . $image['arquivo'], 'path', 'uploads'));
+      }
+
+      return $this->db->delete('imoveis_imagens', $params);
+    }
+  }
+
   public function property_like($params) {
     if($this->site->user_logged() && isset($params['property_id']) && $params['property_id'] && isset($params['status']) && $params['status']){
       $user_id = $this->site->userinfo('id');
@@ -586,6 +617,26 @@ class Properties_model extends CI_Model {
       return $query->result_array();
     }else{
       if($return) return $return;
+    }
+
+    return false;
+  }// images
+
+  public function properties_images_uploads($params = array()) {
+    $this->db->select("*");
+
+    if(isset($params['property_id'])){
+      $this->db->where('imoveis_imagens.imovel', $params['property_id']);
+    }else if(isset($params['property_guid'])){
+      $this->db->where('imoveis_imagens.imovel_temp', $params['property_guid']);
+    }
+
+    $this->db->order_by('imoveis_imagens.ordem ASC');
+
+    $query = $this->db->get("imoveis_imagens");
+
+    if ($query->num_rows() > 0) {
+      return $query->result_array();
     }
 
     return false;

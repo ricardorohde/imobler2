@@ -58,8 +58,7 @@ function get_current_url($field = null) {
   return $return;
 }
 
-function sanitize_string( $string, $separator = '-' )
-{
+function sanitize_string( $string, $separator = '-' ) {
     $accents_regex = '~&([a-z]{1,2})(?:acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml);~i';
     $special_cases = array( '&' => 'and', "'" => '');
     $string = mb_strtolower( trim( $string ), 'UTF-8' );
@@ -68,5 +67,29 @@ function sanitize_string( $string, $separator = '-' )
     $string = preg_replace("/[^a-z0-9]/u", "$separator", $string);
     $string = preg_replace("/[$separator]+/u", "$separator", $string);
     return $string;
+}
+
+function save_base64_image($base64_image_string = null, $output_file_without_extension = null, $path_with_end_slash = "" ) {
+    if(!$base64_image_string) return;
+
+    //usage:  if( substr( $img_src, 0, 5 ) === "data:" ) {  $filename=save_base64_image($base64_image_string, $output_file_without_extentnion, getcwd() . "/application/assets/pins/$user_id/"); }
+    //
+    //data is like:    data:image/png;base64,asdfasdfasdf
+    $splited = explode(',', substr( $base64_image_string , 5 ) , 2);
+    $mime=$splited[0];
+    $data=$splited[1];
+
+    $mime_split_without_base64=explode(';', $mime,2);
+    $mime_split=explode('/', $mime_split_without_base64[0],2);
+    if(count($mime_split)==2)
+    {
+        $extension=$mime_split[1];
+        if($extension=='jpeg')$extension='jpg';
+        //if($extension=='javascript')$extension='js';
+        //if($extension=='text')$extension='txt';
+        $output_file_with_extension=$output_file_without_extension.'.'.$extension;
+    }
+    file_put_contents( $path_with_end_slash . $output_file_with_extension, base64_decode($data) );
+    return $output_file_with_extension;
 }
 ?>

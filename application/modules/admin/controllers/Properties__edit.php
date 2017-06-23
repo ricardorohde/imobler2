@@ -22,12 +22,14 @@ class Properties__edit extends Admin_Controller {
 
       'assets' => array(
         'styles' => array(
+          array('plugins/dropzone2/min/dropzone.min.css'),
         ),
 
         'scripts' => array(
           array('plugins/jquery.mask/jquery.mask.min.js'),
           array('plugins/bootstrap-maxlength.js'),
-          array('plugins/mustache.min.js'),
+          array('plugins/dropzone2/min/dropzone.min.js'),
+          // array('plugins/mustache.min.js'),
           array('https://maps.googleapis.com/maps/api/js?key='. $this->config->item('google_api_key') /*.'&callback=properties_edit__init_mapa'*/, array('attributes' => array('async', 'defer')))
         ),
 
@@ -42,7 +44,10 @@ class Properties__edit extends Admin_Controller {
 
     if($property_id){
       $post = array();
+
       $property = $this->properties_model->properties(array('params' => array('property_id' => $property_id)), true);
+
+      $post['guid'] = $property['guid'];
 
       $localizacao = array(
         'endereco_cep' => 'cep',
@@ -56,6 +61,7 @@ class Properties__edit extends Admin_Controller {
         'endereco_estado_id' => 'estado',
         'endereco_cidade' => 'cidade',
         'endereco_bairro' => 'bairro',
+        'endereco_zona_id' => 'zona',
         'endereco_visibilidade_id' => 'visibilidade_site'
       );
       foreach ($localizacao as $de => $para) {
@@ -112,8 +118,143 @@ class Properties__edit extends Admin_Controller {
     if($this->input->post()){
       $post = $this->input->post();
 
-      $this->properties_model->check_locality($post['localizacao']['estado'], $post['localizacao']['cidade'], $post['localizacao']['bairro']);
+      $processa = true;
+      if($processa){
+        $imoveis = $post['detalhes'];
+        $imoveis['guid'] = $post['guid'];
+        $imoveis['breve_descricao'] = $post['metas']['breve_descricao'];
+        $imoveis['descricao'] = $post['metas']['descricao'];
+
+        if($property_id){
+          $this->db->set('data_atualizado', 'NOW()', FALSE);
+          $this->db->update('imoveis', $imoveis, array('id' => $property_id));
+          $property_edit_id = $property_id;
+        }else{
+          $this->db->set('data_atualizado', 'NOW()', FALSE);
+          $this->db->set('data_criado', 'NOW()', FALSE);
+          $this->db->insert('imoveis', $imoveis);
+          $property_edit_id = $this->db->insert_id();
+        }
+
+        $this->db->flush_cache();
+
+        $localidade = $this->properties_model->check_locality($post['localizacao']['estado'], $post['localizacao']['cidade'], $post['localizacao']['bairro']);
+        $endereco = array_merge($post['localizacao'], array('cidade' => $localidade['cidade_id'], 'bairro' => $localidade['bairro_id']));
+
+        $check_endereco = $this->db->get_where('imoveis_enderecos', array('imovel' => $property_edit_id));
+        if($check_endereco->num_rows()){
+          $endereco_edit = $check_endereco->row_array();
+          $this->db->update('enderecos', $endereco, array('id' => $endereco_edit['endereco']));
+        }else{
+          $this->db->insert('enderecos', $endereco);
+          $endereco_id = $this->db->insert_id();
+          $this->db->insert('imoveis_enderecos', array('imovel' => $property_edit_id, 'endereco' => $endereco_id));
+        }
+
+        $this->db->flush_cache();
+
+        $this->db->update('imoveis_caracteristicas', array('update' => 1), array('imovel' => $property_edit_id));
+
+        if(isset($post['caracteristicas'])){
+          foreach ($post['caracteristicas'] as $caracteristica) {
+            $check_caracteristica = $this->db->get_where('imoveis_caracteristicas', array('imovel' => $property_edit_id, 'caracteristica' => $caracteristica));
+            if($check_caracteristica->num_rows()){
+              $this->db->update('imoveis_caracteristicas', array('update' => 0), array('imovel' => $property_edit_id, 'caracteristica' => $caracteristica));
+            }else{
+              $this->db->insert('imoveis_caracteristicas', array('imovel' => $property_edit_id, 'caracteristica' => $caracteristica, 'update' => 0));
+            }
+          }
+        }
+
+        $this->db->delete('imoveis_caracteristicas', array('imovel' => $property_edit_id, 'caracteristica' => $caracteristica, 'update' => 1));
+
+        $this->db->flush_cache();
+
+
+        if(isset($post['despesas']['iptu'])){
+          $despesa = array(
+            'imovel' => $property_edit_id,
+            'tipo' => 1,
+            'valor' => str_replace(',', '.', str_replace('.', '', $post['despesas']['iptu'])),
+            'periodo' => 2
+          );
+
+          $check_despesa = $this->db->get_where('imoveis_despesas', array('imovel' => $property_edit_id, 'tipo' => 1));
+          if($check_despesa->num_rows()){
+            $this->db->update('imoveis_despesas', $despesa, array('imovel' => $property_edit_id, 'tipo' => 1));
+          }else{
+            $this->db->insert('imoveis_despesas', $despesa);
+          }
+        }
+
+        $this->db->flush_cache();
+
+        if(isset($post['despesas']['condominio'])){
+          $despesa = array(
+            'imovel' => $property_edit_id,
+            'tipo' => 2,
+            'valor' => str_replace(',', '.', str_replace('.', '', $post['despesas']['condominio'])),
+            'periodo' => 3
+          );
+
+          $check_despesa = $this->db->get_where('imoveis_despesas', array('imovel' => $property_edit_id, 'tipo' => 2));
+          if($check_despesa->num_rows()){
+            $this->db->update('imoveis_despesas', $despesa, array('imovel' => $property_edit_id, 'tipo' => 2));
+          }else{
+            $this->db->insert('imoveis_despesas', $despesa);
+          }
+        }
+
+
+
+      }
+    // $property_edit_id = 100;
+
+
+
+
+      // print_l();
+
+//       if(isset($post['imagens'])){
+//         $imagens = array();
+//         foreach ($post['imagens'] as $key => $value) {
+//           foreach ($value as $image_key => $image_value) {
+//             $imagens[$image_key][$key] = $image_value;
+//             if($key == 'base64' && !empty($image_value)){
+
+
+
+
+// if( substr( $image_value, 0, 5 ) === "data:" ) {  $filename=save_base64_image($image_value, 'sambadinha', FCPATH . 'assets/uploads/'); }
+
+//               // echo $image_value;
+//               // exit;
+//             }
+//           }
+//         }
+//         $post['imagens'] = $imagens;
+//       }
     }
+
+    $zonas = $this->registros_model->registros(
+      'zonas'
+    );
+
+    $zonas_array = array();
+    if($zonas){
+      $zonas_count = 0;
+      foreach ($zonas as $key => $value) {
+        $zonas_array[$zonas_count] = $value;
+
+        if(isset($post['localizacao']['zona']) && $post['localizacao']['zona'] == $value['id']){
+          $zonas_array[$zonas_count]['selected'] = true;
+        }
+
+        $zonas_count++;
+      }
+    }
+
+    $data['zonas'] = $zonas_array;
 
     $caracteristicas = $this->registros_model->registros(
       'caracteristicas',
@@ -177,7 +318,7 @@ class Properties__edit extends Admin_Controller {
       $data['post'] = $post;
     }
 
-    if($post) print_l($post);
+    if(isset($post)) print_l($post);
     if(isset($_FILES)) print_l($_FILES);
 
     $this->template->view('admin/master', 'admin/properties/edit', $data);

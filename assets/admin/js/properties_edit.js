@@ -176,99 +176,162 @@ $(function(){
       properties_edit__init_mapa();
     }
 
-    $('#property-images').sortable();
-    $('#property-images').disableSelection();
+    $('#property-uploads--view').sortable();
 
-$('input[type="file"]').change(function() {
-  // $('.thumbnail').html('');
-  $.each(this.files, function() {
-    readURL(this);
-  })
-});
+    $('#property-uploads--view').sortable({
+      update: function() {
+        var images_count = 1;
+        $.each($('.dz-preview'), function(i, item){
+          console.log($(item).attr('data-image_id'));
+          console.log(images_count);
+          images_count++;
+        });
+      }
+    });
+
+    Dropzone.autoDiscover = false;
+
+    app.mustache('properties-edit__image-item', function(template){
+
+      var propertyDropzone = new Dropzone(".property-uploads", {
+        url: app.base_url('admin/tools/enviar-imagens'),
+        previewsContainer: '#property-uploads--view',
+        previewTemplate: template,
+        addRemoveLinks: true,
+        init: function() {
+          var thisDropzone = this;
+
+          var data_images = {};
+
+          var property_id = app.body.data('property_id');
+          var property_guid = $('#guid').val();
+          var property_folder = 0;
+
+          if(property_id){
+            property_folder = property_id;
+            data_images['property_id'] = property_id;
+          }else{
+            property_folder = property_guid;
+            data_images['property_guid'] = property_guid;
+          }
+
+          $.ajax({
+            url: app.base_url('admin/tools/imagens'),
+            data: data_images,
+            method: 'post',
+            dataType: 'json'
+          }).done(function(response) {
+            $.each(response, function(key, value){
+              // console.log(value);
+              var mockFile = { name: value.arquivo, size: '123' };
+              thisDropzone.options.addedfile.call(thisDropzone, mockFile);
+              thisDropzone.options.thumbnail.call(thisDropzone, mockFile, app.base_url('imagens/imoveis/'+ property_folder +'/100/100/80/0/'+ value.arquivo));
+              thisDropzone.emit("success", mockFile, JSON.stringify(value));
+            });
+          });
+
+          // thisDropzone.on('addedfile', function(file) {
+          //   console.log('addedfile');
+          //   console.log(file);
+          // });
 
 
-var populate_image = function(images){
-  app.mustache('properties-edit__image-item', function(template){
-    var image_rendered = Mustache.render(template, images);
-    $('#property-images').append(image_rendered);
-    $('#property-images').sortable('refresh');
-  });
-};
 
-function readURL(file) {
-  var reader = new FileReader();
-  var image_obj = {'imagens' : [{}]}
-  reader.onload = function(e) {
-    populate_image({'base64' : e.target.result});
-  }
 
-  reader.readAsDataURL(file);
-}
+// $.get('upload.php', function(data) {
 
-// var input = document.getElementById("images"), formdata = false;
+//     <!-- 5 -->
+//     $.each(data, function(key,value){
 
-// if (window.FormData) {
-//   formdata = new FormData();
-//   // document.getElementById("btn").style.display = "none";
-// }
+//
 
-// function showUploadedItem (source) {
-//   var list = document.getElementById("property-images"),
-//       li   = document.createElement("li"),
-//       img  = document.createElement("img");
-//   img.src = source;
-//   li.appendChild(img);
-//   list.appendChild(li);
-// }
+//
 
-// if (input.addEventListener) {
-//   input.addEventListener("change", function (evt) {
-//     var i = 0, len = this.files.length, img, reader, file;
+//
 
-//     document.getElementById("response").innerHTML = "Uploading . . ."
+//     });
 
-//     for ( ; i < len; i++ ) {
-//       file = this.files[i];
+// });
 
-//       if (!!file.type.match(/image.*/)) {
-//         alert('nao foi');
-//       }
-//     }
+          // thisDropzone.on('chupeta', function(file, response) {
+          //   var $item = $(file.previewTemplate);
+          //   var $image = JSON.parse(response);
 
-//   }, false);
-// }
+          //   $item.attr('data-image_id', $image.image_id);
+          //   $item.find('.dz-caption').attr('name', 'imagens[legendas]['+ $image.image_id +']');
+          // });
 
-// if ( window.FileReader ) {
-//   reader = new FileReader();
-//   reader.onloadend = function (e) {
-//     showUploadedItem(e.target.result);
-//   };
-//   reader.readAsDataURL(file);
-// }
+          thisDropzone.on('completemultiple', function(file, response) {
+            $('#property-uploads--view').sortable('refresh');
+            console.log('complete');
+          });
 
-// if (formdata) {
-//   formdata.append("images[]", file);
-// }
+          thisDropzone.on('success', function(file, response) {
+            var $item = $(file.previewTemplate);
+            var $image = JSON.parse(response);
 
-// if (formdata) {
-//   $.ajax({
-//     url: app.base_url('admin/tools/enviar-imagens'),
-//     type: "POST",
-//     data: formdata,
-//     processData: false,
-//     contentType: false,
-//     success: function (res) {
-//       document.getElementById("response").innerHTML = res;
-//     }
-//   });
-// }
+            $item.attr('data-image_id', $image.id);
+            $item.find('.dz-caption').attr('name', 'imagens[legendas]['+ $image.id +']');
+            $item.find('[data-dz-name]').html($image.arquivo);
+
+
+          });
+
+          thisDropzone.on('removedfile', function(file) {
+            var $item = $(file.previewTemplate);
+
+            var data_images = {};
+
+            var property_id = app.body.data('property_id');
+            var property_guid = $('#guid').val();
+
+            if(property_id){
+              data_images['imovel'] = property_id;
+            }else{
+              data_images['imovel_temp'] = property_guid;
+            }
+
+            data_images['id'] = $item.attr('data-image_id');
+
+            $.ajax({
+              url: app.base_url('admin/tools/excluir_imagens'),
+              data: data_images,
+              method: 'post',
+              dataType: 'json'
+            }).done(function(response) {
+              console.log(response);
+            });
+
+            console.log('removedfile');
+            console.log(file);
+          });
+        }
+      });
+
+      propertyDropzone.on('sending', function(file, xhr, formData){
+        formData.append('upload_folder', 'imoveis');
+
+        var property_id = app.body.data('property_id');
+        var property_guid = $('#guid').val();
+
+        if(property_id){
+          formData.append('property_id', property_id);
+        }else{
+          formData.append('property_guid', property_guid);
+        }
+      });
+    });
+
+    //
+    // $('#property-images').disableSelection();
+
 
     // Dropzone.autoDiscover = false;
     // var propertyDropzone = new Dropzone(".property-uploads", {
     //     url: app.base_url('admin/tools/enviar-imagens'),
-    //     previewsContainer: '.visualizacao',
+    //
     //     previewTemplate: $('#image-preview-template').html(),
-    //     addRemoveLinks: true,
+    //
     //     removedfile: function(file) {
     //       // console.log(file);
 
@@ -307,14 +370,9 @@ function readURL(file) {
             // console.log(JSON.parse(json));
         //   });
 
-        //   this.on('addedfile', function(file) {
-        //     console.log('addedfile');
-        //   });
 
-        //   this.on('removedfile', function(file) {
-        //     console.log('removedfile');
-        //     console.log(file);
-        //   });
+
+
 
         //   this.on('drop', function(file) {
         //     console.log('File',file)
@@ -338,10 +396,7 @@ function readURL(file) {
         // }
     // });
 
-    // propertyDropzone.on('sending', function(file, xhr, formData){
-    //   formData.append('upload_folder', 'imoveis');
-    //   formData.append('property_id', app.body.data('property_id'));
-    // });
+
 
     /*(".property-uploads").dropzone({
       url: "/upload",

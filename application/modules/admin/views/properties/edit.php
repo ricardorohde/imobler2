@@ -28,6 +28,8 @@
 
             <form id="form-work" class="form-horizontal" role="form" autocomplete="off" method="post" action="<?php echo base_url($form_action); ?>" enctype="multipart/form-data">
 
+            <input type="text" name="guid" id="guid" value="<?php echo isset($post['guid']) ? $post['guid'] : uniqid(); ?>">
+
               <h4 class="no-margin">Localização do imóvel</h4>
               <p class="hint-text small">O endereço do imóvel só ficará visível no site se a opção "Mostrar endereço no site" estiver selecionada.</p>
 
@@ -80,13 +82,31 @@
               <div class="form-group">
                 <label for="cidade" class="col-sm-3 control-label">Estado (UF)</label>
                 <div class="col-sm-9">
-                  <select class="full-width" name="localizacao[estado]" id="estado" required data-init-plugin="select2">
+                  <select class="full-width" name="localizacao[estado]" id="estado" required data-init-plugin="select2" required>
                     <option></option>
                     <?php
                     if(isset($estados) && !empty($estados)){
                       foreach ($estados as $estado) {
                         ?>
                         <option value="<?php echo $estado['id']; ?>" <?php echo isset($post['localizacao']['estado']) && $post['localizacao']['estado'] == $estado['id'] ? 'selected="true"' : ''; ?> data-sigla="<?php echo strtoupper($estado['sigla']); ?>"><?php echo $estado['nome']; ?></option>
+                        <?php
+                      }
+                    }
+                    ?>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="zona" class="col-sm-3 control-label">Zona</label>
+                <div class="col-sm-9">
+                  <select class="full-width" name="localizacao[zona]" id="zona" required data-init-plugin="select2" required>
+                    <option></option>
+                    <?php
+                    if(isset($zonas) && !empty($zonas)){
+                      foreach ($zonas as $zona) {
+                        ?>
+                        <option value="<?php echo $zona['id']; ?>" <?php echo isset($post['localizacao']['zona']) && $post['localizacao']['zona'] == $zona['id'] ? 'selected="true"' : ''; ?>><?php echo $zona['nome']; ?></option>
                         <?php
                       }
                     }
@@ -333,21 +353,25 @@
                 <label for="descricao" class="col-sm-3 control-label">Descrição</label>
                 <div class="col-sm-9">
 
-<!-- <div class="property-uploads dropzone">
+<div class="property-uploads dropzone">
 </div>
- -->
+
+<ul id="property-uploads--view">
+
+</ul>
+
 
 <!-- The fileinput-button span is used to style the file input field as button -->
-<span class="btn btn-success fileinput-button">
+<!-- <span class="btn btn-success fileinput-button">
     <i class="glyphicon glyphicon-plus"></i>
     <span>Select files...</span>
-    <!-- The file input field used as target for the file upload widget -->
+    The file input field used as target for the file upload widget
     <input type="file" name="files[]" multiple>
 </span>
 <br>
 <ul id="property-images">
   <?php echo $this->site->mustache('properties-edit__image-list', $post); ?>
-</ul>
+</ul> -->
 <!-- input type="file" name="images" id="images" multiple />
 
 <ul id="property-images" class="sortable" style="border:1px solid #000">

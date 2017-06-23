@@ -20,6 +20,14 @@ $hook['pre_system'] = array(
   ),
 );
 
+$hook['pre_system'] = array(
+  array(
+    'function' => 'save_base64_image',
+    'filename' => 'functions.php',
+    'filepath' => 'hooks'
+  ),
+);
+
 $hook['pre_controller'] = array(
   array(
     'class'    => 'Config',

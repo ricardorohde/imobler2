@@ -59,37 +59,59 @@ class Tools extends Admin_Controller {
 
   function enviar_imagens() {
     $return = array();
+    $image_array = array();
 
     $upload_folder = $this->input->post('upload_folder');
-    $property_id = $this->input->post('property_id');
 
-    $path_uri = 'assets/uploads/' . $upload_folder . '/' . $property_id . '/';
+    if($this->input->post('property_id')){
+      $property_id = $this->input->post('property_id');
+      $image_array['imovel'] = $property_id;
+    }else{
+      $property_guid = $this->input->post('property_guid');
+      $image_array['imovel_temp'] = $property_guid;
+    }
+
+    $path_uri = 'assets/uploads/' . $upload_folder . '/' . (isset($property_id) ? $property_id : $property_guid) . '/';
     $path_upload = FCPATH . $path_uri;
 
     if(!file_exists($path_upload)) {
       mkdir($path_upload, 0755, true);
     }
 
-    foreach ($_FILES["images"]["error"] as $key => $error) {
-      if ($error == UPLOAD_ERR_OK) {
-        $file_name = $_FILES["images"]["name"][$key];
-        $file_extension = pathinfo($file_name, PATHINFO_EXTENSION);
+    $file_name = $_FILES["file"]["name"];
+    $file_extension = pathinfo($file_name, PATHINFO_EXTENSION);
 
-        $return['uploads'][$key]['file_name_new'] = $property_id . '-' . md5($file_name . microtime(false) . rand(0,9999))  . '.' . $file_extension;
+    $return['arquivo'] = md5((isset($property_id) ? $property_id : $property_guid) . $file_name . microtime(false) . rand(0,9999))  . '.' . $file_extension;
 
-        if(move_uploaded_file($_FILES["images"]["tmp_name"][$key], $path_upload . $return['uploads'][$key]['file_name_new'])){
-          $return['uploads'][$key]['success'] = true;
+    $image_array['arquivo'] = $return['arquivo'];
 
-          $this->load->model('properties_model');
+    if(move_uploaded_file($_FILES["file"]["tmp_name"], $path_upload . $return['arquivo'])){
+      $return['success'] = true;
 
-          $return['uploads'][$key]['image_id'] = $this->properties_model->add_property_image(array(
-            'imovel' => $property_id,
-            'arquivo' => $return['uploads'][$key]['file_name_new']
-          ));
-        }
+      $this->load->model('properties_model');
+
+      if(isset($property_id)){
+        $property_id = $this->input->post('property_id');
+      }else{
+        $property_guid = $this->input->post('property_guid');
       }
+
+      $return['id'] = $this->properties_model->add_property_image($image_array);
     }
 
     echo json_encode($return);
+  }
+
+  function imagens() {
+    $this->load->model('properties_model');
+
+    $imagens = $this->properties_model->properties_images_uploads($this->input->post());
+
+    echo json_encode($imagens);
+  }
+
+  function excluir_imagens() {
+    $this->load->model('properties_model');
+    return $this->properties_model->properties_excluir_images($this->input->post());
   }
 }
