@@ -97,6 +97,43 @@ $(function(){
 
   properties_edit.init_cep = function($templates, $callback){
 
+    $('#tags').select2({
+      tags: true
+    });
+
+    var buscar_coordenadas = 0;
+    $('#logradouro, #numero, #bairro, #cidade').on('keyup', function(){
+      var $this = $(this);
+
+      clearTimeout(buscar_coordenadas);
+
+
+      buscar_coordenadas = setTimeout(function(){
+
+        var endereco = $('#logradouro').val() + ($('#numero').val().length ? ',' + $('#numero').val() : '') + ($('#bairro').val().length ? '+-+' + $('#bairro').val() : '') + ($('#cidade').val().length ? '+-+' + $('#cidade').val() : '');
+
+        $.ajax({
+          url: app.base_url('admin/tools/buscar_coordenadas'),
+          data: {
+            'endereco' : endereco
+          },
+          method: 'post',
+          dataType: 'json'
+        }).done(function(response) {
+          $("#latitude").val(response.latitude);
+          $("#longitude").val(response.longitude);
+          $("#latitude_site").val('');
+          $("#longitude_site").val('');
+
+          if(!properties_edit__map){
+            properties_edit__init_mapa();
+          }else{
+            properties_edit__addMarker();
+          }
+        });
+      }, 500);
+    });
+
     var cep_loading = $('.form-loading-cep');
     var options =  {
       onComplete: function(cep) {
@@ -186,16 +223,30 @@ $(function(){
       properties_edit__init_mapa();
     }
 
+    var images_order = function(){
+        var images = [];
+        $.each($('.dz-item'), function(i, item){
+          $(item).find('.dz-counter').html((i+1));
+          images.push($(item).attr('data-image_id'));
+        });
+
+        $.ajax({
+          url: app.base_url('admin/tools/ordenar_imagens'),
+          data: {
+            'imagens' : images
+          },
+          method: 'post',
+          dataType: 'json'
+        }).done(function(response) {
+          console.log(response);
+        });
+    };
+
 
     $('#property-uploads--view').sortable({
       handle: ".dz-handle",
       update: function() {
-        var images_count = 1;
-        $.each($('.dz-preview'), function(i, item){
-          console.log($(item).attr('data-image_id'));
-          console.log(images_count);
-          images_count++;
-        });
+        images_order();
       }
     });
 
@@ -239,6 +290,7 @@ $(function(){
               thisDropzone.options.thumbnail.call(thisDropzone, mockFile, app.base_url('imagens/imoveis/'+ property_folder +'/100/100/80/0/'+ value.arquivo));
               thisDropzone.emit("success", mockFile, JSON.stringify(value));
             });
+            thisDropzone.emit("complete", {});
           });
 
           // thisDropzone.on('addedfile', function(file) {
@@ -272,8 +324,9 @@ $(function(){
           //   $item.find('.dz-caption').attr('name', 'imagens[legendas]['+ $image.image_id +']');
           // });
 
-          thisDropzone.on('completemultiple', function(file, response) {
+          thisDropzone.on('complete', function(file, response) {
             $('#property-uploads--view').sortable('refresh');
+            images_order();
             console.log('complete');
           });
 
@@ -310,11 +363,8 @@ $(function(){
               method: 'post',
               dataType: 'json'
             }).done(function(response) {
-              console.log(response);
+              images_order();
             });
-
-            console.log('removedfile');
-            console.log(file);
           });
         }
       });
@@ -346,13 +396,6 @@ $(function(){
           method: 'post',
           dataType: 'json'
         }).done(function(response) {
-          $.notify(
-            "Legenda atualizada com sucesso!",
-            { globalPosition: 'top right', gap: 1, className: 'success' }
-          );
-
-          // $.notify("Access granted", "success");
-          console.log(response);
         });
       }
     };
@@ -365,7 +408,7 @@ $(function(){
       salvar_caption($this);
     });
 
-    $('#property-uploads--view').on('keyup, blur', '.dz-caption', function(){
+    $('#property-uploads--view').on('keyup', '.dz-caption', function(){
       var $this = $(this);
       $this.addClass('changed');
       clearTimeout(image_caption_timeout);
@@ -373,6 +416,9 @@ $(function(){
         salvar_caption($this);
       }, 500);
     });
+
+
+
 
 
 

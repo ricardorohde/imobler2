@@ -1,78 +1,70 @@
 <div class="content ">
-
-  <!-- START JUMBOTRON -->
   <div class="jumbotron lg-m-b-0" data-pages="parallax">
     <div class="container-fluid container-fixed-lg sm-p-l-20 sm-p-r-20">
       <div class="inner">
-        <!-- START BREADCRUMB -->
         <ul class="breadcrumb">
           <li><a href="<?php echo base_url('admin'); ?>">Dashboard</a></li>
-          <li><a class="active">Lista de imóveis</a></li>
+          <li><a class="active">Imóveis</a></li>
         </ul>
-        <!-- END BREADCRUMB -->
       </div>
     </div>
   </div>
 
-
   <div class="container-fluid container-fixed-lg sm-p-l-20 sm-p-r-20">
-    <h1>Imóveis</h1>
+    <div class="panel panel-transparent">
+      <div class="panel-body">
+        <h1>Imóveis</h1>
 
-    <table class="table table-hover table-condensed" id="detailedTable">
-      <thead>
-        <tr>
-          <th style="width:25%">Title</th>
-          <th style="width:25%">Status</th>
-          <th style="width:25%">Price</th>
-          <th style="width:25%">Last Update</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="v-align-middle semi-bold">Revolution Begins</td>
-          <td class="v-align-middle">Active</td>
-          <td class="v-align-middle semi-bold">40,000 USD</td>
-          <td class="v-align-middle">April 13, 2014</td>
-        </tr>
-        <tr>
-          <td class="v-align-middle semi-bold">Revolution Begins</td>
-          <td class="v-align-middle">Active</td>
-          <td class="v-align-middle semi-bold">70,000 USD</td>
-          <td class="v-align-middle">April 13, 2014</td>
-        </tr>
-        <tr>
-          <td class="v-align-middle semi-bold">Revolution Begins</td>
-          <td class="v-align-middle">Active</td>
-          <td class="v-align-middle semi-bold">20,000 USD</td>
-          <td class="v-align-middle">April 13, 2014</td>
-        </tr>
-        <tr>
-          <td class="v-align-middle semi-bold">Revolution Begins</td>
-          <td class="v-align-middle">Active</td>
-          <td class="v-align-middle semi-bold">90,000 USD</td>
-          <td class="v-align-middle">April 13, 2014</td>
-        </tr>
-      </tbody>
-    </table>
+        <?php
+        if(isset($properties['results']) && !empty($properties['results'])){
+          ?>
+          <div class="table-responsive">
+            <table class="table table-hover table-condensed" id="detailedTable">
+              <thead>
+                <tr>
+                  <th><a href="<?php echo base_url('admin/imoveis/?orderby=property_id' . ($this->input->get('orderby') && $this->input->get('orderby') == 'property_id' ? ($this->input->get('order') && $this->input->get('order') == 'DESC' ? '' : '&order=DESC') : '')); ?>">ID</a></th>
+                  <th>Tipo</th>
+                  <th>Referência</th>
+                  <th>Cidade</th>
+                  <th>Bairro</th>
+                  <th><a href="<?php echo base_url('admin/imoveis/?orderby=' . ($this->input->get('orderby') && $this->input->get('orderby') == 'lowest_price' ? 'biggest_price' : 'lowest_price')); ?>">Valor</a></th>
+                  <th class="hidden-xs">Imagens</th>
+                  <th><a href="<?php echo base_url('admin/imoveis/?orderby=update_date' . ($this->input->get('orderby') && $this->input->get('orderby') == 'update_date' ? ($this->input->get('order') && $this->input->get('order') == 'DESC' ? '' : '&order=DESC') : '')); ?>">Data</a></th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php
+                foreach ($properties['results'] as $property) {
+                  // print_l($property);
+                  ?>
+                  <tr>
+                    <td><?php echo $property['id']; ?></td>
+                    <td class="v-align-middle bold"><?php echo $property['tipo']; ?></td>
+                    <td class="v-align-middle semi-bold"><?php echo $property['referencia']; ?></td>
+                    <td class="v-align-middle"><?php echo $property['endereco_cidade']; ?></td>
+                    <td class="v-align-middle semi-bold"><?php echo $property['endereco_bairro']; ?></td>
+                    <td class="v-align-middle"><?php echo $property['valor']; ?></td>
+                    <td class="hidden-xs v-align-middle"><?php echo isset($property['imagens']) ? count($property['imagens']) : 0; ?></td>
+                    <td><?php echo date('d/m H:i', strtotime($property['data_atualizado'])); ?></td>
+                    <td>
+                      <a href="<?php echo base_url('admin/imoveis/'. $property['id'] .'/editar'); ?>" class="btn btn-info btn-xs">Editar</a>
+                      <a href="javascript: void(0);" data-property_id="<?php echo $property['id']; ?>" data-property_reference="<?php echo $property['referencia']; ?>" class="btn btn-danger btn-xs btn-delete">Excluir</a>
+                    </td>
+                  </tr>
+                  <?php
 
-    <nav aria-label="Page navigation">
-      <ul class="pagination">
-        <li>
-          <a href="#" aria-label="Previous">
-            <span aria-hidden="true">&laquo;</span>
-          </a>
-        </li>
-        <li><a href="#">1</a></li>
-        <li><a href="#">2</a></li>
-        <li><a href="#">3</a></li>
-        <li><a href="#">4</a></li>
-        <li><a href="#">5</a></li>
-        <li>
-          <a href="#" aria-label="Next">
-            <span aria-hidden="true">&raquo;</span>
-          </a>
-        </li>
-      </ul>
-    </nav>
+                }
+                ?>
+              </tbody>
+            </table>
+          </div>
+
+          <?php echo $properties['pagination']; ?>
+          <?php
+        }
+        ?>
+      </div>
+    </div>
   </div>
-</div>
+</a>

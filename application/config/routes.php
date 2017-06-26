@@ -40,7 +40,7 @@ $types = implode('|', $types_arr);
 $paging = ':num';
 
 $route['default_controller'] = 'site/home';
-$route['404_override'] = '';
+$route['404_override'] = 'site/errors/error_404';
 $route['translate_uri_dashes'] = TRUE;
 
 $route['configjs'] = 'site/tools/configjs';
@@ -362,6 +362,17 @@ $route['admin/login'] = 'admin/Account__login';
 $route['admin/logout'] = 'admin/Account__logout';
 $route['admin/esqueci-minha-senha'] = 'admin/Account__forgot_password';
 
+
+
+// Imoveis
 $route['admin/imoveis'] = 'admin/properties__list';
+$route['admin/imoveis/(:num)'] = 'admin/properties__list/index/$1';
 $route['admin/imoveis/adicionar'] = 'admin/properties__edit';
 $route['admin/imoveis/(:num)/editar'] = 'admin/properties__edit/index/$1';
+
+// Campanhas
+$route['admin/campanhas'] = 'admin/campaigns__list';
+$route['admin/campanhas/(:num)'] = 'admin/campaigns__list/index/$1';
+$route['admin/campanhas/adicionar'] = 'admin/campaigns__edit';
+$route['admin/campanhas/(:num)/editar'] = 'admin/campaigns__edit/index/$1';
+

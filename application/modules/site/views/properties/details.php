@@ -454,7 +454,7 @@ data-property_longitude="<?php echo $property['endereco_longitude']; ?>">
             ?>
 
             <?php
-            if(isset($campaigns) && !empty($campaigns)){
+            if(isset($campaigns['results']) && !empty($campaigns['results'])){
               ?>
               <div class="widget widget-categories">
                   <div class="widget-top">
@@ -463,7 +463,7 @@ data-property_longitude="<?php echo $property['endereco_longitude']; ?>">
                   <div class="widget-body">
                       <ul>
                         <?php
-                        foreach ($campaigns as $key => $campaign) {
+                        foreach ($campaigns['results'] as $key => $campaign) {
                           ?>
                           <li><a href="<?php echo base_url($campaign['permalink']); ?>"><?php echo $campaign['title']; ?></a></li>
                           <?php

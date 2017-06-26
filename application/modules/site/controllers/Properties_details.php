@@ -12,6 +12,11 @@ class Properties_details extends Site_Controller {
 
     $property = $this->properties_model->properties((isset($params['route_params']) ? $params['route_params'] : null), true);
 
+    if(!$property){
+      show_404();
+    }
+
+
     $data = array(
       'page' => array(
         'one' => 'home'

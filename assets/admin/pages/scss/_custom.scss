@@ -1,9 +1,13 @@
 
 
 
-@for $i from 1 through 8 {
+@for $i from 1 through 10 {
   .margin-top-#{5 * $i} {
     margin-top: 5 * $i + px !important;
+  }
+
+  .margin-bottom-#{5 * $i} {
+    margin-bottom: 5 * $i + px !important;
   }
 }
 
@@ -15,6 +19,10 @@
 
 .ui-state-highlight { background: #ffff00; }
 
+.pagination-main {
+  margin-bottom: 40px;
+}
+
 #property-uploads--view {
   list-style-type: none;
   padding: 0;
@@ -22,10 +30,26 @@
   display: table;
   width: 100%;
 
+  max-height: 511px;
+  display: block;
+  overflow: auto;
+
   .dz-item {
     width: 100%;
-    border: 1px solid black;
-    border-top: 0;
+    border: 1px solid #666;
+
+
+    &:hover {
+      background: rgba(255, 0, 0, 0.02);
+    }
+
+    &:first-child {
+      background: rgba(255, 0, 0, 0.05);
+
+      &:hover {
+        background: rgba(255, 0, 0, 0.07);
+      }
+    }
 
     .dz-preview {
       display: table;
@@ -34,6 +58,44 @@
 
     .dz-cell {
       display: table-cell;
+
+      &.handle,
+      &.remove {
+        padding: 0 10px;
+        font-size: 20px;
+        color: #000;
+
+        a {
+          color: #000;
+
+          &:hover {
+            color: #cc0000;
+          }
+        }
+      }
+
+      &.image {
+        position: relative;
+        width: 100px;
+
+        img {
+          display: block;
+        }
+      }
+
+      &.caption {
+        width: 100%;
+
+        textarea {
+          display: block;
+          border: 0;
+          padding: 15px;
+          background: rgba(0,0,0,.03);
+          resize: none;
+          color: #000;
+        }
+      }
+
 
       &.top {
         vertical-align: top;
@@ -44,19 +106,36 @@
       }
     }
 
+    .dz-counter {
+      display: block;
+      width: 25px;
+      height: 25px;
+      position: absolute;
+      z-index: 10;
+      background: #cc0000;
+      bottom: 5px;
+      right: 5px;
+      border-radius: 100%;
+      font-size: 11px;
+      font-weight: bold;
+      color: #fff;
+      text-align: center;
+      line-height: 25px;
+    }
+
+    .dz-caption {
+      width: 100%;
+      height: 100px;
+    }
+
     &.ui-sortable-placeholder {
       display: block;
       width: 100%;
-      height: 20px;
+      height: 102px;
       background: #f1f1f1;
       border: 1px dashed red;
     }
 
-    .dz-handle {
-      width: 20px;
-      height: 20px;
-      background: red;
-    }
   }
 }
 

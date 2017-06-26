@@ -171,7 +171,7 @@ if(isset($featured['results']) && !empty($featured['results'])){
   ?>
 
   <?php
-  if(isset($campaigns) && !empty($campaigns)){
+  if(isset($campaigns['results']) && !empty($campaigns['results'])){
     ?>
     <div class="houzez-module-main module-white-bg">
       <div class="houzez-module module-title text-center">
@@ -188,7 +188,7 @@ if(isset($featured['results']) && !empty($featured['results'])){
         <div class="container">
           <div class="row">
             <?php
-            foreach ($campaigns as $key => $campaign) {
+            foreach ($campaigns['results'] as $key => $campaign) {
               ?>
               <div class="col-sm-4">
                 <div class="location-block">

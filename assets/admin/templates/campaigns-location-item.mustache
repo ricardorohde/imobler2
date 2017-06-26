@@ -1,0 +1,19 @@
+{{#location}}
+  <div class="properties-search-location-item {{#repeated}}has-repeated{{/repeated}}">
+    {{#state}}
+    <input type="hidden" data-area="state" name="parametros[location][{{index}}][state]" value="{{state}}">
+    {{/state}}
+    {{#city}}
+    <input type="hidden" data-area="city" name="parametros[location][{{index}}][city]" value="{{city}}">
+    {{/city}}
+    {{#district}}
+      <input type="hidden" data-area="district" name="parametros[location][{{index}}][district]" value="{{district}}">
+    {{/district}}
+    {{#label}}
+      <input type="hidden" data-area="label" name="parametros[location][{{index}}][label]" value="{{label}}">
+    {{/label}}
+
+    <a href="javascript: void(0);" class="property-location-item-remove"><i class="fa fa-times-circle" aria-hidden="true"></i></a>
+    {{ label }}
+  </div>
+{{/location}}

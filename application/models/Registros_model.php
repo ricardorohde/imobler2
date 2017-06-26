@@ -11,6 +11,8 @@ class Registros_model extends CI_Model {
   }
 
   public function registros($table, $params = array(), $row = false, $select = '*', $join = false, $order = false) {
+    $return = array();
+
     // SELECT
     $this->db->select($select);
 
@@ -38,9 +40,27 @@ class Registros_model extends CI_Model {
       }
     }
 
-    // WHERE IN
-    if(isset($params['limit']) && !empty($params['limit'])){
-      $this->db->limit($params['limit']);
+    // // WHERE IN
+    // if(isset($params['limit']) && !empty($params['limit'])){
+    //   $this->db->limit($params['limit']);
+    // }
+
+    if(!$row){
+      $limit = (isset($params['limit']) ? (is_numeric($params['limit']) ? $params['limit'] : ($this->router->fetch_module() == 'admin' ? $this->config->item('property_list_limit_admin') : $this->config->item('property_list_limit'))) : null);
+      $page = isset($params['page']) ? $params['page'] : 1;
+
+      if($limit){
+          // PAGINATION
+        if(isset($params['pagging']) && $params['pagging'] == true){
+          $return['total_rows'] = $this->registros_count($this->db->_compile_select());
+          $return['total_pages'] = ceil($return['total_rows'] / $limit);
+          $return['current_page'] = $page;
+          $return['pagination'] = $this->site->create_pagination($page, $limit, $return['total_rows'], rtrim((isset($params['base_url']) ? $params['base_url'] : current_url()), "/" . $page), $this->config->item('property_pagination_links'), (isset($params['url_suffix']) ? $params['url_suffix'] : null));
+        }
+
+        $page = max(0, ($page - 1) * $limit);
+        $this->db->limit($limit, $page);
+      }
     }
 
     //ORDER
@@ -61,7 +81,8 @@ class Registros_model extends CI_Model {
 
     $query = $this->db->get();
 
-    if ($query->num_rows() > 0) {
+    if($query->num_rows() > 0) {
+
       if($row){
         if($row === TRUE){
           return $query->row_array();
@@ -73,7 +94,10 @@ class Registros_model extends CI_Model {
           return false;
         }
       }
-      return $query->result_array();
+
+      $return['results'] = $query->result_array();
+
+      return $return;
     }
     return false;
   }

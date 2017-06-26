@@ -23,7 +23,9 @@ class Tools extends Admin_Controller {
     echo json_encode(array('status' => $status));
   }
 
-  function buscar_coordenadas($endereco, $echo = true, $format = 'json'){
+  function buscar_coordenadas($endereco = null, $echo = true, $format = 'json'){
+    $endereco = ($endereco ? $endereco : ($this->input->post('endereco') ? $this->input->post('endereco') : ''));
+
     $response = $this->site->curl_get_result("http://maps.google.com/maps/api/geocode/json?region=BR&address=". str_replace(" ", "+", $endereco) ."&sensor=false", "", "GET");
     $response = json_decode($response, true);
 
@@ -112,11 +114,20 @@ class Tools extends Admin_Controller {
 
   function excluir_imagens() {
     $this->load->model('properties_model');
-    return $this->properties_model->properties_excluir_images($this->input->post());
+    $this->properties_model->properties_excluir_images($this->input->post());
+    echo json_encode(array('success'));
   }
 
   function atualizar_imagem() {
     $this->load->model('properties_model');
     echo $this->properties_model->properties_atualizar_images($this->input->post());
+  }
+
+  function ordenar_imagens() {
+    $imagens = $this->input->post('imagens');
+    foreach ($imagens as $key => $value) {
+      $this->db->update('imoveis_imagens', array('ordem' => $key), array('id' => $value));
+    }
+
   }
 }

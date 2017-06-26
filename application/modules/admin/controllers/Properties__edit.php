@@ -8,6 +8,8 @@ class Properties__edit extends Admin_Controller {
   }
 
   function index($property_id = null) {
+    $this->site->user_logged(FALSE, TRUE);
+
     $data = array(
       'page' => array(
         'one' => 'properties',
@@ -19,6 +21,8 @@ class Properties__edit extends Admin_Controller {
           'property_id' => $property_id
         )
       ),
+
+      'action' => ($property_id ? 'edit' : 'add'),
 
       'assets' => array(
         'styles' => array(
@@ -42,7 +46,7 @@ class Properties__edit extends Admin_Controller {
       'form_action' => ($property_id ? 'admin/imoveis/'. $property_id .'/editar' : 'admin/imoveis/adicionar'),
 
       'estados' => $this->registros_model->registros('estados'),
-      'caracteristicas' => $this->registros_model->registros('caracteristicas')
+      // 'caracteristicas' => $this->registros_model->registros('caracteristicas')
     );
 
     if($property_id){
@@ -50,7 +54,11 @@ class Properties__edit extends Admin_Controller {
 
       $property = $this->properties_model->properties(array('params' => array('property_id' => $property_id)), true);
 
+      // print_l($property);
+
       $post['guid'] = $property['guid'];
+
+      $post['status'] = $property['status'];
 
       $localizacao = array(
         'endereco_cep' => 'cep',
@@ -126,9 +134,14 @@ class Properties__edit extends Admin_Controller {
         }
       }
 
+      if(isset($property['tags'])){
+        foreach ($property['tags'] as $tag) {
+          $post['tags'][] = $tag['tag'];
+        }
+      }
+
       if(isset($property['imagens'])){
         $post['imagens'] = $property['imagens'];
-
       }
     }
 
@@ -155,6 +168,7 @@ class Properties__edit extends Admin_Controller {
         $imoveis['guid'] = $post['guid'];
         $imoveis['breve_descricao'] = $post['metas']['breve_descricao'];
         $imoveis['descricao'] = $post['metas']['descricao'];
+        $imoveis['status'] = isset($post['status']) ? 1 : 0;
 
         if($property_id){
           $this->db->set('data_atualizado', 'NOW()', FALSE);
@@ -166,6 +180,8 @@ class Properties__edit extends Admin_Controller {
           $this->db->insert('imoveis', $imoveis);
           $property_edit_id = $this->db->insert_id();
         }
+
+        // echo '>>>'.$property_edit_id;
 
         $this->db->flush_cache();
 
@@ -287,33 +303,47 @@ class Properties__edit extends Admin_Controller {
 
         }
 
+        $this->db->flush_cache();
+
+        $check_imagens = $this->db->get_where('imoveis_imagens', array('imovel_temp' => $post['guid']));
+        if($check_imagens->num_rows()){
+          $this->db->update('imoveis_imagens', array('imovel' => $property_edit_id, 'imovel_temp' => null), array('imovel_temp' => $post['guid']));
+          $folder = get_asset('imoveis', 'path', 'uploads');
+          rename($folder . '/' . $post['guid'], $folder . '/' . $property_edit_id);
+        }
+
+        $this->db->flush_cache();
+
+        $this->db->update('imoveis_tags', array('update' => 1), array('imovel' => $property_edit_id));
+
+        if(isset($post['tags'])){
+          foreach ($post['tags'] as $tag) {
+
+            $checa_tag = $this->registros_model->registros('tags', array('where' => array('tags.tag' => $tag)), true);
+
+            if($checa_tag){
+              $checa_imovel_tag = $this->db->get_where('imoveis_tags', array('imovel' => $property_edit_id, 'tag' => $checa_tag['id']));
+              if($checa_imovel_tag->num_rows()){
+                $this->db->update('imoveis_tags', array('update' => null), array('tag' => $checa_tag['id']));
+              }else{
+                $this->db->insert('imoveis_tags', array('imovel' => $property_edit_id, 'tag' => $checa_tag['id']));
+              }
+            }else{
+              $this->db->insert('tags', array('tag' => $tag));
+              $tag_id = $this->db->insert_id();
+              $this->db->insert('imoveis_tags', array('imovel' => $property_edit_id, 'tag' => $tag_id));
+            }
+          }
+        }
+
+        $this->db->delete('imoveis_tags', array('imovel' => $property_edit_id, 'update' => 1));
+
+        $this->db->flush_cache();
+
+        $this->site->alerta_redirect('success', ($property_id ? 'O imóvel foi atualizado com sucesso.' : 'O imóvel foi adicionado com sucesso.'), 'admin/imoveis/' . $property_edit_id . '/editar', 'visible');
+
       }
-    // $property_edit_id = 100;
 
-
-
-
-      // print_l();
-
-//       if(isset($post['imagens'])){
-//         $imagens = array();
-//         foreach ($post['imagens'] as $key => $value) {
-//           foreach ($value as $image_key => $image_value) {
-//             $imagens[$image_key][$key] = $image_value;
-//             if($key == 'base64' && !empty($image_value)){
-
-
-
-
-// if( substr( $image_value, 0, 5 ) === "data:" ) {  $filename=save_base64_image($image_value, 'sambadinha', FCPATH . 'assets/uploads/'); }
-
-//               // echo $image_value;
-//               // exit;
-//             }
-//           }
-//         }
-//         $post['imagens'] = $imagens;
-//       }
     }
 
     $zonas = $this->registros_model->registros(
@@ -321,9 +351,9 @@ class Properties__edit extends Admin_Controller {
     );
 
     $zonas_array = array();
-    if($zonas){
+    if(isset($zonas['results'])){
       $zonas_count = 0;
-      foreach ($zonas as $key => $value) {
+      foreach ($zonas['results'] as $key => $value) {
         $zonas_array[$zonas_count] = $value;
 
         if(isset($post['localizacao']['zona']) && $post['localizacao']['zona'] == $value['id']){
@@ -336,9 +366,31 @@ class Properties__edit extends Admin_Controller {
 
     $data['zonas'] = $zonas_array;
 
+    $tags = $this->registros_model->registros(
+      'tags'
+    );
+
+    $tags_array = array();
+    if(isset($tags['results'])){
+      $tags_count = 0;
+      foreach ($tags['results'] as $key => $value) {
+        $tags_array[$tags_count] = $value;
+
+        if(isset($post['tags']) && in_array($value['tag'], $post['tags'])){
+          $tags_array[$tags_count]['selected'] = true;
+        }
+
+        $tags_count++;
+      }
+    }
+
+    $data['tags'] = $tags_array;
+
     $caracteristicas = $this->registros_model->registros(
       'caracteristicas',
-      array('group_by' => 'caracteristicas.id'),
+      array(
+        'group_by' => 'caracteristicas.id'
+      ),
       false,
       'caracteristicas.*, caracteristicas_tipos.nome as tipo_nome',
       array(
@@ -352,9 +404,9 @@ class Properties__edit extends Admin_Controller {
 
     $caracteristicas_array = array();
 
-    if($caracteristicas){
+    if(isset($caracteristicas['results'])){
       $caracteristicas_count = 0;
-      foreach ($caracteristicas as $caracteristica) {
+      foreach ($caracteristicas['results'] as $caracteristica) {
         if(!isset($caracteristicas_array[$caracteristica['tipo']])){
           $caracteristicas_array[$caracteristica['tipo']]['tipo'] = $caracteristica['tipo_nome'];
         }
@@ -387,7 +439,7 @@ class Properties__edit extends Admin_Controller {
     ), array('imoveis_tipos_segmentos.ordem' => 'ASC', 'imoveis_tipos.ordem' => 'ASC', ));
 
     $imoveis_tipos = array();
-    foreach($imoveis_tipos_segmentos as $tipo) {
+    foreach($imoveis_tipos_segmentos['results'] as $tipo) {
         $imoveis_tipos[$tipo['segmento_slug']]['nome'] = $tipo['segmento'];
         $imoveis_tipos[$tipo['segmento_slug']]['tipos'][] = $tipo;
     }
@@ -398,8 +450,8 @@ class Properties__edit extends Admin_Controller {
       $data['post'] = $post;
     }
 
-    if(isset($post)) print_l($post);
-    if(isset($_FILES)) print_l($_FILES);
+    // if(isset($post)) print_l($post);
+    // if(isset($_FILES)) print_l($_FILES);
 
     $this->template->view('admin/master', 'admin/properties/edit', $data);
   }

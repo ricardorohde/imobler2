@@ -1,5 +1,6 @@
 <?php header('Content-type: application/javascript'); ?>
 var app = app || {};
+var mustache_templates = {};
 
 var usuario_logado = <?php echo $this->session->userdata('usuario_logado') ? "JSON.parse('" . json_encode($this->session->userdata("usuario_logado")) . "')" : 'false'; ?>;
 
@@ -28,6 +29,17 @@ var usuario_logado = <?php echo $this->session->userdata('usuario_logado') ? "JS
 			var response = '<?php echo get_asset(null, 'path'); ?>';
 			return response + '/' + (typeof $path !== 'undefined' ? $path : '');
 		},
+
+    mustache: function(check_template, callback){
+      if(typeof mustache_templates[check_template] != 'undefined'){
+        return callback(mustache_templates[check_template]);
+      }else{
+        $.get(app.get_asset_url('templates/'+ check_template +'.mustache'), function(template) {
+          mustache_templates[check_template] = template;
+          return callback(template);
+        });
+      }
+    },
 
 		slug: function(str) {
 			str = str.replace(/^\s+|\s+$/g, ''); // trim

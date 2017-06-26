@@ -54,13 +54,31 @@
 
         <ul class="sub-menu">
           <li class="<?php echo isset($page['two']) && $page['two'] == 'list' && isset($page['one']) && $page['one'] == 'properties' ? 'active' : ''; ?>">
-            <a href="<?php echo base_url('admin/imoveis'); ?>">Listar imóveis</a>
-            <span class="icon-thumbnail">li</span>
+            <a href="<?php echo base_url('admin/imoveis'); ?>">Todos os imóveis</a>
+            <span class="icon-thumbnail">ti</span>
           </li>
 
           <li class="<?php echo isset($page['two']) && $page['two'] == 'add' && isset($page['one']) && $page['one'] == 'properties' ? 'active' : ''; ?>">
             <a href="<?php echo base_url('admin/imoveis/adicionar'); ?>">Adicionar imóvel</a>
             <span class="icon-thumbnail">ai</span>
+          </li>
+        </ul>
+      </li>
+
+      <li class="<?php echo isset($page['one']) && $page['one'] == 'campaigns' ? 'open active' : ''; ?>">
+        <a href="javascript:;"><span class="title">Campanhas</span>
+        <span class="<?php echo isset($page['one']) && $page['one'] == 'campaigns' ? 'open' : ''; ?> arrow"></span></a>
+        <span class="icon-thumbnail"><i class="fa fa-building-o"></i></span>
+
+        <ul class="sub-menu">
+          <li class="<?php echo isset($page['two']) && $page['two'] == 'list' && isset($page['one']) && $page['one'] == 'campaigns' ? 'active' : ''; ?>">
+            <a href="<?php echo base_url('admin/campanhas'); ?>">Todas as campanhas</a>
+            <span class="icon-thumbnail">tc</span>
+          </li>
+
+          <li class="<?php echo isset($page['two']) && $page['two'] == 'add' && isset($page['one']) && $page['one'] == 'campaigns' ? 'active' : ''; ?>">
+            <a href="<?php echo base_url('admin/campanhas/adicionar'); ?>">Adicionar imóvel</a>
+            <span class="icon-thumbnail">ac</span>
           </li>
         </ul>
       </li>

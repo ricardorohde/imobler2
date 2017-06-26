@@ -214,14 +214,33 @@ class Properties_model extends CI_Model {
       $this->db->where('imoveis.banheiros >=', $request['params']['bathrooms']);
     }
 
+    //- Suítes
+    if(isset($request['params']['suites']) && !empty($request['params']['suites'])){
+      $this->db->where('imoveis.suites >=', $request['params']['suites']);
+    }
+
     //- Garagens
     if(isset($request['params']['garages']) && !empty($request['params']['garages'])){
       $this->db->where('imoveis.garagens >=', $request['params']['garages']);
     }
 
-    // Visibilidade no site
-    $visibility = (isset($request['params']['visibility']) ? $request['params']['visibility'] : 1);
-    $this->db->where('imoveis.status', $visibility);
+    //- Outras informações
+    foreach (array(
+      'condominium' => 'condominio',
+      'offer' => 'oferta',
+      'featured' => 'destaque',
+      'release' => 'lancamento'
+      ) as $info_de => $info_para) {
+      if(isset($request['params'][$info_de]) && !empty($request['params'][$info_de])){
+        $this->db->where('imoveis.' . $info_para, 1);
+      }
+    }
+
+    if($this->router->fetch_module() == 'site'){
+      // Visibilidade no site
+      $visibility = (isset($request['params']['visibility']) ? $request['params']['visibility'] : 1);
+      $this->db->where('imoveis.status', $visibility);
+    }
 
 
     //- Transação
@@ -251,6 +270,9 @@ class Properties_model extends CI_Model {
 
     // ORDER BY
     if(isset($request['orderby']) && !empty($request['orderby'])){
+
+      $order = isset($request['order']) ? $request['order'] : 'ASC';
+
       switch ($request['orderby']) {
 
         case 'lowest_price':
@@ -263,6 +285,14 @@ class Properties_model extends CI_Model {
 
         case 'most_recent':
           $this->db->order_by('imoveis.id DESC');
+        break;
+
+        case 'update_date':
+          $this->db->order_by('imoveis.data_atualizado ' . $order);
+        break;
+
+        case 'property_id':
+          $this->db->order_by('imoveis.id ' . $order);
         break;
 
         case 'featured':
@@ -280,20 +310,19 @@ class Properties_model extends CI_Model {
     // GROUP BY
     $this->db->group_by('imoveis.id');
 
+    if(!$row){
+      // PAGINATION
+      $limit = (isset($request['limit']) && !empty($request['limit']) ? $request['limit'] : ($this->router->fetch_module() == 'admin' ? $this->config->item('property_list_limit_admin') : $this->config->item('property_list_limit')));
+      $page = isset($request['page']) ? $request['page'] : 1;
+      $return['total_rows'] = $this->get_rows_count($this->db->_compile_select());
+      $return['total_pages'] = ceil($return['total_rows'] / $limit);
+      $return['current_page'] = $page;
+      $return['pagination'] = $this->site->create_pagination($page, $limit, $return['total_rows'], rtrim((isset($request['base_url']) ? $request['base_url'] : current_url()), "/" . $page), $this->config->item('property_pagination_links'), (isset($request['url_suffix']) ? $request['url_suffix'] : null));
+      $page = max(0, ($page - 1) * $limit);
+      $this->db->limit($limit, $page);
+    }
 
-
-    // PAGINATION
-    $limit = (isset($request['limit']) && !empty($request['limit']) ? $request['limit'] : $this->config->item('property_list_limit'));
-    $page = isset($request['page']) ? $request['page'] : 1;
-    $return['total_rows'] = $this->get_rows_count($this->db->_compile_select());
-    $return['total_pages'] = ceil($return['total_rows'] / $limit);
-    $return['current_page'] = $page;
-    $return['pagination'] = $this->site->create_pagination($page, $limit, $return['total_rows'], rtrim((isset($request['base_url']) ? $request['base_url'] : current_url()), "/" . $page), $this->config->item('property_pagination_links'), (isset($request['url_suffix']) ? $request['url_suffix'] : null));
-    $page = max(0, ($page - 1) * $limit);
-    $this->db->limit($limit, $page);
-
-
-    $return['sql'] = $this->db->_compile_select();
+    // $return['sql'] = $this->db->_compile_select();
     // echo $return['sql'];
 
 
@@ -372,6 +401,11 @@ class Properties_model extends CI_Model {
       if($this->site->user_logged()){
         $return = $this->properties_favorites($return_ids, $return);
       }
+
+      if($this->router->fetch_module() == 'admin'){
+        $return = $this->properties_tags($return_ids, $return);
+      }
+
 
       if($row){
         $return = isset($return['results'][0]) ? $return['results'][0] : false;
@@ -633,6 +667,38 @@ class Properties_model extends CI_Model {
             $return['results'][$property_key]['imagens'][] = $imovel_imagem;
           }else{
             $return['imagens'][] = $imovel_imagem;
+          }
+        }
+        return $return;
+      }
+
+      return $query->result_array();
+    }else{
+      if($return) return $return;
+    }
+
+    return false;
+  }// images
+
+  public function properties_tags($properties_ids, $return = null) {
+    $this->db->select("imoveis_tags.imovel, tags.id, tags.tag");
+
+    $this->db->join("tags", "imoveis_tags.tag = tags.id", "inner");
+
+    $this->db->where_in('imoveis_tags.imovel', $properties_ids);
+
+    $this->db->order_by('imoveis_tags.id ASC');
+
+    $query = $this->db->get("imoveis_tags");
+
+    if ($query->num_rows() > 0) {
+      if($return){
+        foreach ($query->result_array() as $imovel_imagem) {
+          if(isset($return['results'])){
+            $property_key = array_search ($imovel_imagem['imovel'], $properties_ids);
+            $return['results'][$property_key]['tags'][] = $imovel_imagem;
+          }else{
+            $return['tags'][] = $imovel_imagem;
           }
         }
         return $return;
