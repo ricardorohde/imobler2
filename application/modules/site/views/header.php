@@ -19,7 +19,7 @@
                         echo $this->site->mustache('header__account', $this->session->userdata('usuario_logado'));
                     }else{
                         ?>
-                        <a href="#" data-toggle="modal" data-target="#pop-login">Entrar / Cadastrar</a>
+                        <a href="#" class="btn-login" data-toggle="modal" data-target="#pop-login">Entrar / Cadastrar</a>
                         <?php
                     }
                     ?>

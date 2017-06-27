@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Campaigns__list extends Admin_Controller {
+class Campaigns__categories__list extends Admin_Controller {
   function __construct() {
     parent::__construct();
     $this->load->model('properties_model');
@@ -13,7 +13,8 @@ class Campaigns__list extends Admin_Controller {
     $data = array(
       'page' => array(
         'one' => 'campaigns',
-        'two' => 'list'
+        'two' => 'categories',
+        'three' => 'list'
       ),
 
       'section' => array(),
@@ -27,26 +28,25 @@ class Campaigns__list extends Admin_Controller {
           array('plugins/sweetalert2/sweetalert2.min.js')
         ),
 
-        'script_page' => 'js/campaigns_list.js'
+        'script_page' => 'js/campaigns_categories_list.js'
       ),
     );
 
-    $orderby = $this->input->get('orderby') ? $this->input->get('orderby') : 'campanhas.id';
+    $orderby = $this->input->get('orderby') ? $this->input->get('orderby') : 'campanhas_categorias.id';
     $orderdir = $this->input->get('order') ? $this->input->get('order') : 'ASC';
 
-    $data['campaigns'] = $this->registros_model->registros(
-      'campanhas',
+    $data['categories'] = $this->registros_model->registros(
+      'campanhas_categorias',
       array(
-        'where' => array()
+        'pagging' => true
       ),
       false,
-      'campanhas.*, campanhas_categorias.nome as categoria_nome',
+      'campanhas_categorias.*',
       array(
-        array('campanhas_categorias', 'campanhas.categoria = campanhas_categorias.id', 'inner')
       ),
       array($orderby => $orderdir)
     );
 
-    $this->template->view('admin/master', 'admin/campaigns/list', $data);
+    $this->template->view('admin/master', 'admin/campaigns/categories/list', $data);
   }
 }

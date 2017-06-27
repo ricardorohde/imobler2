@@ -2242,9 +2242,17 @@ table {
 }
 .header-section-4 .header-right a {
   color: #fff;
+  outline: none;
 }
 .header-section-4 .header-right a:hover {
   color: #00aeef;
+}
+.header-section-4 .header-right a.btn-login {
+  color: #004274;
+}
+.header-section-4 .header-right a.btn-login:hover {
+  background: transparent;
+  color: #e43012;
 }
 .header-section-4 .header-right .btn {
   border-color: #004274;

@@ -5,7 +5,7 @@
         <ul class="breadcrumb">
           <li><a href="<?php echo base_url('admin'); ?>">Dashboard</a></li>
           <li><a href="<?php echo base_url('admin/campanhas'); ?>">Campanhas</a></li>
-          <li><a class="active"><?php echo $action == 'edit' ? 'Editando campanha' . (isset($post['nome']) ? ' "' . $post['nome'] . '"' : '') : 'Adicionar campanha'; ?></a></li>
+          <li><a class="active"><?php echo $action == 'edit' ? 'Editando campanha' . (isset($post['titulo']) ? ' "' . $post['titulo'] . '"' : '') : 'Adicionar campanha'; ?></a></li>
         </ul>
       </div>
     </div>
@@ -14,13 +14,13 @@
   <div class="container-fluid container-fixed-lg sm-p-l-20 sm-p-r-20">
     <div class="panel panel-transparent">
       <div class="panel-body">
-        <h1 class="margin-bottom-50"><?php echo $action == 'edit' ? 'Editando campanha' . (isset($post['nome']) ? ' <strong>"' . $post['nome'] . '"</strong>' : '') : 'Adicionar campanha'; ?></h1>
+        <h1 class="margin-bottom-50"><?php echo $action == 'edit' ? 'Editando campanha' . (isset($post['titulo']) ? ' <strong>"' . $post['titulo'] . '"</strong>' : '') : 'Adicionar campanha'; ?></h1>
 
         <?php $this->load->view('admin/includes/alertas', $this->_ci_cached_vars); ?>
 
         <form id="form-work" class="form-horizontal" role="form" autocomplete="off" method="post" action="<?php echo base_url($form_action); ?>" enctype="multipart/form-data">
 
-          <input type="text" name="parametros[transaction]" value="venda">
+          <input type="hidden" name="parametros[transaction]" value="venda">
 
           <div class="form-group">
             <label for="titulo" class="col-sm-3 control-label">Título</label>
@@ -62,10 +62,11 @@
               <div class="input-group">
                 <span class="input-group-addon"><?php echo base_url(); ?></span>
                 <input type="text" class="form-control" id="permalink" name="permalink" value="<?php echo isset($post['permalink']) ? $post['permalink'] : ''; ?>" required>
+                <span class="input-group-addon"><a href="javascript: void(0);" class="copy-permalink"><i class="fa fa-clipboard" aria-hidden="true"></i></a></span>
+
               </div>
             </div>
           </div>
-
 
           <div class="form-group">
             <label for="localizacao" class="col-sm-3 control-label">Localização</label>
@@ -263,6 +264,14 @@
           <div class="form-group">
             <label for="imagem_arquivo" class="col-sm-3 control-label">Foto da campanha</label>
             <div class="col-sm-9">
+              <?php
+              if(isset($post['imagem_arquivo']) && !empty($post['imagem_arquivo'])){
+                ?>
+                <input type="hidden" name="imagem_arquivo_existente" value="<?php echo $post['imagem_arquivo']; ?>">
+                <p><img src="<?php echo base_url('imagens/campanhas/' . $post['id'] . '/150/150/100/0/' . $post['imagem_arquivo']); ?>" class="img-thumbnail"></p>
+                <?php
+              }
+              ?>
               <input type="file" class="form-control" id="imagem_arquivo" name="imagem_arquivo" value="">
             </div>
           </div>

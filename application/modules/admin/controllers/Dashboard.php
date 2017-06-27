@@ -40,7 +40,7 @@ class Dashboard extends Admin_Controller {
           array('plugins/bootstrap-datepicker/js/bootstrap-datepicker.js')
         ),
 
-        'script_page' => 'js/dashboard.js'
+        // 'script_page' => 'js/dashboard.js'
       )
     );
 

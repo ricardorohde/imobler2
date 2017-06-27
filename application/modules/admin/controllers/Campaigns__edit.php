@@ -12,7 +12,7 @@ class Campaigns__edit extends Admin_Controller {
 
     $data = array(
       'page' => array(
-        'one' => 'properties',
+        'one' => 'campaigns',
         'two' => ($campaign_id ? 'edit' : 'add')
       ),
 
@@ -36,7 +36,8 @@ class Campaigns__edit extends Admin_Controller {
           array('plugins/notify.min.js'),
           array('plugins/jquery-ui2/jquery-ui.min.js'),
           array('plugins/sweetalert2/sweetalert2.min.js'),
-          array('plugins/mustache.min.js')
+          array('plugins/mustache.min.js'),
+          array('plugins/clipboard.min.js')
         ),
 
         'script_page' => 'js/campaigns_edit.js'
@@ -57,15 +58,82 @@ class Campaigns__edit extends Admin_Controller {
       );
 
       $post['parametros'] = json_decode($post['parametros'], true);
+
+      if(isset($post['parametros']['location']) && !empty($post['parametros']['location'])){
+        $location = array();
+        foreach ($post['parametros']['location'] as $key => $value) {
+          $location[$key] = $value;
+          $location[$key]['index'] = $key;
+        }
+
+        $post['parametros']['location'] = $location;
+      }
     }
 
     if($this->input->post()){
       $post = $this->input->post();
 
+      $campaign = $post;
+
+      $parametros = array();
+      foreach ($post['parametros'] as $key => $value) {
+        if(!empty($value)){
+
+          if(in_array($key, array('min_price', 'max_price'))){
+            $parametros[$key] = str_replace('.', '', $value);
+          }else{
+            $parametros[$key] = $value;
+          }
+
+        }
+      }
+
+      $campaign['status'] = (isset($campaign['status']) ? 1 : 0);
+
+      $campaign['parametros'] = json_encode($parametros);
+
+      if(isset($campaign['imagem_arquivo_existente'])){
+        $imagem_arquivo_existente = $campaign['imagem_arquivo_existente'];
+        unset($campaign['imagem_arquivo_existente']);
+      }
+
+      if($campaign_id){
+        $this->db->set('data_atualizado', 'NOW()', FALSE);
+        $this->db->update('campanhas', $campaign, array('id' => $campaign_id));
+        $campaign_edit_id = $campaign_id;
+      }else{
+        $this->db->set('data_atualizado', 'NOW()', FALSE);
+        $this->db->insert('campanhas', $campaign);
+        $campaign_edit_id = $this->db->insert_id();
+      }
+
       if(isset($_FILES['imagem_arquivo']['error']) && $_FILES['imagem_arquivo']['error'] == 0){
-        print_l($_FILES);
+
+        $path_uri = 'assets/uploads/campanhas/' . $campaign_edit_id . '/';
+        $path_upload = FCPATH . $path_uri;
+
+        if(!file_exists($path_upload)) {
+          mkdir($path_upload, 0755, true);
+        }
+
+        if(isset($imagem_arquivo_existente)){
+          if(file_exists($path_upload . $imagem_arquivo_existente)) {
+            unlink($path_upload . $imagem_arquivo_existente);
+          }
+        }
+
+        $file_name = $_FILES["imagem_arquivo"]["name"];
+        $file_extension = pathinfo($file_name, PATHINFO_EXTENSION);
+
+        $imagem_arquivo = md5($campaign_edit_id . $file_name . microtime(false) . rand(0,9999))  . '.' . $file_extension;
+
+        if(move_uploaded_file($_FILES["imagem_arquivo"]["tmp_name"], $path_upload . $imagem_arquivo)){
+          $this->db->update('campanhas', array('imagem_arquivo' => $imagem_arquivo), array('id' => $campaign_edit_id));
+        }
 
       }
+
+      $this->site->alerta_redirect('success', ($campaign_id ? 'A campanha foi atualizada com sucesso.' : 'A campanha foi adicionada com sucesso.'), 'admin/campanhas/' . $campaign_edit_id . '/editar', 'visible');
 
     }
 
@@ -170,10 +238,33 @@ class Campaigns__edit extends Admin_Controller {
 
     $data['caracteristicas'] = $caracteristicas_array;
 
-    $data['post'] = $post;
-
-    print_l($data['post']);
+    $data['post'] = isset($post) ? $post : null;
 
     $this->template->view('admin/master', 'admin/campaigns/edit', $data);
+  }
+
+  function excluir($campaign_id) {
+    $campaign = $this->registros_model->registros(
+      'campanhas',
+      array(
+        'where' => array(
+          'campanhas.id' => $campaign_id
+        )
+      ),
+      true
+    );
+
+    if($campaign){
+      if(isset($campaign['imagem_arquivo']) && !empty($campaign['imagem_arquivo'])){
+        if(file_exists(get_asset('campanhas/' . $campaign['id'] . '/' . $campaign['imagem_arquivo'], 'path', 'uploads'))){
+          unlink(get_asset('campanhas/' . $campaign['id'] . '/' . $campaign['imagem_arquivo'], 'path', 'uploads'));
+        }
+      }
+
+      $this->db->delete('campanhas', array('id' => $campaign['id']));
+
+      $this->site->alerta_redirect('success', 'Campanha ecluída com sucesso!', 'admin/campanhas', 'visible');
+    }
+
   }
 }

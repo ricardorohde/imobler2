@@ -1037,8 +1037,18 @@
     width: 50%;
     a{
       color: $white;
+      outline: none;
+
       &:hover{
         color: rgba(0,174,239,1);
+      }
+
+      &.btn-login {
+        color: #004274;
+        &:hover {
+          background: transparent;
+          color: $red;
+        }
       }
     }
     .btn{

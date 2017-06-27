@@ -200,10 +200,10 @@ if(isset($featured['results']) && !empty($featured['results'])){
                         $imagem_arquivo = base_url('imagens/campanhas/' . $campaign['id'] . '/370/370/100/' . $campaign['imagem_arquivo']);
                       }
                       ?>
-                      <img src="<?php echo $imagem_arquivo; ?>" width="370" height="370" alt="<?php echo $campaign['title']; ?>">
+                      <img src="<?php echo $imagem_arquivo; ?>" width="370" height="370" alt="<?php echo $campaign['titulo']; ?>">
                     </a>
                     <figcaption class="location-fig-caption">
-                      <h3 class="heading"><?php echo $campaign['title']; ?></h3>
+                      <h3 class="heading"><?php echo $campaign['titulo']; ?></h3>
                       <!-- <p class="sub-heading">30 Properties</p> -->
                     </figcaption>
                   </figure>

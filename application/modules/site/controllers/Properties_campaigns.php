@@ -33,8 +33,8 @@ class Properties_campaigns extends Site_Controller {
       ),
 
       'section' => array(
-        'title' => $campaign['title'],
-        'description' => $campaign['description']
+        'title' => $campaign['titulo'],
+        'description' => $campaign['descricao']
       ),
 
       'assets' => array(
@@ -53,6 +53,10 @@ class Properties_campaigns extends Site_Controller {
       'properties' => $this->properties_model->properties($route_params),
       'campaign' => $campaign
     );
+
+    if(isset($campaign['imagem_arquivo']) && !empty($campaign['imagem_arquivo'])){
+      $data['section']['image'] = 'imagens/campanhas/'. $campaign['id'] . '/400/400/100/0/' . $campaign['imagem_arquivo'];
+    }
 
 		$this->template->view('site/master', 'site/properties/campaigns', $data);
 	}

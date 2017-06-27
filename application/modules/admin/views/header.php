@@ -164,7 +164,7 @@
       <!-- END NOTIFICATIONS LIST -->
       <a href="#" class="search-link" data-toggle="search"><i class="pg-search"></i>Começe a digitar <span class="bold">pesquisar</span></a> </div>
   </div>
-  <div class=" pull-right">
+  <div class=" hide pull-right">
     <div class="header-inner">
       <a href="#" class="btn-link icon-set menu-hambuger-plus m-l-20 sm-no-margin hidden-sm hidden-xs" data-toggle="quickview" data-toggle-element="#quickview"></a>
     </div>

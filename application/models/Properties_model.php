@@ -322,7 +322,7 @@ class Properties_model extends CI_Model {
       $this->db->limit($limit, $page);
     }
 
-    // $return['sql'] = $this->db->_compile_select();
+    $return['sql'] = $this->db->_compile_select();
     // echo $return['sql'];
 
 

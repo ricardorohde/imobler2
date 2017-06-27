@@ -166,11 +166,22 @@ var campaigns_edit_images_slider = null;
 
   campaigns_edit.init = function() {
 
+    new Clipboard('.copy-permalink', {
+        text: function(trigger) {
 
+          if($('#permalink').val().length){
+            $.notify("A URL foi copiada, pressione Control+V", "success");
+            return app.base_url($('#permalink').val());
+          }else{
+            $.notify("O campo permalink está vazio", "error");
+            return false;
+          }
+        }
+    });
 
 
     // MASK
-    $('.price-mask').mask('000.000.000.000.000,00', {reverse: true});
+    $('.price-mask').mask('000.000.000.000.000', {reverse: true});
     $('.area-mask').mask('000.000.000.000.000', {reverse: true});
 
     $('textarea[maxlength]').maxlength({

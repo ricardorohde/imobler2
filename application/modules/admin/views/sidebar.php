@@ -66,8 +66,7 @@
       </li>
 
       <li class="<?php echo isset($page['one']) && $page['one'] == 'campaigns' ? 'open active' : ''; ?>">
-        <a href="javascript:;"><span class="title">Campanhas</span>
-        <span class="<?php echo isset($page['one']) && $page['one'] == 'campaigns' ? 'open' : ''; ?> arrow"></span></a>
+        <a href="javascript:;"><span class="title">Campanhas</span><span class="<?php echo isset($page['one']) && $page['one'] == 'campaigns' ? 'open' : ''; ?> arrow"></span></a>
         <span class="icon-thumbnail"><i class="fa fa-building-o"></i></span>
 
         <ul class="sub-menu">
@@ -77,20 +76,38 @@
           </li>
 
           <li class="<?php echo isset($page['two']) && $page['two'] == 'add' && isset($page['one']) && $page['one'] == 'campaigns' ? 'active' : ''; ?>">
-            <a href="<?php echo base_url('admin/campanhas/adicionar'); ?>">Adicionar imóvel</a>
+            <a href="<?php echo base_url('admin/campanhas/adicionar'); ?>">Adicionar campanha</a>
             <span class="icon-thumbnail">ac</span>
+          </li>
+
+          <li class="<?php echo isset($page['two']) && $page['two'] == 'categories' && isset($page['one']) && $page['one'] == 'campaigns' ? 'active' : ''; ?>">
+            <a href="javascript:;"><span class="title">Categorias</span><span class="arrow"></span></a>
+            <span class="icon-thumbnail">cc</span>
+
+            <ul class="sub-menu">
+              <li class="<?php echo isset($page['three']) && $page['three'] == 'list' && isset($page['two']) && $page['two'] == 'categories' && isset($page['one']) && $page['one'] == 'campaigns' ? 'active' : ''; ?>">
+                <a href="<?php echo base_url('admin/campanhas/categorias'); ?>">Todas as categorias</a>
+                <span class="icon-thumbnail">tc</span>
+              </li>
+
+              <li class="<?php echo isset($page['three']) && $page['three'] == 'add' && isset($page['two']) && $page['two'] == 'categories' && isset($page['one']) && $page['one'] == 'campaigns' ? 'active' : ''; ?>">
+                <a href="<?php echo base_url('admin/campanhas/categorias/adicionar'); ?>">Adicionar categoria</a>
+                <span class="icon-thumbnail">ac</span>
+              </li>
+            </ul>
           </li>
         </ul>
       </li>
 
-      <li class="">
-        <a href="portlets.html">
-          <span class="title">Portlets</span>
+      <li class="<?php echo isset($page['one']) && $page['one'] == 'users' ? 'open active' : ''; ?>">
+        <a href="<?php echo base_url('admin/usuarios'); ?>">
+          <span class="title">Usuários</span>
         </a>
-        <span class="icon-thumbnail"><i class="pg-grid"></i></span>
+        <span class="icon-thumbnail"><i class="fa fa-user"></i></span>
       </li>
 
     </ul>
+
     <div class="clearfix"></div>
   </div>
   <!-- END SIDEBAR MENU -->

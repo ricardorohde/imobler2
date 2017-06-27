@@ -3,9 +3,9 @@
     <div class="page-title breadcrumb-top">
       <div class="row">
         <div class="col-sm-12">
-          <ol class="breadcrumb"><li ><a href="/"><i class="fa fa-home"></i></a></li><li class="active"><?php echo $campaign['title']; ?></li></ol>
+          <ol class="breadcrumb"><li ><a href="/"><i class="fa fa-home"></i></a></li><li class="active"><?php echo $campaign['titulo']; ?></li></ol>
           <div class="page-title-left">
-              <h2><?php echo $campaign['title']; ?></h2>
+              <h2><?php echo $campaign['titulo']; ?></h2>
           </div>
           <div class="page-title-right">
             <div class="view hidden-xs">

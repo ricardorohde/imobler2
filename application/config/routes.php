@@ -369,10 +369,18 @@ $route['admin/imoveis'] = 'admin/properties__list';
 $route['admin/imoveis/(:num)'] = 'admin/properties__list/index/$1';
 $route['admin/imoveis/adicionar'] = 'admin/properties__edit';
 $route['admin/imoveis/(:num)/editar'] = 'admin/properties__edit/index/$1';
+$route['admin/imoveis/(:num)/excluir'] = 'admin/properties__edit/excluir/$1';
 
 // Campanhas
 $route['admin/campanhas'] = 'admin/campaigns__list';
 $route['admin/campanhas/(:num)'] = 'admin/campaigns__list/index/$1';
 $route['admin/campanhas/adicionar'] = 'admin/campaigns__edit';
 $route['admin/campanhas/(:num)/editar'] = 'admin/campaigns__edit/index/$1';
+$route['admin/campanhas/(:num)/excluir'] = 'admin/campaigns__edit/excluir/$1';
+
+$route['admin/campanhas/categorias'] = 'admin/campaigns__categories__list';
+$route['admin/campanhas/categorias/(:num)'] = 'admin/campaigns__categories__list/index/$1';
+$route['admin/campanhas/categorias/adicionar'] = 'admin/campaigns__categories__edit';
+$route['admin/campanhas/categorias/(:num)/editar'] = 'admin/campaigns__categories__edit/index/$1';
+$route['admin/campanhas/categorias/(:num)/excluir'] = 'admin/campaigns__categories__edit/excluir/$1';
 
