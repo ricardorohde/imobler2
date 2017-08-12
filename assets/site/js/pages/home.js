@@ -1,5 +1,7 @@
 var home = app['home'] = {};
 var search_process = false;
+var form_submit = false;
+var imovel_id = 0;
 
 (function (window, document, $, undefined) {
   'use strict';
@@ -66,21 +68,52 @@ var search_process = false;
       source: app.base_url('api/get_locations'),
       minLength: 2,
       delay: 250,
-      select: function( event, ui ) {
+      search: function(event, ui) {
         search_process = true;
+        $('.input-search-home').addClass('loading');
+      },
+      open: function(event, ui) {
+        $('.input-search-home').removeClass('loading');
+        if (navigator.userAgent.match(/(iPod|iPhone|iPad)/)) {
+          $('.ui-autocomplete').off('menufocus hover mouseover mouseenter');
+        }
+      },
+      select: function( event, ui ) {
+        search_process = false;
+        form_submit = true;
+        imovel_id = 0;
 
-        $('#banner-search-main-state').val(ui.item.location.state);
-        $('#banner-search-main-city').val(ui.item.location.city);
-        $('#banner-search-main-district').val(ui.item.location.district);
+        $('.input-search-home').removeClass('loading');
+        $(".input-search-local").catcomplete('close');
+
+        if(ui.item.imovel_id){
+          imovel_id = ui.item.imovel_id;
+        }else{
+          $('#banner-search-main-state').val(ui.item.location.state);
+          $('#banner-search-main-city').val(ui.item.location.city);
+          $('#banner-search-main-district').val(ui.item.location.district);
+        }
 
         $('.btn-submit').removeAttr('disabled');
+      }
+    });
 
-        home.get_search_url_by_location();
+    $('#form-search-local').bind("keypress", function (e) {
+      if (e.keyCode == 13) {
+        return false;
       }
     });
 
     $('#form-search-local').submit(function(e){
-      home.get_search_url_by_location();
+      if(form_submit){
+
+        if(imovel_id){
+          window.location.href = app.base_url(imovel_id);
+          return false;
+        }
+
+        home.get_search_url_by_location();
+      }
       e.preventDefault();
     });
   };

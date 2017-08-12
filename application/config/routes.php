@@ -7,7 +7,33 @@ $db =& DB();
 $transactions = ['venda'];
 
 $route['api/(:any)'] = 'site/tools/$1';
+$route['minha-conta'] = 'site/account';
+$route['minha-conta/(login|login_facebook|cadastro)']['post'] = 'site/account/$1';
+$route['minha-conta/favoritos'] = 'site/account/favoritos';
+$route['minha-conta/favoritos/(:num)'] = 'site/account/favoritos/$1';
 $route['minha-conta/(:any)'] = 'site/account/$1';
+
+// Integrações
+$route['vivareal.xml'] = 'site/properties_integrations/index/vivareal';
+$route['mercado.xml'] = 'site/properties_integrations/index/mercado-livre';
+$route['properati'] = 'site/properties_integrations/index/properati';
+
+
+// == PÁGINAS ESTÁTICAS  == \\
+foreach(array(
+  'quem-somos' => 'who_we_are',
+  'termos-de-uso' => 'terms_of_use',
+  'politica-de-privacidade' => 'privacy_policy'
+) as $slug => $page){
+  $route[$slug] = 'site/pages/index/' . $page;
+}
+
+// == CONTATOS == \\
+$route['fale-conosco'] = 'site/contacts/contact_us'; //Fale conosco
+$route['trabalhe-conosco'] = 'site/contacts/work_with_us'; //Trabalhe conosco
+
+// Formulário para os usuários enviarem indformações de imóveis a venda
+$route['anunciar-imovel'] = 'site/properties_add'; //Anunciar um imóvel
 
 $states = $db->get('estados')->result_array();
 $states_arr = [];
@@ -326,14 +352,27 @@ $route['imovel/('. implode('|', $transactions) .')/('.$states.')/('.$cities.')/(
 };
 
 // Ficha do imóvel - Slug - Ex: /imovel/apartamento-a-venda-no-portal-dos-bandeirantes-id-2349
-$route['imovel/(:any)'] = function ($property_permalink){
+$route['imovel/(:any)-id-(:num)'] = function ($property_permalink, $property_id){
   $params = array('route_params' => array(
     'params' => array(
-      'property_permalink' => $property_permalink
+      'property_permalink' => $property_permalink,
+      'property_id' => $property_id
     )
   ));
 
   return 'site/properties_details/index/' . json_encode($params);
+};
+
+// Ficha do imóvel - Antigo - Ex: /cobertura-moooca-id-1234
+$route['(:any)-id-(:num)'] = function ($property_permalink, $property_id){
+  $params = array('route_params' => array(
+    'params' => array(
+      'property_permalink' => $property_permalink,
+      'property_id' => $property_id,
+    )
+  ));
+
+  return 'site/properties_details/redirect/' . json_encode($params);
 };
 
 //.../apartamentos-2-dorms-parque-sao-domingos/

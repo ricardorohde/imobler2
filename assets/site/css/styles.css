@@ -769,6 +769,30 @@ table {
     line-height: 50px;
   }
 }
+.input-icon:after {
+  color: #959595;
+  text-align: center;
+  font-family: "FontAwesome";
+  height: 43px;
+  width: 40px;
+  line-height: 43px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 1;
+}
+@media (min-width: 768px) and (max-width: 991px) {
+  .input-icon:after {
+    height: 50px;
+    line-height: 50px;
+  }
+}
+@media (max-width: 767px) {
+  .input-icon:after {
+    height: 50px;
+    line-height: 50px;
+  }
+}
 
 .input-icon-right input {
   padding-left: 12px !important;
@@ -793,6 +817,13 @@ table {
 
 .input-search:before {
   content: "\f002";
+}
+.input-search.loading:after {
+  content: '';
+  background: url(../img/loading-home.gif);
+  background-size: 20px;
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 
 .input-calendar:before {
@@ -1451,7 +1482,7 @@ table {
 .header-mobile {
   z-index: 11;
   height: auto;
-  background-color: #e43012;
+  background-color: #fff;
   min-height: 60px;
 }
 .header-mobile > .container {
@@ -1493,7 +1524,7 @@ table {
   display: inline-block;
   text-align: center;
   height: 26px;
-  color: #fff;
+  color: #e43012;
   font-size: 20px;
 }
 .header-mobile .account-action li.active .account-dropdown {
@@ -2647,7 +2678,7 @@ table {
 }
 .mobile-nav .nav-trigger {
   cursor: pointer;
-  color: #fff;
+  color: #e43012;
   line-height: 18px;
   height: 18px;
   width: 18px;
@@ -4448,6 +4479,7 @@ table {
 }
 .item-thumb .price h3, figure .price h3, .carousel-module .carousel .item figure .price h3 {
   color: #fff;
+  text-shadow: 0px 0px 1px black;
 }
 .item-thumb .price .rant, figure .price .rant, .carousel-module .carousel .item figure .price .rant {
   color: #fff;
@@ -15505,7 +15537,7 @@ strong, b {
   line-height: 38px;
   margin: 0;
   font-weight: 500;
-  text-transform: capitalize;
+  text-transform: inherit;
   text-align: inherit;
 }
 @media (min-width: 768px) and (max-width: 991px) {

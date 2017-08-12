@@ -8,7 +8,7 @@
               <h3 class="widget-title">Sobe a Mediz</h3>
             </div>
             <div class="widget-body">
-              <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry ipsum has been the industry.</p>
+              <p>A Mediz Imóveis é uma imobiliária que foi montada com o intuito de dar um atendimento diferenciado do normal do mercado imobiliário.</p>
               <p class="read"><a href="<?php echo base_url('quem-somos'); ?>">Conheça-nos <i class="fa fa-caret-right"></i></a></p>
             </div>
           </div>
@@ -34,12 +34,13 @@
               <h3 class="widget-title">Assine nossa newsletter</h3>
             </div>
             <div class="widget-body">
-              <form>
+              <form id="footer-newsletter" method="post" action="<?php echo base_url('api/newsletter'); ?>" autocomplete="off">
                 <div class="table-list">
                   <div class="form-group table-cell">
                     <div class="input-email input-icon">
-                      <input class="form-control" placeholder="Enter your email">
+                      <input type="email" class="form-control" name="email" placeholder="Informe seu e-mail" required>
                     </div>
+                    <small class="help-block text-success footer-news-message">Seu e-mail foi adicionado em nossa lista de envios</small>
                   </div>
                   <div class="table-cell">
                     <button class="btn btn-primary">Enviar</button>
@@ -73,13 +74,13 @@
           </div>
         </div>
         <div class="col-md-4 col-sm-4">
-          <div class="footer-col">
+          <!--div class="footer-col">
             <div class="navi">
               <ul id="footer-menu" class="">
                 <li><a href="<?php echo base_url('politica-de-privacidade'); ?>">Política de privacidade</a></li>
               </ul>
             </div>
-          </div>
+          </div-->
         </div>
         <div class="col-md-4 col-sm-4">
           <div class="footer-col foot-social">

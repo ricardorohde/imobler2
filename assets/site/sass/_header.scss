@@ -255,7 +255,7 @@
   @extend %clearfix;
   z-index: 11;
   height: auto;
-  background-color: $anchor;
+  background-color: $white;
   min-height: 60px;
   > .container{
     position: relative;
@@ -295,7 +295,7 @@
     display: inline-block;
     text-align: center;
     height: 26px;
-    color: $white;
+    color: $anchor;
     font-size: 20px;
   }
   .account-action{
@@ -1456,7 +1456,7 @@
   float: left;
   .nav-trigger{
     cursor: pointer;
-    color: $white;
+    color: $anchor;
     line-height: 18px;
     height: 18px;
     width: 18px;

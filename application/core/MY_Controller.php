@@ -9,7 +9,9 @@ class Default_Controller extends MX_Controller {
     require_once APPPATH . 'third_party/Mustache/Autoloader.php';
     Mustache_Autoloader::register();
 
-    $this->output->enable_profiler(FALSE);
+    require_once APPPATH . 'third_party/PHPMailer/PHPMailerAutoload.php';
+
+    $this->output->enable_profiler(false);
   }
 }
 

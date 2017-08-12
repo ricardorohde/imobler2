@@ -3,7 +3,7 @@
         <div class="header-left">
             <div class="logo">
                 <a href="<?php echo base_url(); ?>">
-                    <img src="<?php echo get_asset('img/logo-mediz-white.png'); ?>" width="180" alt="logo">
+                  <img src="<?php echo get_asset('img/logo-mediz-white.png'); ?>" width="180" alt="logo">
                 </a>
             </div>
         </div>
@@ -31,11 +31,11 @@
 <div class="header-mobile visible-sm visible-xs">
     <div class="container">
         <div class="mobile-nav">
-            <span class="nav-trigger"><i class="fa fa-navicon"></i></span>
+            <a href="<?php echo base_url(); ?>" class="nav-trigger"><i class="fa fa-home" aria-hidden="true"></i></a>
             <div class="nav-dropdown main-nav-dropdown"></div>
         </div>
         <div class="header-logo">
-            <img src="<?php echo get_asset('img/logo-mediz-white.png'); ?>" width="180" alt="logo">
+            <a href="<?php echo base_url(); ?>"><img src="<?php echo get_asset('img/logo-mediz-white.png'); ?>" width="180" alt="Mediz Imóveis"></a>
         </div>
         <div class="header-user">
             <ul class="account-action">

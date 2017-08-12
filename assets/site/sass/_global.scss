@@ -565,7 +565,26 @@ table{
       line-height: 50px;
     }
   }
-
+  &:after{
+    color: $gray-95;
+    text-align: center;
+    font-family: $font-awesome;
+    height: 43px;
+    width: 40px;
+    line-height: 43px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 1;
+    @include respond-to(tablet-landscape-desktop) {
+      height: 50px;
+      line-height: 50px;
+    }
+    @include respond-to(tablet-portrait){
+      height: 50px;
+      line-height: 50px;
+    }
+  }
 }
 .input-icon-right{
   input{
@@ -595,6 +614,16 @@ table{
 .input-search{
   &:before{
     content: "\f002";
+  }
+
+  &.loading {
+    &:after{
+      content: '';
+      background: url(../img/loading-home.gif);
+      background-size: 20px;
+      background-repeat: no-repeat;
+      background-position: center center;
+    }
   }
 }
 .input-calendar{

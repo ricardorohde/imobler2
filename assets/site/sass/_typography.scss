@@ -28,7 +28,7 @@ strong, b {
 /*START PAGE TITLE AND BREADCRUMBS TYPO*/
 .page-title{
   .title-head{
-    @include typography(30px, 38px, 0, 500, capitalize, inherit);
+    @include typography(30px, 38px, 0, 500, inherit, inherit);
     @include respond-to(tablet-landscape-desktop){
       font-size: 24px;
     }

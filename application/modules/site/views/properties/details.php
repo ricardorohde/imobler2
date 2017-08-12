@@ -162,7 +162,7 @@ data-property_longitude="<?php echo $property['endereco_longitude']; ?>">
                     array('idade', 'ano', 'anos', '%idade% %caracteristica%'),
                     array('area_util', 'área útil ', 'área útil', '%area_util% m² %caracteristica%'),
                     array('area_total', 'área total ', 'área total', '%area_total% m² %caracteristica%'),
-                    array('condominio', '', '', 'Condomínio'),
+                    array('condominio', '', '', 'Condomínio fechado'),
                     array('mobiliado', '', '', 'Mobiliado'),
                     array('ocupado', '', '', 'Ocupado'),
                   );
@@ -225,53 +225,30 @@ data-property_longitude="<?php echo $property['endereco_longitude']; ?>">
 
           <div id="entre-em-contato" class="detail-contact detail-block">
               <div class="detail-title">
-                  <h2 class="title-left">Contato</h2>
-                  <div class="title-right">
-                  </div>
+                  <h2 class="title-left">Saiba mais sobre este imóvel</h2>
               </div>
-              <div class="media agent-media">
-                  <div class="media-left">
-                      <a href="#">
-                          <img src="<?php echo get_asset('img/logo-contato.jpg'); ?>" class="media-object" alt="Mediz Imóveis" width="74" height="74">
-                      </a>
-                  </div>
-                  <div class="media-body">
-
-                      <ul>
-                          <li><i class="fa fa-user"></i> Mediz Imóveis</li>
-                          <li>
-                              <span><i class="fa fa-phone"></i> (11) 3902-7180</span>
-                              <span><i class="fa fa-whatsapp"></i>  (11) 99315-3548</span>
-                          </li>
-                          <li>
-                              <span><a href="https://www.facebook.com/mediz.imoveis/" target="_blank"><i class="fa fa-facebook-square"></i> Facebook</a></span>
-                          </li>
-                      </ul>
-                  </div>
-              </div>
-              <div class="detail-title-inner">
-                  <h4 class="title-inner">Saiba mais sobre este imóvel</h4>
-              </div>
-              <form>
+              <?php $this->load->view('site/includes/alertas', $this->_ci_cached_vars); ?>
+              <form id="property_contact_form" method="post" action="<?php echo $property['imovel_permalink']; ?>">
+                <input type="hidden" name="imovel_id" value="<?php echo $property['id']; ?>">
                   <div class="row">
                       <div class="col-sm-4 col-xs-12">
                           <div class="form-group">
-                              <input class="form-control" placeholder="Nome" type="text" name="nome">
+                            <input class="form-control" type="text" placeholder="Nome" title="Preencha o nome" name="nome" id="nome" value="<?php echo $this->input->post('nome'); ?>" required>
                           </div>
                       </div>
                       <div class="col-sm-4 col-xs-12">
                           <div class="form-group">
-                              <input class="form-control" placeholder="Telefone" type="text" name="telefone">
+                              <input class="form-control phone-mask" placeholder="Telefone" type="text" name="telefone" id="telefone" value="<?php echo $this->input->post('telefone'); ?>">
                           </div>
                       </div>
                       <div class="col-sm-4 col-xs-12">
                           <div class="form-group">
-                              <input class="form-control" placeholder="E-mail" type="email" name="email">
+                              <input class="form-control" placeholder="E-mail" type="email" name="email" id="email" value="<?php echo $this->input->post('email'); ?>">
                           </div>
                       </div>
                       <div class="col-sm-12 col-xs-12">
                           <div class="form-group">
-                              <textarea class="form-control" rows="5" placeholder="Mensagem" name="mensagem">Olá, tenho interesse neste imóvel: <?php echo $property['tipo']; ?> à <?php echo $property['transacao']; ?> em <?php echo $property['endereco_bairro']; ?>, <?php echo $property['area_util']; ?>m². Referência <?php echo $property['referencia']; ?> Aguardo o contato. Obrigado.</textarea>
+                              <textarea class="form-control" name="mensagem" rows="4" placeholder="Mensagem" id="mensagem" required><?php echo $this->input->post('mensagem') ? $this->input->post('mensagem') : 'Olá, tenho interesse neste imóvel: '. $property['tipo'] .' à '. $property['transacao'] .' em '. $property['endereco_bairro'] .', '. $property['area_util'] .'m². Referência '. $property['referencia'] .' Aguardo o contato. Obrigado.'; ?></textarea>
                           </div>
                       </div>
                   </div>
@@ -465,7 +442,7 @@ data-property_longitude="<?php echo $property['endereco_longitude']; ?>">
                         <?php
                         foreach ($campaigns['results'] as $key => $campaign) {
                           ?>
-                          <li><a href="<?php echo base_url($campaign['permalink']); ?>"><?php echo $campaign['title']; ?></a></li>
+                          <li><a href="<?php echo base_url($campaign['permalink']); ?>"><?php echo $campaign['titulo']; ?></a></li>
                           <?php
                         }
                         ?>

@@ -1,8 +1,16 @@
 var account = app['account'] = {};
 var property_like_post = null;
+var login_redirect = null;
 
 (function (window, document, $, undefined) {
   'use strict';
+
+  account.login = {
+    open: function($redirect){
+      login_redirect = $redirect;
+      $('#pop-login').modal('toggle');
+    }
+  };
 
   account.facebook = {
     status: function(response){
@@ -20,6 +28,10 @@ var property_like_post = null;
               if(property_like_post){
                 property_like(property_like_post);
                 property_like_post = null;
+              }
+
+              if(login_redirect){
+                window.location.href = login_redirect;
               }
 
               $.get(app.get_asset_url('templates/header__account.mustache'), function(template) {
@@ -84,6 +96,10 @@ var property_like_post = null;
         if(property_like_post){
           property_like(property_like_post);
           property_like_post = null;
+        }
+
+        if(login_redirect){
+          window.location.href = login_redirect;
         }
 
         $.get(app.get_asset_url('templates/header__account.mustache'), function(template) {
@@ -155,6 +171,32 @@ var property_like_post = null;
     }
   });
 
+  var newsletter_message_timeout = 0;
+  var newsletter = $('#footer-newsletter').validate({
+    messages: {
+      email: {
+        required: 'Obrigatório',
+        email: 'Inválido'
+      }
+    },
+
+    submitHandler: function(form) {
+      $(form).ajaxSubmit({
+        dataType: 'json',
+        success: function(response){
+
+          $('#footer-newsletter')[0].reset();
+          $('.footer-news-message').show();
+
+          clearTimeout(newsletter_message_timeout);
+          newsletter_message_timeout = setTimeout(function(){
+            $('.footer-news-message').hide();
+          }, 4000);
+        }
+      });
+    }
+  });
+
 
   app.body.on('click', '.btn-like, .link-like', function(){
     var $this = $(this);
@@ -167,7 +209,7 @@ var property_like_post = null;
     if(usuario_logado){
       property_like(property_like_post);
     }else{
-      $('#pop-login').modal('toggle');
+      account.login.open();
       return false;
     }
   });
@@ -175,6 +217,7 @@ var property_like_post = null;
   $('.btn-facebook-login').on('click', function(){
     app.account.facebook.login();
   });
+
 
 
 }(this, document, jQuery));

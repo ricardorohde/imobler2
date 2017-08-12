@@ -24,6 +24,10 @@
     @else if $media == phone {
         @media (max-width: 481px) { @content; }
     }
+    //Portrait tablet to landscape and desktop
+    @else if $media == tablet-up {
+      @media (min-width: 767px) { @content; }
+    }
 
     //Landscape phone to portrait tablet
     @else if $media == tablet-portrait {

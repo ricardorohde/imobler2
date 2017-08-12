@@ -57,6 +57,7 @@ class Properties_model extends CI_Model {
       imoveis_tipos.nome as tipo,
       imoveis_tipos.nome_plural as tipo_plural,
       imoveis_tipos.slug as tipo_slug,
+      imoveis_tipos.slug_ingles as tipo_slug_ingles,
       imoveis_tipos.id as tipo_id,
 
       enderecos.cep as endereco_cep,
@@ -141,6 +142,11 @@ class Properties_model extends CI_Model {
       $this->db->join("imoveis_caracteristicas", "imoveis_caracteristicas.imovel = imoveis.id", "inner"); // Imóveis características
       $this->db->join("caracteristicas", "imoveis_caracteristicas.caracteristica = caracteristicas.id", "inner"); // Características
       $this->db->where_in('caracteristicas.slug', $request['params']['property_features']);
+    }
+
+    if($this->site->user_logged() && isset($request['favorites']) && $request['favorites'] == true){
+      $this->db->join("imoveis_favoritos", "imoveis_favoritos.imovel = imoveis.id", "inner"); // Favoritos
+      $this->db->where('imoveis_favoritos.usuario', $this->site->userinfo('id'));
     }
 
     // Características
@@ -310,7 +316,7 @@ class Properties_model extends CI_Model {
     // GROUP BY
     $this->db->group_by('imoveis.id');
 
-    if(!$row){
+    if(!$row && !(isset($request['limit']) && $request['limit'] == 'all')){
       // PAGINATION
       $limit = (isset($request['limit']) && !empty($request['limit']) ? $request['limit'] : ($this->router->fetch_module() == 'admin' ? $this->config->item('property_list_limit_admin') : $this->config->item('property_list_limit')));
       $page = isset($request['page']) ? $request['page'] : 1;
@@ -322,9 +328,8 @@ class Properties_model extends CI_Model {
       $this->db->limit($limit, $page);
     }
 
-    $return['sql'] = $this->db->_compile_select();
+    // $return['sql'] = $this->db->_compile_select();
     // echo $return['sql'];
-
 
     $query = $this->db->get();
 
@@ -379,7 +384,7 @@ class Properties_model extends CI_Model {
 
         // Permalink
         if(!empty($result['imovel_permalink'])){
-          $return['results'][$return_count]['imovel_permalink'] = base_url($this->config->item('property_detail_url_prefix') . '/' . $result['imovel_permalink']);
+          $return['results'][$return_count]['imovel_permalink'] = base_url($this->config->item('property_detail_url_prefix') . '/' . $result['imovel_permalink'] . '-id-' . $result['id']);
         }else{
           $url = array($this->config->item('property_detail_url_prefix'));
           $url_parts = array('transacao_slug', 'endereco_estado', 'endereco_cidade_slug', 'endereco_bairro_slug', 'tipo_slug', 'id');
@@ -586,7 +591,7 @@ class Properties_model extends CI_Model {
 
       // Permalink
       if(!empty($result['imovel_permalink'])){
-        $return = base_url($this->config->item('property_detail_url_prefix') . '/' . $result['imovel_permalink']);
+        $return = base_url($this->config->item('property_detail_url_prefix') . '/' . $result['imovel_permalink'] . '-id-' . $result['id']);
       }else{
         $url = array($this->config->item('property_detail_url_prefix'));
         $url_parts = array('transacao_slug', 'endereco_estado', 'endereco_cidade_slug', 'endereco_bairro_slug', 'tipo_slug', 'id');
@@ -822,64 +827,101 @@ class Properties_model extends CI_Model {
   }
 
   public function get_locations_by_term() {
+    $term = $this->input->get('term');
 
-    $this->db->select("
-      UCASE(estados.sigla) as estado_sigla,
-      estados.sigla as estado_slug,
-      cidades.nome as cidade_nome,
-      cidades.slug as cidade_slug,
-      '' as bairro_nome,
-      '' as bairro_slug,
-      'city' as category
-    ");
+    if(is_numeric($term) || strpos($term, '-')){
+      $this->db->select("
+        '' as estado_sigla,
+        '' as estado_slug,
+        '' as cidade_nome,
+        '' as cidade_slug,
+        '' as bairro_nome,
+        '' as bairro_slug,
+        imoveis_negociacoes.imovel as imovel_id,
+        imoveis_negociacoes.referencia as imovel_referencia,
+        'property' as category
+      ");
 
-    $this->db->from('estados');
-    $this->db->join("cidades", "cidades.estado = estados.id", "inner");
+      $this->db->from('imoveis_negociacoes');
+      // $this->db->join("imoveis", "imoveis_negociacoes.imovel = imoveis.id", "inner");
 
-    $this->db->like('cidades.nome', $this->input->get('term'));
+      if(is_numeric($term)){
+        $this->db->like('imoveis_negociacoes.imovel', $term);
+      }else{
+        $this->db->like('imoveis_negociacoes.referencia', $term);
+      }
 
-    $this->db->limit(3);
+      $this->db->limit(6);
 
-    $query_city = $this->db->get_compiled_select();
+      $query_reference = $this->db->get_compiled_select();
 
-    $this->db->select("
-      UCASE(estados.sigla) as estado_sigla,
-      estados.sigla as estado_slug,
-      cidades.nome as cidade_nome,
-      cidades.slug as cidade_slug,
-      bairros.nome as bairro_nome,
-      bairros.slug as bairro_slug,
-      'district' as category
-    ");
+      $query = $this->db->query($query_reference);
+    }else{
 
-    $this->db->from('estados');
-    $this->db->join("cidades", "cidades.estado = estados.id", "inner");
-    $this->db->join("bairros", "bairros.cidade = cidades.id", "inner");
+      $this->db->select("
+        UCASE(estados.sigla) as estado_sigla,
+        estados.sigla as estado_slug,
+        cidades.nome as cidade_nome,
+        cidades.slug as cidade_slug,
+        '' as bairro_nome,
+        '' as bairro_slug,
+        '' as imovel_id,
+        '' as imovel_referencia,
+        'city' as category
+      ");
 
-    $this->db->like('bairros.nome', $this->input->get('term'));
+      $this->db->from('estados');
+      $this->db->join("cidades", "cidades.estado = estados.id", "inner");
 
-    $this->db->limit(6);
+      $this->db->like('cidades.nome', $term);
 
-    $query_district = $this->db->get_compiled_select();
+      $this->db->limit(3);
 
-    $query = $this->db->query($query_city ." UNION ". $query_district);
+      $query_city = $this->db->get_compiled_select();
 
-    // echo $query_city ." UNION ". $query_district;
+      $this->db->select("
+        UCASE(estados.sigla) as estado_sigla,
+        estados.sigla as estado_slug,
+        cidades.nome as cidade_nome,
+        cidades.slug as cidade_slug,
+        bairros.nome as bairro_nome,
+        bairros.slug as bairro_slug,
+        '' as imovel_id,
+        '' as imovel_referencia,
+        'district' as category
+      ");
+
+      $this->db->from('estados');
+      $this->db->join("cidades", "cidades.estado = estados.id", "inner");
+      $this->db->join("bairros", "bairros.cidade = cidades.id", "inner");
+
+      $this->db->like('bairros.nome', $term);
+
+      $this->db->limit(6);
+
+      $query_district = $this->db->get_compiled_select();
+
+      $query = $this->db->query($query_city ." UNION ". $query_district);
+
+      // echo $query_city ." UNION ". $query_district;
+
+    }
 
     if($query->num_rows() > 0) {
       $return = array();
 
       foreach($query->result_array() as $row){
         array_push($return, array(
-          'label' => ($row['category'] == 'city' ? $row['cidade_nome'] . ' ('. $row['estado_sigla'] .')' : $row['bairro_nome'] . ' ('. $row['cidade_nome'] . ', ' . $row['estado_sigla'] .')'),
+          'label' => ($row['category'] == 'property' ? (is_numeric($term) ? 'Imóvel ID: ' . $row['imovel_id'] . ' - Referência: ' : '') . $row['imovel_referencia'] : ($row['category'] == 'city' ? $row['cidade_nome'] . ' ('. $row['estado_sigla'] .')' : $row['bairro_nome'] . ' ('. $row['cidade_nome'] . ', ' . $row['estado_sigla'] .')')),
           'location' => array(
             'state' => $row['estado_slug'],
             'city' => $row['cidade_slug'],
             'district' => $row['bairro_slug']
           ),
+          'imovel_id' => $row['imovel_id'],
           'category' => array(
             'slug' => $row['category'],
-            'name' => ($row['category'] == 'city' ? 'Cidades' : 'Bairros')
+            'name' => ($row['category'] == 'city' ? 'Cidades' : ($row['category'] == 'district' ? 'Bairros' : 'Referência'))
           )
         ));
       }

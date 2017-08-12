@@ -20,6 +20,46 @@ function base64url_decode($data) {
   return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT));
 }
 
+function correct_encoding($text) {
+  $current_encoding = mb_detect_encoding($text, 'auto');
+  $text = iconv($current_encoding, 'UTF-8', $text);
+  return $text;
+}
+
+function send_mail($email_to, $subject, $message, $replyTo = null) {
+  $mailer = new PHPMailer();
+  $mailer->IsSMTP();
+  $mailer->SMTPDebug = 0;
+  $mailer->Port = 587;
+
+  $mailer->Host = 'smtp.imobler.com.br';
+
+  $mailer->SMTPSecure = 'tls';
+
+  $mailer->IsHTML(true);
+  $mailer->CharSet = 'UTF-8';
+
+  if($replyTo){
+    $mailer->AddReplyTo($replyTo);
+  }
+
+  $mailer->SMTPAuth = true;
+  $mailer->Username = 'nao-responda@imobler.com.br';
+  $mailer->Password = 'Rs2@34ft';
+  $mailer->FromName = 'Mediz Imóveis';
+  $mailer->From = 'nao-responda@imobler.com.br';
+  $mailer->AddAddress($email_to);
+  $mailer->AddAddress('marcos@medizimoveis.com.br');
+  $mailer->Subject = $subject;
+  $mailer->Body = $message;
+
+  if(!$mailer->Send()){
+    return array('status' => 'error', 'message' => $mailer->ErrorInfo);
+  }
+
+  return array('status' => 'success');
+}
+
 function get_current_url($field = null) {
   $return = array();
 

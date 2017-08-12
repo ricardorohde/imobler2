@@ -44,7 +44,7 @@
             <div class="label-status label label-default">{{transacao}}</div>
             {{#lancamento}}<span class="label label-danger">Lançamento</span>{{/lancamento}}
           </div>
-          <h2 class="property-title">{{id}}<a href="{{imovel_permalink}}">{{tipo}} {{#dormitorios}}com {{.}} quartos{{/dormitorios}} para {{transacao}}{{#area_util}}, {{.}}m²{{/area_util}}</a></h2>
+          <h2 class="property-title"><a href="{{imovel_permalink}}">{{tipo}} {{#dormitorios}}com {{.}} quartos{{/dormitorios}} para {{transacao}}{{#area_util}}, {{.}}m²{{/area_util}}</a></h2>
           <h4 class="property-location" title="{{endereco_label}}">{{endereco_label}}</h4>
         </div>
         <div class="info-row amenities hide-on-grid">
@@ -60,7 +60,7 @@
           </p>
         </div>
         <div class="info-row date hide-on-grid">
-          <p><i class="fa fa-calendar"></i> {{data_atualizado_formatada}}</p>
+          <p><i class="fa fa-home"></i> {{referencia}} - {{id}}</p>
         </div>
       </div>
       <div class="body-right table-cell hidden-gird-cell">
@@ -96,7 +96,7 @@
   </div>
   <div class="item-foot date hide-on-list">
     <div class="item-foot-left">
-      <p><i class="fa fa-calendar"></i> {{data_atualizado_formatada}}</p>
+      <p><i class="fa fa-home"></i> {{referencia}} - {{id}}</p>
     </div>
     <div class="item-foot-right">
 

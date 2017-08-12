@@ -8,7 +8,7 @@
         <h1>Seu novo imóvel está aqui</h1>
         <h2 class="banner-sub-title">Informe o tipo e o local do imóvel que está procurando.</h2>
         <div class="banner-search-main">
-            <form id="form-search-local" method="post" class="form-inline">
+            <form id="form-search-local" action="<?php echo base_url('buscar-imoveis'); ?>" method="post" class="form-inline">
                 <input type="hidden" id="banner-search-main-transaction" name="params[transaction][]" value="venda" />
 
                 <div class="form-group">
@@ -33,14 +33,14 @@
                         }
                         ?>
                     </select>
-                    <div class="search input-search input-icon">
+                    <div class="search input-search input-search-home input-icon">
                         <input type="hidden" id="banner-search-main-state" name="params[location][0][state]" value="" />
                         <input type="hidden" id="banner-search-main-city" name="params[location][0][city]" value="">
                         <input type="hidden" id="banner-search-main-district" name="params[location][0][district]" value="">
-                        <input type="text" class="form-control input-search-local" placeholder="Bairro, cidade ou referência do imóvel" autocomplete="off" />
+                        <input type="text" name="params[term]" class="form-control input-search-local" placeholder="Bairro, cidade ou referência do imóvel" autocomplete="off" />
                     </div>
                     <div class="search-btn">
-                        <button class="btn btn-secondary"><i class="fa fa-search"></i> Search</button>
+                        <button class="btn btn-secondary"><i class="fa fa-search"></i> Buscar</button>
                     </div>
                 </div>
             </form>
@@ -197,7 +197,7 @@ if(isset($featured['results']) && !empty($featured['results'])){
                       <?php
                       $imagem_arquivo = 'http://lorempixel.com/g/370/370/city/'. rand(1,10) .'/';
                       if(!empty($campaign['imagem_arquivo'])){
-                        $imagem_arquivo = base_url('imagens/campanhas/' . $campaign['id'] . '/370/370/100/' . $campaign['imagem_arquivo']);
+                        $imagem_arquivo = base_url('imagens/campanhas/' . $campaign['id'] . '/370/370/100/0/' . $campaign['imagem_arquivo']);
                       }
                       ?>
                       <img src="<?php echo $imagem_arquivo; ?>" width="370" height="370" alt="<?php echo $campaign['titulo']; ?>">

@@ -71,4 +71,16 @@ class Tools extends Site_Controller {
       }
     }
   }
+
+  public function newsletter() {
+    $checa_usuario = $this->db->get_where('usuarios', array('email' => $this->input->post('email')));
+    if($checa_usuario->num_rows() > 0){
+      $usuario = $checa_usuario->row_array();
+      $this->db->update('usuarios', array('news' => 1), array('id' => $usuario['id']));
+    }else{
+      $this->db->set('data_criado', 'NOW()', FALSE);
+      $this->db->insert('usuarios', array('email' => $this->input->post('email'), 'news' => 1));
+    }
+    echo json_encode(array('sucesso'));
+  }
 }

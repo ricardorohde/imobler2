@@ -20,6 +20,15 @@
     <meta property="og:site_name" content="<?php echo $this->config->item('site_nome'); ?>" />
     <meta property="og:description" content="<?php echo isset($section["description"]) ? $section["description"] : $this->config->item('site_description'); ?>" />
 
+    <?php
+    if(isset($section["canonical"]) && !empty($section["canonical"])){
+        ?>
+        <link rel="canonical" href="<?php echo $section["canonical"]; ?>" />
+        <?php
+    }
+    ?>
+
+
     <link rel="apple-touch-icon-precomposed" sizes="57x57" href="<?php echo get_asset('img/favicon/apple-touch-icon-57x57.png'); ?>" />
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="<?php echo get_asset('img/favicon/apple-touch-icon-114x114.png'); ?>" />
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="<?php echo get_asset('img/favicon/apple-touch-icon-72x72.png'); ?>" />

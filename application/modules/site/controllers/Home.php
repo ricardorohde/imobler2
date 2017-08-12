@@ -10,7 +10,10 @@ class Home extends Site_Controller {
 	public function index($params = null) {
     if($params) $params = json_decode($params, true);
 
-    print_l();
+    $open_login = '';
+    if($this->session->flashdata('redirect')){
+      $open_login = 'account.login.open("'. $this->session->flashdata('redirect') .'");';
+    }
 
     $data = array(
       'page' => array(
@@ -24,7 +27,7 @@ class Home extends Site_Controller {
         ),
 
         'scripts' => array(
-          array('js/pages/home.js')
+          array('js/pages/home.js', true, $open_login)
         )
       ),
 

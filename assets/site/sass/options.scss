@@ -1,4 +1,6 @@
+@import 'compass';
 @import 'variables.scss';
+@import 'mixings.scss';
 
 .properties-search-double-left {
   padding-right: 5px;
@@ -52,7 +54,17 @@
   #gallery,
   #map,
   #street-map {
-    min-height: 430px;
+    min-height: 265px;
+  }
+}
+
+@include respond-to(tablet-up){
+  .section-detail-content {
+    #gallery,
+    #map,
+    #street-map {
+      min-height: 430px;
+    }
   }
 }
 
@@ -157,4 +169,9 @@
 .pagination-main .pagination a,
 .pagination-main .pagination a:hover {
   color: $red;
+}
+
+.footer-news-message {
+  margin-bottom: 0;
+  display: none;
 }

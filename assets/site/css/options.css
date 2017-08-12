@@ -45,9 +45,16 @@
 .section-detail-content #gallery,
 .section-detail-content #map,
 .section-detail-content #street-map {
-  min-height: 430px;
+  min-height: 265px;
 }
 
+@media (min-width: 767px) {
+  .section-detail-content #gallery,
+  .section-detail-content #map,
+  .section-detail-content #street-map {
+    min-height: 430px;
+  }
+}
 .owl-theme .owl-controls .owl-nav [class*=owl-] {
   font-family: 'fontAwesome';
   width: 40px;
@@ -138,6 +145,11 @@
 .pagination-main .pagination a,
 .pagination-main .pagination a:hover {
   color: #e43012;
+}
+
+.footer-news-message {
+  margin-bottom: 0;
+  display: none;
 }
 
 /*# sourceMappingURL=options.css.map */

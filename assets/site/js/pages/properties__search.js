@@ -155,7 +155,7 @@ jQuery.fn.toggleAttr = function(attr) {
       var rendered = Mustache.render(property_search_location_item_template, {'location' : locations});
       $('#property-location-items').html(rendered);
       if(!repeated){
-        properties_search.form_submit();
+        // properties_search.form_submit();
       }
     }else{
       $.get(app.get_asset_url('templates/properties-search__filter-location.mustache'), function(template) {
@@ -163,7 +163,7 @@ jQuery.fn.toggleAttr = function(attr) {
         var rendered = Mustache.render(property_search_location_item_template, {'location' : locations});
         $('#property-location-items').html(rendered);
         if(!repeated){
-          properties_search.form_submit();
+          // properties_search.form_submit();
         }
       });
     }
@@ -184,7 +184,7 @@ jQuery.fn.toggleAttr = function(attr) {
     properties_types.hide();
     properties_types.selectpicker();
     $('#properties_types__container').on('hide.bs.dropdown', function () {
-        properties_search.form_submit();
+        // properties_search.form_submit();
     });
 
     var property_listing_order = $('#property-listing-order');
@@ -211,7 +211,7 @@ jQuery.fn.toggleAttr = function(attr) {
     $('#search-min_price, #search-max_price, #search-min_area, #search-max_area').on('blur', function(){
       if(text_input_changed){
         text_input_changed = false;
-        properties_search.form_submit();
+        // properties_search.form_submit();
       }
     });
 
@@ -326,11 +326,11 @@ jQuery.fn.toggleAttr = function(attr) {
 
     $('.radio-as-button input[type="radio"]').on('click', function(){
       $(this).toggleAttr('checked');
-      properties_search.form_submit();
+      // properties_search.form_submit();
     });
 
     $('input[name="params[property_features][]"]').on('click', function(){
-      properties_search.form_submit();
+      // properties_search.form_submit();
     });
 
     properties_search.slider();

@@ -27,12 +27,13 @@ $config['base_url'] = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ?
 $config['base_url'] .= "://".$_SERVER['HTTP_HOST'];
 $config['base_url'] .= str_replace(basename($_SERVER['SCRIPT_NAME']),"",$_SERVER['SCRIPT_NAME']);
 $config['property_pagination_links'] = 3;
-$config['site_versao'] = 1234;//md5(time() . rand(0,999));
+$config['site_versao'] = 12345;//md5(time() . rand(0,999));
 $config['google_api_key'] = 'AIzaSyDqSuNjacjDBvYZJkqPB-W_jGunQqjkMec';
 
 $config['link_social_facebook'] = 'https://facebook.com/medizimoveis';
 $config['link_social_instagram'] = 'http://instagram.com/medizimoveis';
 $config['link_social_twitter'] = 'https://twitter.com/medizimoveis';
+
 /*
 |--------------------------------------------------------------------------
 | Index File
@@ -84,7 +85,7 @@ $config['url_suffix'] = '';
 | than english.
 |
 */
-$config['language']	= 'english';
+$config['language']	= 'portugues';
 
 /*
 |--------------------------------------------------------------------------
@@ -388,7 +389,7 @@ $config['encryption_key'] = '';
 $config['sess_driver'] = 'files';
 $config['sess_cookie_name'] = 'ci_session';
 $config['sess_expiration'] = 7200;
-$config['sess_save_path'] = NULL;
+$config['sess_save_path'] = sys_get_temp_dir();
 $config['sess_match_ip'] = FALSE;
 $config['sess_time_to_update'] = 300;
 $config['sess_regenerate_destroy'] = FALSE;
