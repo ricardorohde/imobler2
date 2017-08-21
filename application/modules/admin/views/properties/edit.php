@@ -254,7 +254,7 @@
                         }
                         ?>
                         <div class="col-sm-4">
-                          <div class="checkbox ">
+                          <div class="checkbox check-danger">
                             <input type="checkbox" name="caracteristicas[]" value="<?php echo $caracteristica_item['id']; ?>" <?php echo isset($caracteristica_item['selected']) ? 'checked="true"' : ''; ?> id="checkbox<?php echo $caracteristica_item['id']; ?>">
                             <label for="checkbox<?php echo $caracteristica_item['id']; ?>"><?php echo $caracteristica_item['nome']; ?></label>
                           </div>

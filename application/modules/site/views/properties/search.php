@@ -120,7 +120,7 @@
                                     <div class="properties-search-double-left col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                         <h4>Preço Mínimo</h4>
                                         <div class="form-group">
-                                            <input id="search-min_price" class="form-control price-mask" name="params[min_price]" placeholder="R$ 200.000" value="<?php echo isset($filters['params']['min_price']) ? $filters['params']['min_price'] : ''; ?>" type="text">
+                                            <input id="search-min_price" class="form-control price-mask" name="params[min_price]" placeholder="R$ 100.000" value="<?php echo isset($filters['params']['min_price']) ? $filters['params']['min_price'] : ''; ?>" type="text">
                                         </div>
                                     </div>
                                     <div class="properties-search-double-right col-xs-12 col-sm-12 col-md-6 col-lg-6">

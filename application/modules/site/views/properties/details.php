@@ -1,7 +1,6 @@
 <section id="section-body"
 data-property_latitude="<?php echo $property['endereco_latitude']; ?>"
 data-property_longitude="<?php echo $property['endereco_longitude']; ?>">
-
 <div class="detail-top detail-top-grid no-margin">
   <div class="container">
     <div class="row">
@@ -82,7 +81,7 @@ data-property_longitude="<?php echo $property['endereco_longitude']; ?>">
                     <?php
                     foreach ($property['imagens'] as $key => $image) {
                       ?>
-                      <img class="owl-lazy" src="<?php echo base_url('imagens/imoveis/0/810/430/100/0/property-image.jpg'); ?>" data-src="<?php echo base_url('imagens/imoveis/' . $property['id'] . '/810/430/100/2/' . $image['arquivo']); ?>" alt="<?php echo $image['legenda']; ?>">
+                      <img class="owl-lazy" src="<?php echo base_url('imagens/imoveis/0/810/430/100/0/property-image.jpg'); ?>" data-src="<?php echo base_url('imagens/imoveis/' . $property['id'] . '/810/430/100/2/' . $image['arquivo']); ?>" alt="<?php echo !empty($image['legenda']) ? $image['legenda'] : $property['tipo'] . ' à ' . strtolower($property['transacao']) . ($property['dormitorios'] ? ' com ' . $property['dormitorios'] . ($property['dormitorios'] == 1 ? ' quarto' : ' quartos') : '') . ($property['area_util'] ? ', ' . $property['area_util'] . ' m²' : '') . ' - ' . $property['endereco_bairro']; ?>">
                       <?php
                     }
                     ?>
@@ -141,7 +140,7 @@ data-property_longitude="<?php echo $property['endereco_longitude']; ?>">
                 <a href="javascript: void(0);" class="link-like" data-like_status="<?php echo isset($property['imovel_favorito']) ? 'liked' : 'unliked'; ?>" data-property_id="<?php echo $property['id']; ?>">Adicionar aos favoritos <i class="fa fa-heart"></i></a>
               </div>
             </div>
-            <?php echo nl2br($property['descricao']); ?>
+            <div class="text-justify"><?php echo nl2br($property['descricao']); ?></div>
           </div>
 
           <div class="detail-list detail-block">

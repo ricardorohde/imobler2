@@ -151,7 +151,7 @@ if(isset($featured['results']) && !empty($featured['results'])){
                         </div>
                         <div class="item-foot date hide-on-list">
                           <div class="item-foot-left">
-                            <p><i class="fa fa-calendar"></i> <?php echo $property_featured['data_atualizado_formatada']; ?></p>
+                            <p><i class="fa fa-home"></i> <?php echo $property_featured['referencia']; ?> - <?php echo $property_featured['id']; ?></p>
                           </div>
                         </div>
                       </div>
@@ -197,7 +197,7 @@ if(isset($featured['results']) && !empty($featured['results'])){
                       <?php
                       $imagem_arquivo = 'http://lorempixel.com/g/370/370/city/'. rand(1,10) .'/';
                       if(!empty($campaign['imagem_arquivo'])){
-                        $imagem_arquivo = base_url('imagens/campanhas/' . $campaign['id'] . '/370/370/100/0/' . $campaign['imagem_arquivo']);
+                        $imagem_arquivo = base_url('imagens/campanhas/' . $campaign['id'] . '/370/370/100/1/' . $campaign['imagem_arquivo']);
                       }
                       ?>
                       <img src="<?php echo $imagem_arquivo; ?>" width="370" height="370" alt="<?php echo $campaign['titulo']; ?>">

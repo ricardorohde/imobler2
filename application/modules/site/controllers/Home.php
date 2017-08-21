@@ -38,9 +38,9 @@ class Home extends Site_Controller {
       'orderby' => 'featured'
     ));
 
-    $data['campaigns'] = $this->registros_model->registros('campanhas', array('where' => array('campanhas.status' => 1, 'campanhas_categorias.id' => 1)), false, 'campanhas.*, campanhas_categorias.nome as categoria', array(
+    $data['campaigns'] = $this->registros_model->registros('campanhas', array('where' => array('campanhas.status' => 1, 'campanhas_categorias.id' => 8), 'limit' => 3), false, 'campanhas.*, campanhas_categorias.nome as categoria', array(
       array('campanhas_categorias', 'campanhas.categoria = campanhas_categorias.id', 'inner')
-    ));
+    ), array('campanhas.id' => 'RANDOM'));
 
     // print_l($this->properties_model->properties((isset($params['route_params']) ? $params['route_params'] : null)));
 

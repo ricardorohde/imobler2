@@ -9,6 +9,8 @@
     <meta name="description" content="<?php echo isset($section["description"]) ? $section["description"] : $this->config->item('site_description'); ?>">
     <meta name="author" content="Luciano Souza - 89dev">
 
+    <meta name="google-site-verification" content="DUpvnuyLQXEMfeUSz9LVbKOLbXDi0NpybNaj9i_EIqA" />
+
     <meta property="og:title" content="<?php echo isset($section["title"]) ? $section["title"] . ' - ' . $this->config->item('site_nome') : $this->config->item('site_slogan') . ' - ' . $this->config->item('site_nome'); ?>"/>
     <?php
     if(isset($section["image"]) && !empty($section["image"])){
@@ -93,6 +95,18 @@ if(isset($section["body_class"])){
          js.src = "//connect.facebook.net/en_US/sdk.js";
          fjs.parentNode.insertBefore(js, fjs);
        }(document, 'script', 'facebook-jssdk'));
+    </script>
+
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-4536348-22']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
     </script>
 
     <script src="<?php echo get_asset('js/LAB.min.js'); ?>"></script>

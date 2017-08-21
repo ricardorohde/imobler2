@@ -128,6 +128,10 @@ class Tools extends Admin_Controller {
     foreach ($imagens as $key => $value) {
       $this->db->update('imoveis_imagens', array('ordem' => $key), array('id' => $value));
     }
+  }
 
+  function alterar_status() {
+    $this->db->update('imoveis', array('status' => $this->input->post('property_status')), array('id' => $this->input->post('property_id')));
+    echo json_encode(array('status' => 'success'));
   }
 }

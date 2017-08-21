@@ -274,43 +274,42 @@ class Properties_model extends CI_Model {
       }
     }
 
+
     // ORDER BY
-    if(isset($request['orderby']) && !empty($request['orderby'])){
+    $orderby = isset($request['orderby']) ? $request['orderby'] : 'lowest_price';
+    $order = isset($request['order']) ? $request['order'] : 'ASC';
 
-      $order = isset($request['order']) ? $request['order'] : 'ASC';
+    switch ($orderby) {
 
-      switch ($request['orderby']) {
+      case 'lowest_price':
+        $this->db->order_by('imoveis_negociacoes.valor ASC');
+      break;
 
-        case 'lowest_price':
-          $this->db->order_by('imoveis_negociacoes.valor ASC');
-        break;
+      case 'biggest_price':
+        $this->db->order_by('imoveis_negociacoes.valor DESC');
+      break;
 
-        case 'biggest_price':
-          $this->db->order_by('imoveis_negociacoes.valor DESC');
-        break;
+      case 'most_recent':
+        $this->db->order_by('imoveis.id DESC');
+      break;
 
-        case 'most_recent':
-          $this->db->order_by('imoveis.id DESC');
-        break;
+      case 'update_date':
+        $this->db->order_by('imoveis.data_atualizado ' . $order);
+      break;
 
-        case 'update_date':
-          $this->db->order_by('imoveis.data_atualizado ' . $order);
-        break;
+      case 'property_id':
+        $this->db->order_by('imoveis.id ' . $order);
+      break;
 
-        case 'property_id':
-          $this->db->order_by('imoveis.id ' . $order);
-        break;
+      case 'featured':
+        $this->db->where('destaque', 1);
+        $this->db->order_by('imoveis.id', 'RANDOM');
+      break;
 
-        case 'featured':
-          $this->db->where('destaque', 1);
-          $this->db->order_by('imoveis.id', 'RANDOM');
-        break;
+      case 'recommended':
+        $this->db->order_by('imoveis.id', 'RANDOM');
+      break;
 
-        case 'recommended':
-          $this->db->order_by('imoveis.id', 'RANDOM');
-        break;
-
-      }
     }
 
     // GROUP BY

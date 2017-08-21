@@ -1,0 +1,16 @@
+FTP
+Host: 186.202.153.10
+Login: medizimoveis3
+Senha: MedizBia7395
+
+MYSQL
+Host: medizimo2017.mysql.dbaas.com.br (179.188.16.7)
+User: medizimo2017
+Database: medizimo2017
+Senha: MedizBia7395
+
+
+
+
+webpagetests.org
+

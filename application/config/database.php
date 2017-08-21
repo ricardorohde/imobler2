@@ -70,15 +70,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | The $query_builder variables lets you determine whether or not to load
 | the query builder class.
 */
-$active_group = 'homolog';
+$active_group = 'prod';
 $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost',
-	'username' => '',
-	'password' => '',
-	'database' => '',
+	'username' => 'root',
+	'password' => 'adm5135',
+	'database' => 'mediz_imobler',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
@@ -101,6 +101,28 @@ $db['homolog'] = array(
   'username' => 'lcoso_mediz2',
   'password' => 'Rs2@34ft',
   'database' => 'lcosouza1_mediz2',
+  'dbdriver' => 'mysqli',
+  'dbprefix' => '',
+  'pconnect' => FALSE,
+  'db_debug' => (ENVIRONMENT !== 'production'),
+  'cache_on' => FALSE,
+  'cachedir' => '',
+  'char_set' => 'utf8',
+  'dbcollat' => 'utf8_general_ci',
+  'swap_pre' => '',
+  'encrypt' => FALSE,
+  'compress' => FALSE,
+  'stricton' => FALSE,
+  'failover' => array(),
+  'save_queries' => TRUE
+);
+
+$db['prod'] = array(
+  'dsn' => '',
+  'hostname' => 'medizimo2017.mysql.dbaas.com.br',
+  'username' => 'medizimo2017',
+  'password' => 'MedizBia7395',
+  'database' => 'medizimo2017',
   'dbdriver' => 'mysqli',
   'dbprefix' => '',
   'pconnect' => FALSE,

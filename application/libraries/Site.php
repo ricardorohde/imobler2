@@ -109,6 +109,8 @@ class Site {
       $return['page'] = $route_params['page'];
     }
 
+    $route_params['orderby'] = isset($route_params['orderby']) ? $route_params['orderby'] : 'lowest_price';
+
     $return['filter'] = base64url_encode(json_encode($route_params));
 
     $return['uri_full'] = $uri . (isset($route_params['page']) ? $route_params['page'] : '') . '?_=' . $return['filter'];

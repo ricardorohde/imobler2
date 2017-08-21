@@ -5,24 +5,29 @@ function print_l($_array = null){
   }
 }
 require ('meekrodb.2.3.class.php');
-$antigo = new MeekroDB('127.0.0.1', 'root', 'adm5135', 'mediz_atual', '3306', 'utf8');
-$novo = new MeekroDB('127.0.0.1', 'root', 'adm5135', 'lcosouza1_mediz2', '3306', 'utf8');
+$antigo = new MeekroDB('localhost', 'root', 'adm5135', 'medizdepara', '3306', 'utf8');
+$novo = new MeekroDB('localhost', 'root', 'adm5135', 'mediz_imobler', '3306', 'utf8');
 
+echo date('d/m/Y h:i:s', time());
 
 $imovel_id = 0;
 
 if(isset($_GET['clear']) && $_GET['clear'] == 754){
+  $novo->query('delete from bairros');
   $novo->query('delete from campanhas');
+  $novo->query('delete from cidades');
   $novo->query('delete from enderecos');
   $novo->query('delete from imoveis');
-  $novo->query('delete from imoveis_tipos');
+  $novo->query('delete from tags');
+  $novo->query('delete from imoveis_imagens');
 
-  $novo->query('delete from bairros');
-  $novo->query('delete from cidades');
-
+  $novo->query('ALTER TABLE bairros AUTO_INCREMENT = 1');
   $novo->query('ALTER TABLE campanhas AUTO_INCREMENT = 1');
+  $novo->query('ALTER TABLE cidades AUTO_INCREMENT = 1');
   $novo->query('ALTER TABLE enderecos AUTO_INCREMENT = 1');
   $novo->query('ALTER TABLE imoveis AUTO_INCREMENT = 1');
+  $novo->query('ALTER TABLE imoveis_imagens AUTO_INCREMENT = 1');
+
   $novo->query('ALTER TABLE imoveis_caracteristicas AUTO_INCREMENT = 1');
   $novo->query('ALTER TABLE imoveis_despesas AUTO_INCREMENT = 1');
   $novo->query('ALTER TABLE imoveis_enderecos AUTO_INCREMENT = 1');
@@ -31,10 +36,7 @@ if(isset($_GET['clear']) && $_GET['clear'] == 754){
   $novo->query('ALTER TABLE imoveis_negociacoes AUTO_INCREMENT = 1');
   $novo->query('ALTER TABLE imoveis_observacoes AUTO_INCREMENT = 1');
   $novo->query('ALTER TABLE imoveis_tags AUTO_INCREMENT = 1');
-  $novo->query('ALTER TABLE imoveis_tipos AUTO_INCREMENT = 1');
-  $novo->query('ALTER TABLE imoveis_tipos_segmentos AUTO_INCREMENT = 1');
-  $novo->query('ALTER TABLE bairros AUTO_INCREMENT = 1');
-  $novo->query('ALTER TABLE cidades AUTO_INCREMENT = 1');
+  $novo->query('ALTER TABLE tags AUTO_INCREMENT = 1');
 
   exit;
 }
@@ -43,26 +45,29 @@ function get_imagens($ids, $request){
   global $antigo;
   $return = $request;
 
-  $imagens = $antigo->query("
-    SELECT
-      imoveis_imagens.padrao,
-      imoveis_imagens.imovel,
-      imoveis_imagens.legenda,
-      imoveis_imagens.arquivo,
-      imoveis_imagens.ordem
-    FROM
-      imoveis_imagens
-    WHERE
-      imoveis_imagens.imovel IN (". implode(',', $ids) .")
-    ORDER BY
-      imoveis_imagens.padrao DESC, imoveis_imagens.ordem ASC
-  ");
+  if(!empty($ids)){
+    $imagens = $antigo->query("
+      SELECT
+        imoveis_imagens.padrao,
+        imoveis_imagens.imovel,
+        imoveis_imagens.legenda,
+        imoveis_imagens.arquivo,
+        imoveis_imagens.ordem
+      FROM
+        imoveis_imagens
+      WHERE
+        imoveis_imagens.imovel IN (". implode(',', $ids) .")
+      ORDER BY
+        imoveis_imagens.padrao DESC, imoveis_imagens.ordem ASC
+    ");
 
-  if($imagens){
-    foreach ($imagens as $imagem) {
-      $return[$imagem['imovel']]['imagens'][] = $imagem;
+    if($imagens){
+      foreach ($imagens as $imagem) {
+        $return[$imagem['imovel']]['imagens'][] = $imagem;
+      }
     }
   }
+
 
   return $return;
 }
@@ -71,28 +76,30 @@ function get_caracteristicas($ids, $request){
   global $antigo;
   $return = $request;
 
-  $caracteristicas = $antigo->query("
-    SELECT
-      imoveis_caracteristicas.imovel,
-      imoveis_caracteristicas.caracteristica,
-      caracteristicas.nome
-    FROM
-      imoveis_caracteristicas
-    INNER JOIN
-      caracteristicas
-    ON
-      imoveis_caracteristicas.caracteristica = caracteristicas.id
-    WHERE
-      imoveis_caracteristicas.imovel IN (". implode(',', $ids) .")
-    AND
-      caracteristicas.nome_vivareal IS NOT NULL
-    ORDER BY
-      imoveis_caracteristicas.imovel
-  ");
+  if(!empty($ids)){
+    $caracteristicas = $antigo->query("
+      SELECT
+        imoveis_caracteristicas.imovel,
+        imoveis_caracteristicas.caracteristica,
+        caracteristicas.nome
+      FROM
+        imoveis_caracteristicas
+      INNER JOIN
+        caracteristicas
+      ON
+        imoveis_caracteristicas.caracteristica = caracteristicas.id
+      WHERE
+        imoveis_caracteristicas.imovel IN (". implode(',', $ids) .")
+      AND
+        caracteristicas.nome_vivareal IS NOT NULL
+      ORDER BY
+        imoveis_caracteristicas.imovel
+    ");
 
-  if($caracteristicas){
-    foreach ($caracteristicas as $caracteristica) {
-      $return[$caracteristica['imovel']]['caracteristicas'][] = $caracteristica['nome'];
+    if($caracteristicas){
+      foreach ($caracteristicas as $caracteristica) {
+        $return[$caracteristica['imovel']]['caracteristicas'][] = $caracteristica['nome'];
+      }
     }
   }
 
@@ -119,7 +126,6 @@ function get_imoveis() {
       tb_imoveis.*,
       tb_tipos_de_imoveis.nome as tipo_de_imovel_nome,
       tb_tipos_de_imoveis.nome_plural as tipo_de_imovel_nome_plural,
-      tb_tipos_de_imoveis.segmento as tipo_de_imovel_segmento,
       tb_tipos_de_imoveis.slug AS tipo_de_imovel,
       tb_tipos_de_imoveis.slug_ingles AS tipo_de_imovel_ingles,
       tb_tipos_de_imoveis.titulo AS meta_title,
@@ -212,11 +218,11 @@ $imoveis = get_imoveis();
 if(!empty($imoveis)){
   foreach($imoveis as $imovel){
 
-    $imovel_tipo_id = $novo->queryFirstField("SELECT id FROM imoveis_tipos WHERE segmento = %i AND nome = %s", $imovel['tipo_de_imovel_segmento'], $imovel['tipo_de_imovel_nome']);
+    $imovel_tipo_id = $novo->queryFirstField("SELECT id FROM imoveis_tipos WHERE nome = %s", $imovel['tipo_de_imovel_nome']);
     if(!$imovel_tipo_id){
 
       $imovel_tipo_adicionado = array(
-        'segmento' => $imovel['tipo_de_imovel_segmento'],
+        'segmento' => 1,
         'nome' => limpa_texto($imovel['tipo_de_imovel_nome']),
         'nome_plural' => limpa_texto($imovel['tipo_de_imovel_nome_plural']),
         'slug' => format_uri($imovel['tipo_de_imovel_nome']),

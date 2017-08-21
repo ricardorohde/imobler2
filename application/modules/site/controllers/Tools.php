@@ -35,6 +35,8 @@ class Tools extends Site_Controller {
 
     if(isset($post['orderby'])){
       $route_params['orderby'] = $post['orderby'];
+    }else{
+      $route_params['orderby'] = 'lowest_price';
     }
 
     if(isset($post['page'])){
@@ -73,13 +75,13 @@ class Tools extends Site_Controller {
   }
 
   public function newsletter() {
-    $checa_usuario = $this->db->get_where('usuarios', array('email' => $this->input->post('email')));
+    $checa_usuario = $this->db->get_where('newsletter', array('email' => $this->input->post('email')));
     if($checa_usuario->num_rows() > 0){
-      $usuario = $checa_usuario->row_array();
-      $this->db->update('usuarios', array('news' => 1), array('id' => $usuario['id']));
+      // $usuario = $checa_usuario->row_array();
+      // $this->db->update('newsletter', array('news' => 1), array('id' => $usuario['id']));
     }else{
       $this->db->set('data_criado', 'NOW()', FALSE);
-      $this->db->insert('usuarios', array('email' => $this->input->post('email'), 'news' => 1));
+      $this->db->insert('newsletter', array('email' => $this->input->post('email')));
     }
     echo json_encode(array('sucesso'));
   }
